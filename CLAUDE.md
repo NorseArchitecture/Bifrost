@@ -34,7 +34,7 @@ Each platform realm is a git submodule. Two non-negotiable conventions:
 - **Relative URLs** (`../Svartalfheim.git`), resolved against whatever remote Bifrost was cloned from — one `.gitmodules` serves HTTPS and SSH clones identically. A fork of Bifrost resolves submodules against the fork's owner and fails loudly unless the realms are forked alongside it. **That behavior is deliberate** — forking the bridge is the signal to build your own, not a workflow we accommodate.
 - **Branch tracking on `master`** (`-b master` in `.gitmodules`). `git submodule update --remote` pulls each realm's tip; this repo exists for developer productivity, so tracking beats SHA-pinning here.
 
-New realm lands? `git submodule add -b master ../{Realm}.git` and update the README realm table in the same change.
+New realm lands? `git submodule add -b master ../{Realm}.git` and update the realm tables in both README.md and this file in the same change.
 
 ## 4. What Belongs Here (and What Doesn't)
 
@@ -68,6 +68,7 @@ The realms each carry their own authoritative CLAUDE.md; the subset that matters
 
 - **No automatic git commits.** Stage and show the diff; the human commits. When in doubt, stop and wait.
 - **No force-pushing to `master`.** No skipping git hooks. No committing secrets — local dev configuration uses user secrets or Aspire-managed values, never checked-in credentials.
+- **README.md and CLAUDE.md stay in sync — boy-scout law.** The pair tells one story at two altitudes: README is the public narrative, CLAUDE.md the working law. Any change touching what either describes — submodules, naming, conventions, composition — updates both in the same change, and the realm tables in both files must match `.gitmodules` exactly. Touch a repo, check its pair before you leave.
 
 ## 7. Open Decisions
 
