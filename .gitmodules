@@ -1,0 +1,16 @@
+[submodule "Svartalfheim"]
+	path = Svartalfheim
+	url = ../Svartalfheim.git
+	branch = master
+[submodule "Asgard"]
+	path = Asgard
+	url = ../Asgard.git
+	branch = master
+[submodule "Midgard"]
+	path = Midgard
+	url = ../Midgard.git
+	branch = master
+[submodule "Yggdrasil"]
+	path = Yggdrasil
+	url = ../Yggdrasil.git
+	branch = master
