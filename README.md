@@ -13,6 +13,7 @@ Each realm is a git submodule, pinned to track `master`:
 | [Svartalfheim](https://github.com/NorseArchitecture/Svartalfheim) | `Norse.Primitives.*` — domain value types, identifiers, result parsing, encryption |
 | [Asgard](https://github.com/NorseArchitecture/Asgard) | `Norse.Abstractions.*` — the contracts and laws every realm must honor |
 | [Midgard](https://github.com/NorseArchitecture/Midgard) | `Norse.Infrastructure.*` — persistence, messaging, caching, external integrations |
+| [Urdarbrunnr](https://github.com/NorseArchitecture/Urdarbrunnr) | `Norse.EntityFramework.*` — entity base types, DbContext foundations, conventions, value converters, and the migrations chassis |
 | [Yggdrasil](https://github.com/NorseArchitecture/Yggdrasil) | `Norse.Hosting.*` — the web, worker, and migration service chassis |
 | [Glitnir](https://github.com/NorseArchitecture/Glitnir) | The design court — specs, plans, and proof-of-concept verdicts; every design is tried there before code is forged |
 

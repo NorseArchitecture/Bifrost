@@ -18,3 +18,7 @@
 	path = Glitnir
 	url = ../Glitnir.git
 	branch = master
+[submodule "Urdarbrunnr"]
+	path = Urdarbrunnr
+	url = ../Urdarbrunnr.git
+	branch = master
