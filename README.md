@@ -14,6 +14,7 @@ Each realm is a git submodule, pinned to track `master`:
 | [Asgard](https://github.com/NorseArchitecture/Asgard) | `Norse.Abstractions.*` — the contracts and laws every realm must honor |
 | [Midgard](https://github.com/NorseArchitecture/Midgard) | `Norse.Infrastructure.*` — persistence, messaging, caching, external integrations |
 | [Yggdrasil](https://github.com/NorseArchitecture/Yggdrasil) | `Norse.Hosting.*` — the web, worker, and migration service chassis |
+| [Glitnir](https://github.com/NorseArchitecture/Glitnir) | The design court — specs, plans, and proof-of-concept verdicts; every design is tried there before code is forged |
 
 ## Getting started
 

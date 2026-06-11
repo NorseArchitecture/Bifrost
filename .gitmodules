@@ -14,3 +14,7 @@
 	path = Yggdrasil
 	url = ../Yggdrasil.git
 	branch = master
+[submodule "Glitnir"]
+	path = Glitnir
+	url = ../Glitnir.git
+	branch = master

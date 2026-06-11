@@ -1,12 +1,30 @@
 <Solution>
-  <Folder Name="/Solution Items/">
-    <File Path=".editorconfig" />
-    <File Path=".gitattributes" />
-    <File Path=".gitignore" />
-    <File Path=".gitmodules" />
-    <File Path="dotnet-tools.json" />
-    <File Path="global.json" />
-    <File Path="LICENSE" />
-    <File Path="README.md" />
-  </Folder>
+	<Folder Name="/Primitives/">
+		<File Path="Svartalfheim/.editorconfig" />
+		<File Path="Svartalfheim/.gitattributes" />
+		<File Path="Svartalfheim/.gitignore" />
+		<File Path="Svartalfheim/CLAUDE.md" />
+		<File Path="Svartalfheim/Directory.Build.props" />
+		<File Path="Svartalfheim/global.json" />
+		<File Path="Svartalfheim/LICENSE" />
+		<File Path="Svartalfheim/Svartalfheim.slnx" />
+	</Folder>
+	<Folder Name="/Primitives/src/">
+		<Project Path="Svartalfheim/src/Primitives/Primitives.csproj" />
+	</Folder>
+	<Folder Name="/Primitives/tests/">
+		<File Path="Svartalfheim/tests/Directory.Build.props" />
+		<Project Path="Svartalfheim/tests/Primitives.Tests/Primitives.Tests.csproj" />
+	</Folder>
+	<Folder Name="/Solution Items/">
+		<File Path=".editorconfig" />
+		<File Path=".gitattributes" />
+		<File Path=".gitignore" />
+		<File Path=".gitmodules" />
+		<File Path="CLAUDE.md" />
+		<File Path="dotnet-tools.json" />
+		<File Path="global.json" />
+		<File Path="LICENSE" />
+		<File Path="README.md" />
+	</Folder>
 </Solution>
