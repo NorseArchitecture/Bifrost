@@ -1,0 +1,6 @@
+<Project>
+	<PropertyGroup>
+		<AssemblyName>Norse.$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>Norse.$(MSBuildProjectName)</RootNamespace>
+	</PropertyGroup>
+</Project>

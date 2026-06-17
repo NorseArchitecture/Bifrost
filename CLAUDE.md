@@ -21,6 +21,8 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 | Midgard | `Norse.Infrastructure.*` | Concrete implementations: persistence, messaging, caching, integrations |
 | Urdarbrunnr | `Norse.EntityFramework.*` | Entity base types, DbContext foundations, conventions, value converters, migrations chassis |
 | Yggdrasil | `Norse.Hosting.*` | Web, worker, and migration service chassis |
+| Himinbjorg | `Norse.Identity.*` | EF persistence for ASP.NET Identity + OpenIddict — backend-only entities, conventions, and migrations; never referenced from WASM or MAUI |
+| Heimdall | `Norse.Access.*` | Auth services on Himinbjorg: one access ruleset across Blazor Server, WASM, and MAUI, plus admin Blazor components and the backing gRPC service |
 | Glitnir | — (documents only) | Design court: specs, plans, and proof-of-concept verdicts |
 | **Bifrost** (this repo) | `Norse.Orchestration.*` | Aspire AppHost composing the local development environment |
 

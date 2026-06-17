@@ -22,3 +22,11 @@
 	path = Urdarbrunnr
 	url = ../Urdarbrunnr.git
 	branch = master
+[submodule "Himinbjorg"]
+	path = Himinbjorg
+	url = ../Himinbjorg.git
+	branch = master
+[submodule "Heimdall"]
+	path = Heimdall
+	url = ../Heimdall.git
+	branch = master

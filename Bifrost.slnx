@@ -1,4 +1,7 @@
 <Solution>
+	<Folder Name="/Orchestration/">
+		<Project Path="src/Orchestration.AppHost/Orchestration.AppHost.csproj" />
+	</Folder>
 	<Folder Name="/Primitives/">
 		<File Path="Svartalfheim/.editorconfig" />
 		<File Path="Svartalfheim/.gitattributes" />
@@ -22,6 +25,7 @@
 		<File Path=".gitignore" />
 		<File Path=".gitmodules" />
 		<File Path="CLAUDE.md" />
+		<File Path="Directory.Build.props" />
 		<File Path="dotnet-tools.json" />
 		<File Path="global.json" />
 		<File Path="LICENSE" />
