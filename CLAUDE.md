@@ -71,6 +71,7 @@ The realms each carry their own authoritative CLAUDE.md; the subset that matters
 
 - **No automatic git commits.** Stage and show the diff; the human commits. When in doubt, stop and wait.
 - **No force-pushing to `master`.** No skipping git hooks. No committing secrets — local dev configuration uses user secrets or Aspire-managed values, never checked-in credentials.
+- **Implementation is subagent-driven and test-driven, always.** `superpowers:subagent-driven-development` is the default orchestration skill, not a recommendation among equals — `executing-plans` is the narrow fallback for a separate session with human review checkpoints, never an interchangeable choice. Every plan's REQUIRED SUB-SKILL line names the default paired with `superpowers:test-driven-development` — orchestration sequences tasks, TDD governs how each one is coded. Platform-wide rule, stated once: `../Glitnir/CLAUDE.md` §2.8.
 - **README.md and CLAUDE.md stay in sync — boy-scout law.** The pair tells one story at two altitudes: README is the public narrative, CLAUDE.md the working law. Any change touching what either describes — submodules, naming, conventions, composition — updates both in the same change, and the realm tables in both files must match `.gitmodules` exactly. Touch a repo, check its pair before you leave.
 
 ## 7. Open Decisions
