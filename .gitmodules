@@ -34,3 +34,7 @@
 	path = Nagalfar
 	url = ../Nagalfar.git
 	branch = master
+[submodule "Ratatoskr"]
+	path = Ratatoskr
+	url = ../Ratatoskr
+	branch = master

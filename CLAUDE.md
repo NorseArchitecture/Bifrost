@@ -24,8 +24,9 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 |---|---|---|
 | Svartalfheim | `Norse.Primitives.*` | Domain value types, identifiers, result parsing, encryption |
 | Asgard | `Norse.Abstractions.*` | Contracts and laws every realm must honor |
-| Midgard | `Norse.Infrastructure.*` | Concrete implementations: persistence, messaging, caching, integrations |
+| Midgard | `Norse.Infrastructure.*` | Concrete implementations: persistence, caching, integrations |
 | Urdarbrunnr | `Norse.EntityFramework.*` | Entity base types, DbContext foundations, conventions, value converters, migrations chassis |
+| Ratatoskr | `Norse.NServiceBus.*` | NServiceBus endpoint configuration, saga infrastructure, message conventions, and transport wiring — the squirrel that carries messages between the realms |
 | Yggdrasil | `Norse.Hosting.*` | Web, worker, and migration service chassis |
 | Himinbjorg | `Norse.Identity.*` | EF persistence for ASP.NET Identity + OpenIddict — backend-only entities, conventions, and migrations; never referenced from WASM or MAUI |
 | Heimdall | `Norse.Access.*` | Auth services on Himinbjorg: one access ruleset across Blazor Server, WASM, and MAUI, plus admin Blazor components and the backing gRPC service |

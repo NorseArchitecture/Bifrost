@@ -12,8 +12,9 @@ Each realm is a git submodule, pinned to track `master`:
 |---|---|
 | [Svartalfheim](https://github.com/NorseArchitecture/Svartalfheim) | `Norse.Primitives.*` — domain value types, identifiers, result parsing, encryption |
 | [Asgard](https://github.com/NorseArchitecture/Asgard) | `Norse.Abstractions.*` — the contracts and laws every realm must honor |
-| [Midgard](https://github.com/NorseArchitecture/Midgard) | `Norse.Infrastructure.*` — persistence, messaging, caching, external integrations |
+| [Midgard](https://github.com/NorseArchitecture/Midgard) | `Norse.Infrastructure.*` — persistence, caching, external integrations |
 | [Urdarbrunnr](https://github.com/NorseArchitecture/Urdarbrunnr) | `Norse.EntityFramework.*` — entity base types, DbContext foundations, conventions, value converters, and the migrations chassis |
+| [Ratatoskr](https://github.com/NorseArchitecture/Ratatoskr) | `Norse.NServiceBus.*` — NServiceBus endpoint configuration, saga infrastructure, message conventions, and transport wiring; the squirrel that carries messages between the realms |
 | [Yggdrasil](https://github.com/NorseArchitecture/Yggdrasil) | `Norse.Hosting.*` — the web, worker, and migration service chassis |
 | [Himinbjorg](https://github.com/NorseArchitecture/Himinbjorg) | `Norse.Identity.*` — backend-only EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations that never cross to WASM or MAUI |
 | [Heimdall](https://github.com/NorseArchitecture/Heimdall) | `Norse.Access.*` — auth services on Himinbjorg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
