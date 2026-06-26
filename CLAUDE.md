@@ -10,6 +10,12 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 
 **Every Claude Code session starts from Bifrost.** The bridge is the working root: all realms are checked out beneath it, and **Glitnir** rides alongside as the design court — every spec, plan, and proof of concept that enters the record as part of a rendered verdict lives there. Realm CLAUDE.md files reference Glitnir documents by sibling-relative path (`../Glitnir/docs/...`).
 
+**Peer repositories** sit beside Bifrost in the same parent directory and are not submodules of it:
+
+| Repository | Local path | Purpose |
+|---|---|---|
+| `.github` | `../.github` | Org-default community-health files and shared reusable GitHub Actions workflows (`ci-build-test.yml`, `release-nuget.yml`, `update-bifrost.yml`). Referenced by realms as `NorseArchitecture/.github/.github/workflows/*.yml@master`. |
+
 ## 2. The Naming Model
 
 **Repositories are named for the lore; projects and namespaces are named for the function.** Open the org and you tour the cosmos; open the solution and every project says what it does. The codename never appears as an operational identifier — `Bifrost` is the repo name and the story, `Norse.Orchestration` is the code.
@@ -75,7 +81,26 @@ The realms each carry their own authoritative CLAUDE.md; the subset that matters
 - **Implementation is subagent-driven and test-driven, always.** `superpowers:subagent-driven-development` is the default orchestration skill, not a recommendation among equals — `executing-plans` is the narrow fallback for a separate session with human review checkpoints, never an interchangeable choice. Every plan's REQUIRED SUB-SKILL line names the default paired with `superpowers:test-driven-development` — orchestration sequences tasks, TDD governs how each one is coded. Platform-wide rule, stated once: `../Glitnir/CLAUDE.md` §2.8.
 - **README.md and CLAUDE.md stay in sync — boy-scout law.** The pair tells one story at two altitudes: README is the public narrative, CLAUDE.md the working law. Any change touching what either describes — submodules, naming, conventions, composition — updates both in the same change, and the realm tables in both files must match `.gitmodules` exactly. Touch a repo, check its pair before you leave.
 
-## 7. Open Decisions
+## 7. CI/CD Patterns
+
+### Branch Coverage (proven 2026-06-26, Svartalfheim PR #4)
+
+The shared reusable workflow at `../.github/.github/workflows/ci-build-test.yml` collects branch coverage, posts a sticky PR comment, and enforces a hard gate. The full design is in `../Glitnir/docs/Platform/specs/2026-06-26-code-coverage-ci-design.md`.
+
+**Realm adoption** — two files per realm, same pattern every time:
+
+1. `tests/Directory.Build.props` — add `<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.*" />` (hoisted, not per-csproj; maintain alphabetical order).
+2. `.github/workflows/ci.yml` — add `permissions: pull-requests: write` at the workflow level and pass `with: minimum_coverage: <N>` on the `gate` job.
+
+**Critical gotchas — learn these before touching any realm's coverage setup:**
+
+- **Use `18.*`, not `17.*`.** The package jumped from 17.x (MTP 1.x era) to 18.x (MTP 2.x era). `17.*` fails at test-runner startup with `MissingMethodException: GetTestHostWorkingDirectory`. There is no `17.x` version that works with MTP 2.x.
+- **MTP writes `coverage.xml` relative to the test binary, not the repo root.** A flat `coverage*.xml` glob from the workspace root finds nothing in CI. The Generate coverage report step uses `find . -name "coverage*.xml" -not -path "*/obj/*"` to locate files dynamically — the `echo "Coverage files: $COVERAGE_FILES"` line makes CI logs self-diagnosing.
+- **No `.runsettings` files in MTP realms.** VSTest DataCollector config (`XPlat code coverage`, `<DataCollectionRunSettings>`) is silently ignored by Microsoft.Testing.Platform. A stray `.runsettings` does nothing — but it leaves a false architectural signal. If one exists, `git rm` it.
+- **`FLOOR=60` lives once** — in the enforcement step of `ci-build-test.yml`. The `minimum_coverage` input default is `0`, not 60. Effective threshold = `max(FLOOR, minimum_coverage)`.
+- **Both caller and callee must declare `pull-requests: write`.** The reusable workflow cannot escalate beyond what the caller grants — the `ci.yml` workflow-level permission and the `ci-build-test.yml` job-level permission are both required.
+
+## 8. Open Decisions
 
 Raise these before writing code that touches them; do not silently proceed:
 
