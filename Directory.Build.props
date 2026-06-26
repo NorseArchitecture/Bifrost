@@ -1,6 +1,8 @@
 <Project>
 	<PropertyGroup>
 		<AssemblyName>Norse.$(MSBuildProjectName)</AssemblyName>
+		<NorseRefVersion Condition="'$(NorseRefVersion)' == ''">*-*</NorseRefVersion>
 		<RootNamespace>Norse.$(MSBuildProjectName)</RootNamespace>
+		<UseProjectReferences Condition="'$(UseProjectReferences)' == ''">true</UseProjectReferences>
 	</PropertyGroup>
 </Project>

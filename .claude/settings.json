@@ -1,5 +1,8 @@
 {
   "permissions": {
+    "additionalDirectories": [
+      "../"
+    ],
     "allow": [
       "Edit",
       "Write",
