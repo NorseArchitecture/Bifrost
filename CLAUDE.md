@@ -34,7 +34,7 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 | Glitnir | — (documents only) | Design court: specs, plans, and proof-of-concept verdicts |
 | **Bifrost** (this repo) | `Norse.Orchestration.*` | Aspire AppHost composing the local development environment |
 
-**The brand prefix is build-injected, never file-encoded.** Project folders and `.csproj` files are brand-free (`src/Primitives/Primitives.csproj`); each realm's root `Directory.Build.props` sets `<AssemblyName>Norse.$(MSBuildProjectName)</AssemblyName>` and `<RootNamespace>Norse.$(MSBuildProjectName)</RootNamespace>`. A fork rebrands by changing `Norse` once per realm — no project renames, no slnx surgery. The props edit rebrands everything the build derives (assemblies, packages, `InternalsVisibleTo` keyed off `$(AssemblyName)`); `namespace Norse.*` declarations in code deliberately do not follow — culling them is the fork's own conscious act, and neither step touches the filesystem. Solution folders in `Bifrost.slnx` carry the function names (`/Primitives/`), one per realm — inside a solution everything reads by function; the lore lives on the repo and `.slnx` file names.
+**The brand prefix is build-injected, never file-encoded.** Project folders and `.csproj` files are brand-free (`src/Primitives/Primitives.csproj`); each realm's root `Directory.Build.props` injects `Norse.$(MSBuildProjectName)` as both `AssemblyName` and `RootNamespace`. A fork rebrands by changing `Norse` once per realm — no project renames, no slnx surgery; `namespace Norse.*` declarations in code do not follow (that's the fork's own act). Solution folders in `Bifrost.slnx` carry the function names (`/Primitives/`), one per realm.
 
 **Aspire ecosystem names are kept, not fought:** the AppHost project keeps its Aspire-conventional shape — project `Orchestration.AppHost`, assembly `Norse.Orchestration.AppHost`. Don't invent novel names for things the ecosystem has already named.
 
@@ -64,42 +64,32 @@ When in doubt: if deleting Bifrost would break anything other than the local dev
 
 ## 5. Conventions
 
-The realms each carry their own authoritative CLAUDE.md; the subset that matters in this repo:
+Code style, indentation, `var`, accessibility, and naming rules: global `~/.claude/CLAUDE.md`. Bifrost-specific additions:
 
-- **Tabs for indentation** (YAML/Markdown/JSON 2-space — ecosystem exceptions are declared in `.editorconfig` with reasons).
-- **Warnings are errors.** Ratcheted at build time, on purpose.
-- **`var` for return assignments only;** construction uses explicit type with target-typed `new()`.
-- **Accessibility by omission** (`omit_if_default`); least accessibility until a concrete caller demands the door open; `sealed` by default.
 - **`.slnx` solution format** (`dotnet new sln --format slnx`); project layout `src/{ProjectName}/{ProjectName}.csproj` with brand-free project names (see §2). Each realm's solution file is named for the lore (`Svartalfheim.slnx`), matching its repo.
-- **Fail loudly.** No silent fallbacks anywhere, including local-dev convenience paths — a missing container, port, or connection string is a hard, immediate failure, not a degraded experience.
-- **US English spelling** in code, comments, docs, and commit messages.
+- **`sealed` by default** — `internal sealed` is the default for every new type; open only when a concrete subtype exists.
 - **Relative paths only in documents** (hard law, 2026-06-11): repo-relative or workspace-relative (`../Glitnir/docs/...`); machine-local absolute paths never enter the record — environment variables name machine locations when unavoidable.
 
 ## 6. Process
 
 - **No automatic git commits.** Stage and show the diff; the human commits. When in doubt, stop and wait.
 - **No force-pushing to `master`.** No skipping git hooks. No committing secrets — local dev configuration uses user secrets or Aspire-managed values, never checked-in credentials.
-- **Implementation is subagent-driven and test-driven, always.** `superpowers:subagent-driven-development` is the default orchestration skill, not a recommendation among equals — `executing-plans` is the narrow fallback for a separate session with human review checkpoints, never an interchangeable choice. Every plan's REQUIRED SUB-SKILL line names the default paired with `superpowers:test-driven-development` — orchestration sequences tasks, TDD governs how each one is coded. Platform-wide rule, stated once: `../Glitnir/CLAUDE.md` §2.8.
+- **Implementation is subagent-driven and test-driven, always.** `superpowers:subagent-driven-development` is the default — `executing-plans` is the narrow separate-session fallback, never interchangeable. Pairs with `superpowers:test-driven-development` on every coding task. Full rule: `../Glitnir/CLAUDE.md` §2.8.
 - **README.md and CLAUDE.md stay in sync — boy-scout law.** The pair tells one story at two altitudes: README is the public narrative, CLAUDE.md the working law. Any change touching what either describes — submodules, naming, conventions, composition — updates both in the same change, and the realm tables in both files must match `.gitmodules` exactly. Touch a repo, check its pair before you leave.
 
 ## 7. CI/CD Patterns
 
-### Branch Coverage (proven 2026-06-26, Svartalfheim PR #4)
+Coverage CI and release pipeline proven on Svartalfheim (PRs #4, #6). Full design and gotchas: `../Glitnir/docs/Platform/specs/2026-06-26-code-coverage-ci-design.md`.
 
-The shared reusable workflow at `../.github/.github/workflows/ci-build-test.yml` collects branch coverage, posts a sticky PR comment, and enforces a hard gate. The full design is in `../Glitnir/docs/Platform/specs/2026-06-26-code-coverage-ci-design.md`.
+**Realm adoption — two files:**
 
-**Realm adoption** — two files per realm, same pattern every time:
+1. `tests/Directory.Build.props` — `<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.*" />` (hoisted; alphabetical order).
+2. `.github/workflows/ci.yml` — `permissions: pull-requests: write` at workflow level; `with: minimum_coverage: <N>` on the `gate` job.
 
-1. `tests/Directory.Build.props` — add `<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.*" />` (hoisted, not per-csproj; maintain alphabetical order).
-2. `.github/workflows/ci.yml` — add `permissions: pull-requests: write` at the workflow level and pass `with: minimum_coverage: <N>` on the `gate` job.
-
-**Critical gotchas — learn these before touching any realm's coverage setup:**
-
-- **Use `18.*`, not `17.*`.** The package jumped from 17.x (MTP 1.x era) to 18.x (MTP 2.x era). `17.*` fails at test-runner startup with `MissingMethodException: GetTestHostWorkingDirectory`. There is no `17.x` version that works with MTP 2.x.
-- **MTP writes `coverage.xml` relative to the test binary, not the repo root.** A flat `coverage*.xml` glob from the workspace root finds nothing in CI. The Generate coverage report step uses `find . -name "coverage*.xml" -not -path "*/obj/*"` to locate files dynamically — the `echo "Coverage files: $COVERAGE_FILES"` line makes CI logs self-diagnosing.
-- **No `.runsettings` files in MTP realms.** VSTest DataCollector config (`XPlat code coverage`, `<DataCollectionRunSettings>`) is silently ignored by Microsoft.Testing.Platform. A stray `.runsettings` does nothing — but it leaves a false architectural signal. If one exists, `git rm` it.
-- **`FLOOR=60` lives once** — in the enforcement step of `ci-build-test.yml`. The `minimum_coverage` input default is `0`, not 60. Effective threshold = `max(FLOOR, minimum_coverage)`.
-- **Both caller and callee must declare `pull-requests: write`.** The reusable workflow cannot escalate beyond what the caller grants — the `ci.yml` workflow-level permission and the `ci-build-test.yml` job-level permission are both required.
+**Non-obvious bits:**
+- **`18.*` only** — `17.*` fails at MTP 2.x startup with `MissingMethodException`. No `17.x` works.
+- **No `.runsettings`** — silently ignored by MTP; `git rm` any that exist.
+- **Coverage floor is 60** in the shared workflow; `minimum_coverage` input default is `0`. Effective = `max(60, input)`.
 
 ## 8. Open Decisions
 
