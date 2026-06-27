@@ -6,20 +6,20 @@ The local developer meta-repository for the Norse platform — `Norse.Orchestrat
 
 ## The realms on the bridge
 
-Each realm is a git submodule, pinned to track `master`:
+Each realm is a git submodule, pinned to track `master`. Repositories carry the lore; namespaces carry the function:
 
 | Submodule | The function |
 |---|---|
-| [Svartalfheim](https://github.com/NorseArchitecture/Svartalfheim) | `Norse.Primitives.*` — domain value types, identifiers, result parsing, encryption |
-| [Asgard](https://github.com/NorseArchitecture/Asgard) | `Norse.Abstractions.*` — the contracts and laws every realm must honor |
-| [Midgard](https://github.com/NorseArchitecture/Midgard) | `Norse.Infrastructure.*` — persistence, caching, external integrations |
+| [Svartalfheim](https://github.com/NorseArchitecture/Svartalfheim) | `Norse.Primitives.*` — the forge: `Result<T>`, the parsing stack, and the analyzers and BuildCheck rules that strike when law is broken |
+| [Asgard](https://github.com/NorseArchitecture/Asgard) | `Norse.Abstractions.*` — declared law: contracts, attribute model, plugin interfaces, mediator law |
+| [Midgard](https://github.com/NorseArchitecture/Midgard) | `Norse.Infrastructure.*` — embodied law: concrete persistence, mediator runtime, API, UI Composition framework |
 | [Urdarbrunnr](https://github.com/NorseArchitecture/Urdarbrunnr) | `Norse.EntityFramework.*` — entity base types, DbContext foundations, conventions, value converters, and the migrations chassis |
 | [Ratatoskr](https://github.com/NorseArchitecture/Ratatoskr) | `Norse.NServiceBus.*` — NServiceBus endpoint configuration, saga infrastructure, message conventions, and transport wiring; the squirrel that carries messages between the realms |
-| [Yggdrasil](https://github.com/NorseArchitecture/Yggdrasil) | `Norse.Hosting.*` — the web, worker, and migration service chassis |
-| [Himinbjorg](https://github.com/NorseArchitecture/Himinbjorg) | `Norse.Identity.*` — backend-only EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations that never cross to WASM or MAUI |
+| [Yggdrasil](https://github.com/NorseArchitecture/Yggdrasil) | `Norse.Hosting.*` — hosting runtimes and deployables: web server, worker, migration service, WASM client, and MAUI app |
+| [Himinbjorg](https://github.com/NorseArchitecture/Himinbjorg) | `Norse.Identity.*` — EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
 | [Heimdall](https://github.com/NorseArchitecture/Heimdall) | `Norse.Access.*` — auth services on Himinbjorg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
 | [Nagalfar](https://github.com/NorseArchitecture/Nagalfar) | `Norse.DesignSystem.*` — design tokens, radii, and component primitives, assembled from the unglamorous remnants into something seaworthy enough to carry every product UI |
-| [Glitnir](https://github.com/NorseArchitecture/Glitnir) | The design court — specs, plans, and proof-of-concept verdicts; every design is tried there before code is forged |
+| [Glitnir](https://github.com/NorseArchitecture/Glitnir) | *(docs only)* — the design court: specs, plans, and proof-of-concept verdicts; every design is tried there before code is forged |
 
 ## The design court
 
