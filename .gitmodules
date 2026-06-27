@@ -30,9 +30,9 @@
 	path = Heimdall
 	url = ../Heimdall.git
 	branch = master
-[submodule "Nagalfar"]
-	path = Nagalfar
-	url = ../Nagalfar.git
+[submodule "Naglfar"]
+	path = Naglfar
+	url = ../Naglfar.git
 	branch = master
 [submodule "Ratatoskr"]
 	path = Ratatoskr

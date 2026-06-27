@@ -18,7 +18,7 @@ Each realm is a git submodule, pinned to track `master`. Repositories carry the 
 | [Yggdrasil](https://github.com/NorseArchitecture/Yggdrasil) | `Norse.Hosting.*` — hosting runtimes and deployables: web server, worker, migration service, WASM client, and MAUI app |
 | [Himinbjorg](https://github.com/NorseArchitecture/Himinbjorg) | `Norse.Identity.*` — EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
 | [Heimdall](https://github.com/NorseArchitecture/Heimdall) | `Norse.Access.*` — auth services on Himinbjorg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
-| [Nagalfar](https://github.com/NorseArchitecture/Nagalfar) | `Norse.DesignSystem.*` — design tokens, radii, and component primitives, assembled from the unglamorous remnants into something seaworthy enough to carry every product UI |
+| [Naglfar](https://github.com/NorseArchitecture/Naglfar) | `Norse.DesignSystem.*` — design tokens, radii, and component primitives, assembled from the unglamorous remnants into something seaworthy enough to carry every product UI |
 | [Glitnir](https://github.com/NorseArchitecture/Glitnir) | *(docs only)* — the design court: specs, plans, and proof-of-concept verdicts; every design is tried there before code is forged |
 
 ## The design court
