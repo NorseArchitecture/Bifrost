@@ -2,6 +2,10 @@
 
 > The rainbow bridge between the realms, watched over by Heimdall.
 
+<img width="720" height="960" alt="Bifrost — the shimmering rainbow bridge spanning the nine realms, the only passage between worlds" src="https://github.com/user-attachments/assets/ef2ba252-9011-4aec-a08e-a8434e16a43f" />
+
+*Image credit: [@norsemythologyclips](https://www.instagram.com/norsemythologyclips/) — go follow them.*
+
 The local developer meta-repository for the Norse platform — `Norse.Orchestration.*`, the .NET Aspire AppHost that composes every resource required to run and develop the platform: services, databases, queues, and configuration. Clone once, cross the bridge, and every realm grown on Yggdrasil is running.
 
 ## The realms on the bridge
