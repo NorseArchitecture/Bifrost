@@ -55,27 +55,27 @@ git submodule update --remote
 
 ## Developer tooling
 
+None of the following install themselves — `dotnet restore` only touches package graphs. Each entry below is a one-time machine setup: `dotnet workload install {id}` for workloads, `dotnet new install {package}` for templates.
+
 ### Workloads
 
-Workloads install SDK components — build targets, platform SDKs, and bundled templates — that ship outside the core .NET SDK. Each must be installed once per developer machine; `dotnet restore` never installs them. **MAUI workloads require Windows or macOS** — WSL2/Linux refuses them because the target platforms (Android, iOS, Mac Catalyst, Windows) are unavailable there.
+Workloads install SDK components — build targets, platform SDKs, and bundled templates — that ship outside the core .NET SDK. **MAUI workloads require Windows or macOS** — WSL2/Linux refuses them because the target platforms (Android, iOS, Mac Catalyst, Windows) are unavailable there.
 
-| Workload | Command | Why |
-|---|---|---|
-| `maui` | `dotnet workload install maui` | Installs the MAUI SDK and build targets for Yggdrasil's MAUI app host, and bundles the current-era MAUI templates (`maui`, `maui-blazor`, `mauilib`, `maui-page-*`, `maui-view-*`, `maui-dict-xaml`). |
+| Workload | Why |
+|---|---|
+| `maui` | Installs the MAUI SDK and build targets for Yggdrasil's MAUI app host, and bundles the current-era MAUI templates (`maui`, `maui-blazor`, `mauilib`, `maui-page-*`, `maui-view-*`, `maui-dict-xaml`). |
 
 ### Templates
 
-Templates not bundled with a workload must be installed explicitly — they live in the SDK template cache, not in a project's package graph, so `dotnet restore` never installs them.
-
-| Package | Command | Templates | Why |
-|---|---|---|---|
-| `Microsoft.Extensions.AI.Templates` | `dotnet new install Microsoft.Extensions.AI.Templates` | `aichatweb` | Scaffolds an AI chat web app wired to Microsoft.Extensions.AI with Blazor and Aspire. Starting point for Naglfar (`Norse.DesignSystem.*`)-hosted AI surfaces. |
-| `Blazorise.Templates` | `dotnet new install Blazorise.Templates` | `blazorise` | Scaffolds a Blazorise app. Likely Naglfar (`Norse.DesignSystem.*`) when adopted — **pending design team decision on whether Blazorise is the component library of record.** |
-| `Microsoft.FluentUI.AspNetCore.Templates` | `dotnet new install Microsoft.FluentUI.AspNetCore.Templates` | `fluentblazor`, `fluentblazorwasm`, `fluentaspire-starter`, `fluentmaui-blazor-web` | Scaffolds Microsoft Fluent UI Blazor apps across server, WASM, Aspire, and MAUI-Blazor-hybrid variants. Likely Naglfar (`Norse.DesignSystem.*`) when adopted — **pending design team decision on whether Fluent UI is the component library of record.** |
-| `xunit.v3.templates` | `dotnet new install xunit.v3.templates` | `xunit3`, `xunit3-extension` | Creates correctly wired xUnit v3 test projects on Microsoft.Testing.Platform. The built-in `xunit` template installs v2 packages and produces projects that fail at MTP startup with `MissingMethodException`. |
-| `ParticularTemplates` | `dotnet new install ParticularTemplates` | `nsbendpoint`, `nsbhandler`, `nsbsaga` | Official NServiceBus scaffolding from Particular Software — endpoint, message handler, and saga stubs wired to NServiceBus conventions. Ratatoskr (`Norse.NServiceBus.*`) is the realm that consumes these. |
-| `Aspire.ProjectTemplates` | `dotnet new install Aspire.ProjectTemplates` | `aspire-apphost`, `aspire-servicedefaults`, and others | Official Aspire scaffolding. `aspire-apphost` is the template for new bridge AppHost projects; `aspire-servicedefaults` scaffolds the service-defaults project the platform intentionally places in Midgard (`Norse.Infrastructure.*`) rather than the AppHost. The starter and test templates (`aspire-starter`, `aspire-xunit`, etc.) are bundled but unused here. |
-| `BenchmarkDotNet.Templates` | `dotnet new install BenchmarkDotNet.Templates` | `benchmark` | Scaffolds a BenchmarkDotNet project with the correct harness wiring. Used when profiling hot paths in the forge (Svartalfheim) or any realm where allocation and throughput matter. |
+| Package | Templates | Why |
+|---|---|---|
+| `Microsoft.Extensions.AI.Templates` | `aichatweb` | Scaffolds an AI chat web app wired to Microsoft.Extensions.AI with Blazor and Aspire. Starting point for Naglfar (`Norse.DesignSystem.*`)-hosted AI surfaces. |
+| `Blazorise.Templates` | `blazorise` | Scaffolds a Blazorise app. Likely Naglfar (`Norse.DesignSystem.*`) when adopted — **pending design team decision on whether Blazorise is the component library of record.** |
+| `Microsoft.FluentUI.AspNetCore.Templates` | `fluentblazor`, `fluentblazorwasm`, `fluentaspire-starter`, `fluentmaui-blazor-web` | Scaffolds Microsoft Fluent UI Blazor apps across server, WASM, Aspire, and MAUI-Blazor-hybrid variants. Likely Naglfar (`Norse.DesignSystem.*`) when adopted — **pending design team decision on whether Fluent UI is the component library of record.** |
+| `xunit.v3.templates` | `xunit3`, `xunit3-extension` | Creates correctly wired xUnit v3 test projects on Microsoft.Testing.Platform. The built-in `xunit` template installs v2 packages and produces projects that fail at MTP startup with `MissingMethodException`. |
+| `ParticularTemplates` | `nsbendpoint`, `nsbhandler`, `nsbsaga` | Official NServiceBus scaffolding from Particular Software — endpoint, message handler, and saga stubs wired to NServiceBus conventions. Ratatoskr (`Norse.NServiceBus.*`) is the realm that consumes these. |
+| `Aspire.ProjectTemplates` | `aspire-apphost`, `aspire-servicedefaults`, and others | Official Aspire scaffolding. `aspire-apphost` is the template for new bridge AppHost projects; `aspire-servicedefaults` scaffolds the service-defaults project the platform intentionally places in Midgard (`Norse.Infrastructure.*`) rather than the AppHost. The starter and test templates (`aspire-starter`, `aspire-xunit`, etc.) are bundled but unused here. |
+| `BenchmarkDotNet.Templates` | `benchmark` | Scaffolds a BenchmarkDotNet project with the correct harness wiring. Used when profiling hot paths in the forge (Svartalfheim) or any realm where allocation and throughput matter. |
 
 ## Build your own bridge
 
