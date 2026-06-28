@@ -14,7 +14,7 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 
 | Repository | Local path | Purpose |
 |---|---|---|
-| Ginnungagap (`.github`) | `../.github` | The primordial void: org-default community-health files, reusable GitHub Actions workflows (`ci-build-test.yml`, `release-nuget.yml`, `update-bifrost.yml`), config scatter (`scatter-the-runes.ps1`, `manifest.psd1`), and the Law of the Aesir. Referenced by realms as `NorseArchitecture/.github/.github/workflows/*.yml@master`. |
+| Ginnungagap (`.github`) | `../.github` | The primordial void: org-default community-health files, reusable GitHub Actions workflows (`ci-build-test.yml`, `release-nuget.yml`, `update-bifrost.yml`), config scatter (`scatter-the-runes.ps1`, `manifest.psd1`), and the Law of the Æsir. Referenced by realms as `NorseArchitecture/.github/.github/workflows/*.yml@master`. |
 
 ## 2. The Naming Model
 
@@ -33,7 +33,7 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 | Naglfar | `Norse.DesignSystem.*` | Design tokens, radii, and component primitives — standalone for now, no declared consumers |
 | Glitnir | — (documents only) | Design court: specs, plans, and proof-of-concept verdicts |
 | **Bifröst** (this repo) | `Norse.Orchestration.*` | Aspire AppHost composing the local development environment |
-| Ginnungagap (`.github`) | — (org-defaults only) | The primordial void: community-health files, reusable workflows, config scatter, and the Law of the Aesir — everything that exists before and beneath the realms |
+| Ginnungagap (`.github`) | — (org-defaults only) | The primordial void: community-health files, reusable workflows, config scatter, and the Law of the Æsir — everything that exists before and beneath the realms |
 
 **The brand prefix is build-injected, never file-encoded.** Project folders and `.csproj` files are brand-free (`src/Primitives/Primitives.csproj`); each realm's root `Directory.Build.props` injects `Norse.$(MSBuildProjectName)` as both `AssemblyName` and `RootNamespace`. A fork rebrands by changing `Norse` once per realm — no project renames, no slnx surgery; `namespace Norse.*` declarations in code do not follow (that's the fork's own act). Solution folders in `Bifrost.slnx` carry the function names (`/Primitives/`), one per realm.
 

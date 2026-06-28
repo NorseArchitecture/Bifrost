@@ -27,7 +27,7 @@ Each realm is a git submodule, pinned to track `master`. Repositories carry the 
 
 ## The primordial void
 
-[Ginnungagap](https://github.com/NorseArchitecture/.github) is not on the bridge — GitHub enforces the repository name `.github` and it carries no submodule. But it is the void beneath every realm: org-default community-health files, the reusable GitHub Actions workflows every realm calls, the config scatter that keeps them all in sync, and the Law of the Aesir carved into every branch. Nothing exists before it.
+[Ginnungagap](https://github.com/NorseArchitecture/.github) is not on the bridge — GitHub enforces the repository name `.github` and it carries no submodule. But it is the void beneath every realm: org-default community-health files, the reusable GitHub Actions workflows every realm calls, the config scatter that keeps them all in sync, and the Law of the Æsir carved into every branch. Nothing exists before it.
 
 ## The design court
 
