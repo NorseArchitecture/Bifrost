@@ -75,9 +75,9 @@ None of the following install themselves — `dotnet restore` only touches packa
 
 Workloads install SDK components — build targets, platform SDKs, and bundled templates — that ship outside the core .NET SDK. **MAUI workloads require Windows or macOS** — WSL2/Linux refuses them because the target platforms (Android, iOS, Mac Catalyst, Windows) are unavailable there.
 
-| Workload | Why |
-|---|---|
-| `maui` | Installs the MAUI SDK and build targets for Yggdrasil's MAUI app host, and bundles the current-era MAUI templates (`maui`, `maui-blazor`, `mauilib`, `maui-page-*`, `maui-view-*`, `maui-dict-xaml`). |
+| Workload | Templates | Why |
+|---|---|---|
+| `maui` | `maui`, `maui-blazor`, `mauilib`, `maui-page-*`, `maui-view-*`, `maui-dict-xaml` | Installs the MAUI SDK and build targets for Yggdrasil's MAUI app host. |
 
 ### Templates
 
