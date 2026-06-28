@@ -53,6 +53,20 @@ To pull each realm's latest `master` after the initial clone:
 git submodule update --remote
 ```
 
+## Staying current
+
+Clone it once, then leave it for a month — run these two scripts to get back to a known-good state:
+
+```shell
+# Pull every realm to master tip in parallel (no detached HEAD), then pull Bifrost itself
+pwsh scripts/sync-the-realms.ps1
+
+# Refresh every Docker image already in the local cache
+pwsh scripts/pull-the-images.ps1
+```
+
+`sync-the-realms.ps1` fetches and fast-forwards each submodule concurrently, keeps them on a real branch, and exits non-zero if any realm fails. `pull-the-images.ps1` iterates the images already known to Docker — it refreshes, not discovers, so run it after the Aspire AppHost has been launched at least once.
+
 ## Developer tooling
 
 None of the following install themselves — `dotnet restore` only touches package graphs. Each entry below is a one-time machine setup: `dotnet workload install {id}` for workloads, `dotnet new install {package}` for templates.
