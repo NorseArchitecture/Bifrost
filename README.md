@@ -2,7 +2,7 @@
 
 > The rainbow bridge between the realms, watched over by Heimdall.
 
-<img width="720" height="960" alt="Bifrost — the shimmering rainbow bridge spanning the nine realms, the only passage between worlds" src="https://github.com/user-attachments/assets/ef2ba252-9011-4aec-a08e-a8434e16a43f" />
+![Bifrost — the shimmering rainbow bridge spanning the nine realms, the only passage between worlds](https://github.com/user-attachments/assets/ef2ba252-9011-4aec-a08e-a8434e16a43f "Bifrost — the rainbow bridge between the realms")
 
 *Image credit: [@norsemythologyclips](https://www.instagram.com/norsemythologyclips/) — go follow them.*
 
