@@ -63,3 +63,6 @@ Two consequences of that design, both deliberate:
 
 - **Contributions belong in the realms.** Changes to primitives go to Svartalfheim, contracts to Asgard, implementations to Midgard, hosting to Yggdrasil. Pull requests here should be rare — composition fixes, not features.
 - **Submodule URLs are relative** (`../Svartalfheim.git`), resolved against whatever remote you cloned Bifröst from. That's what makes HTTPS and SSH both work from a single `.gitmodules` — and it means a *fork* of Bifröst resolves submodules against the fork's owner, failing loudly unless the realms are forked alongside it. If you find yourself forking Bifröst, that's the signal you've reached the moment to build your own bridge instead.
+
+## Soundtrack: Across the Rainbow Bridge
+[![Soundtrack: Across the Rainbow Bridge](https://img.youtube.com/vi/mhqn3QSedwY/maxresdefault.jpg)](https://www.youtube.com/watch?v=mhqn3QSedwY)
