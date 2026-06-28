@@ -4,17 +4,17 @@ Cold-start context for any Claude Code session in this repo. Where a rule here c
 
 ## 1. What This Repository Is
 
-**Bifrost** is the local developer meta-repository for the Norse Architecture — the rainbow bridge between the realms. It exists for exactly one purpose: **clone once and run.** It composes every resource required to run and develop the platform — services, databases, queues, and configuration — via a .NET Aspire AppHost under the `Norse.Orchestration.*` namespace.
+**Bifröst** is the local developer meta-repository for the Norse Architecture — the rainbow bridge between the realms. It exists for exactly one purpose: **clone once and run.** It composes every resource required to run and develop the platform — services, databases, queues, and configuration — via a .NET Aspire AppHost under the `Norse.Orchestration.*` namespace.
 
 It is a **reference composition, not a product**. Consumers of the Norse Architecture are expected to build their own bridge: take the realm repos they need as submodules, write their own AppHost, and swap the runtime containers for whatever direction their platform is going. Contributions land in the realms; pull requests here should be rare — composition fixes, not features.
 
-**Every Claude Code session starts from Bifrost.** The bridge is the working root: all realms are checked out beneath it, and **Glitnir** rides alongside as the design court — every spec, plan, and proof of concept that enters the record as part of a rendered verdict lives there. Realm CLAUDE.md files reference Glitnir documents by sibling-relative path (`../Glitnir/docs/...`).
+**Every Claude Code session starts from Bifröst.** The bridge is the working root: all realms are checked out beneath it, and **Glitnir** rides alongside as the design court — every spec, plan, and proof of concept that enters the record as part of a rendered verdict lives there. Realm CLAUDE.md files reference Glitnir documents by sibling-relative path (`../Glitnir/docs/...`).
 
-**Peer repositories** sit beside Bifrost in the same parent directory and are not submodules of it:
+**Peer repositories** sit beside Bifröst in the same parent directory and are not submodules of it:
 
 | Repository | Local path | Purpose |
 |---|---|---|
-| `.github` | `../.github` | Org-default community-health files and shared reusable GitHub Actions workflows (`ci-build-test.yml`, `release-nuget.yml`, `update-bifrost.yml`). Referenced by realms as `NorseArchitecture/.github/.github/workflows/*.yml@master`. |
+| Ginnungagap (`.github`) | `../.github` | The primordial void: org-default community-health files, reusable GitHub Actions workflows (`ci-build-test.yml`, `release-nuget.yml`, `update-bifrost.yml`), config scatter (`scatter-the-runes.ps1`, `manifest.psd1`), and the Law of the Aesir. Referenced by realms as `NorseArchitecture/.github/.github/workflows/*.yml@master`. |
 
 ## 2. The Naming Model
 
@@ -28,11 +28,12 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 | Urdarbrunnr | `Norse.EntityFramework.*` | Entity base types, DbContext foundations, conventions, value converters, and the migrations chassis |
 | Ratatoskr | `Norse.NServiceBus.*` | NServiceBus endpoint configuration, saga infrastructure, message conventions, and transport wiring — the squirrel that carries messages between the realms |
 | Yggdrasil | `Norse.Hosting.*` | Hosting runtimes and deployables: web server, worker, migration service, WASM client, and MAUI app |
-| Himinbjorg | `Norse.Identity.*` | EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
-| Heimdall | `Norse.Access.*` | Auth services on Himinbjorg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
+| Himinbjörg | `Norse.Identity.*` | EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
+| Heimdall | `Norse.Access.*` | Auth services on Himinbjörg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
 | Naglfar | `Norse.DesignSystem.*` | Design tokens, radii, and component primitives — standalone for now, no declared consumers |
 | Glitnir | — (documents only) | Design court: specs, plans, and proof-of-concept verdicts |
-| **Bifrost** (this repo) | `Norse.Orchestration.*` | Aspire AppHost composing the local development environment |
+| **Bifröst** (this repo) | `Norse.Orchestration.*` | Aspire AppHost composing the local development environment |
+| Ginnungagap (`.github`) | — (org-defaults only) | The primordial void: community-health files, reusable workflows, config scatter, and the Law of the Aesir — everything that exists before and beneath the realms |
 
 **The brand prefix is build-injected, never file-encoded.** Project folders and `.csproj` files are brand-free (`src/Primitives/Primitives.csproj`); each realm's root `Directory.Build.props` injects `Norse.$(MSBuildProjectName)` as both `AssemblyName` and `RootNamespace`. A fork rebrands by changing `Norse` once per realm — no project renames, no slnx surgery; `namespace Norse.*` declarations in code do not follow (that's the fork's own act). Solution folders in `Bifrost.slnx` carry the function names (`/Primitives/`), one per realm.
 
@@ -57,10 +58,10 @@ New realm lands? `git submodule add -b master ../{Realm}.git` and update the rea
 **Does not belong here:**
 
 - **Runtime endpoints, hosting chassis, service code** — that's Yggdrasil (`Norse.Hosting.*`) and below. Bifrost composes what the realms provide; it never provides.
-- **`ServiceDefaults`** — ruled 2026-06-11: Midgard (`Norse.Infrastructure.*`) if possible; Yggdrasil (`Norse.Hosting.*`) only if it carries shared runtime context that touches all the composition runtimes; never Bifrost, Aspire convention notwithstanding.
+- **`ServiceDefaults`** — ruled 2026-06-11: Midgard (`Norse.Infrastructure.*`) if possible; Yggdrasil (`Norse.Hosting.*`) only if it carries shared runtime context that touches all the composition runtimes; never Bifröst, Aspire convention notwithstanding.
 - **Anything a specific company or product needs** — product code is sovereign and lives under its own root, in its own repos, on its own bridge.
 
-When in doubt: if deleting Bifrost would break anything other than the local dev experience, the thing is in the wrong repo.
+When in doubt: if deleting Bifröst would break anything other than the local dev experience, the thing is in the wrong repo.
 
 ## 5. Conventions
 

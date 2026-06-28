@@ -1,8 +1,8 @@
-# Bifrost
+# Bifröst
 
 > The rainbow bridge between the realms, watched over by Heimdall.
 
-![Bifrost — the shimmering rainbow bridge spanning the nine realms, the only passage between worlds](https://github.com/user-attachments/assets/ef2ba252-9011-4aec-a08e-a8434e16a43f "Bifrost — the rainbow bridge between the realms")
+![Bifröst — the shimmering rainbow bridge spanning the nine realms, the only passage between worlds](https://github.com/user-attachments/assets/ef2ba252-9011-4aec-a08e-a8434e16a43f "Bifröst — the rainbow bridge between the realms")
 
 *Image credit: [@norsemythologyclips](https://www.instagram.com/norsemythologyclips/) — go follow them.*
 
@@ -20,10 +20,14 @@ Each realm is a git submodule, pinned to track `master`. Repositories carry the 
 | [Urdarbrunnr](https://github.com/NorseArchitecture/Urdarbrunnr) | `Norse.EntityFramework.*` — entity base types, DbContext foundations, conventions, value converters, and the migrations chassis |
 | [Ratatoskr](https://github.com/NorseArchitecture/Ratatoskr) | `Norse.NServiceBus.*` — NServiceBus endpoint configuration, saga infrastructure, message conventions, and transport wiring; the squirrel that carries messages between the realms |
 | [Yggdrasil](https://github.com/NorseArchitecture/Yggdrasil) | `Norse.Hosting.*` — hosting runtimes and deployables: web server, worker, migration service, WASM client, and MAUI app |
-| [Himinbjorg](https://github.com/NorseArchitecture/Himinbjorg) | `Norse.Identity.*` — EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
-| [Heimdall](https://github.com/NorseArchitecture/Heimdall) | `Norse.Access.*` — auth services on Himinbjorg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
+| [Himinbjörg](https://github.com/NorseArchitecture/Himinbjorg) | `Norse.Identity.*` — EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
+| [Heimdall](https://github.com/NorseArchitecture/Heimdall) | `Norse.Access.*` — auth services on Himinbjörg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
 | [Naglfar](https://github.com/NorseArchitecture/Naglfar) | `Norse.DesignSystem.*` — design tokens, radii, and component primitives, assembled from the unglamorous remnants into something seaworthy enough to carry every product UI |
 | [Glitnir](https://github.com/NorseArchitecture/Glitnir) | *(docs only)* — the design court: specs, plans, and proof-of-concept verdicts; every design is tried there before code is forged |
+
+## The primordial void
+
+[Ginnungagap](https://github.com/NorseArchitecture/.github) is not on the bridge — GitHub enforces the repository name `.github` and it carries no submodule. But it is the void beneath every realm: org-default community-health files, the reusable GitHub Actions workflows every realm calls, the config scatter that keeps them all in sync, and the Law of the Aesir carved into every branch. Nothing exists before it.
 
 ## The design court
 
@@ -51,11 +55,11 @@ git submodule update --remote
 
 ## Build your own bridge
 
-Bifrost is a reference composition, not a destination for contributions. The realms are the product; this repository just demonstrates one way to bridge them.
+Bifröst is a reference composition, not a destination for contributions. The realms are the product; this repository just demonstrates one way to bridge them.
 
 The intended pattern is to **create your own meta-repository from the constituent parts**: take the realms you need as submodules, write your own AppHost, and swap the runtime containers — database, message broker, cache, identity provider — for whatever direction your platform is going. The substrate doesn't care which containers you compose against it; that is the point.
 
 Two consequences of that design, both deliberate:
 
 - **Contributions belong in the realms.** Changes to primitives go to Svartalfheim, contracts to Asgard, implementations to Midgard, hosting to Yggdrasil. Pull requests here should be rare — composition fixes, not features.
-- **Submodule URLs are relative** (`../Svartalfheim.git`), resolved against whatever remote you cloned Bifrost from. That's what makes HTTPS and SSH both work from a single `.gitmodules` — and it means a *fork* of Bifrost resolves submodules against the fork's owner, failing loudly unless the realms are forked alongside it. If you find yourself forking Bifrost, that's the signal you've reached the moment to build your own bridge instead.
+- **Submodule URLs are relative** (`../Svartalfheim.git`), resolved against whatever remote you cloned Bifröst from. That's what makes HTTPS and SSH both work from a single `.gitmodules` — and it means a *fork* of Bifröst resolves submodules against the fork's owner, failing loudly unless the realms are forked alongside it. If you find yourself forking Bifröst, that's the signal you've reached the moment to build your own bridge instead.
