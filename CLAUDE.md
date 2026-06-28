@@ -58,7 +58,7 @@ New realm lands? `git submodule add -b master ../{Realm}.git` and update the rea
 **Does not belong here:**
 
 - **Runtime endpoints, hosting chassis, service code** — that's Yggdrasil (`Norse.Hosting.*`) and below. Bifrost composes what the realms provide; it never provides.
-- **`ServiceDefaults`** — ruled 2026-06-11: Midgard (`Norse.Infrastructure.*`) if possible; Yggdrasil (`Norse.Hosting.*`) only if it carries shared runtime context that touches all the composition runtimes; never Bifröst, Aspire convention notwithstanding.
+- **`ServiceDefaults`** — ruled 2026-06-28: Midgard (`Norse.Infrastructure.*`); never Yggdrasil, never Bifröst, Aspire convention notwithstanding.
 - **Anything a specific company or product needs** — product code is sovereign and lives under its own root, in its own repos, on its own bridge.
 
 When in doubt: if deleting Bifröst would break anything other than the local dev experience, the thing is in the wrong repo.
