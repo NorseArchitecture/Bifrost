@@ -1,8 +1,11 @@
 <Project>
 	<PropertyGroup>
 		<AssemblyName>Norse.$(MSBuildProjectName)</AssemblyName>
-		<NorseRefVersion Condition="'$(NorseRefVersion)' == ''">*-*</NorseRefVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<NorseRefVersion>*-*</NorseRefVersion>
+		<Nullable>enable</Nullable>
 		<RootNamespace>Norse.$(MSBuildProjectName)</RootNamespace>
-		<UseProjectReferences Condition="'$(UseProjectReferences)' == ''">true</UseProjectReferences>
+		<TargetFramework>net11.0</TargetFramework>
+		<UseProjectReferences>true</UseProjectReferences>
 	</PropertyGroup>
 </Project>
