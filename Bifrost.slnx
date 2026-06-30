@@ -31,6 +31,59 @@
 		<Project Path="Asgard/tests/Abstractions.Web.Server.Tests/Abstractions.Web.Server.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Worker.Tests/Abstractions.Worker.Tests.csproj" />
 	</Folder>
+	<Folder Name="/Configuration/">
+		<File Path="../.github/.gitattributes" />
+		<File Path="../.github/CLAUDE.md" />
+		<File Path="../.github/CONTRIBUTING.md" />
+		<File Path="../.github/README.md" />
+		<File Path="../.github/SECURITY.md" />
+		<File Path="../.github/SUPPORT.md" />
+	</Folder>
+	<Folder Name="/Configuration/.claude/">
+		<File Path="../.github/.claude/settings.json" />
+	</Folder>
+	<Folder Name="/Configuration/.github/" />
+	<Folder Name="/Configuration/.github/workflows/">
+		<File Path="../.github/.github/workflows/ci-build-test.yml" />
+		<File Path="../.github/.github/workflows/release-container.yml" />
+		<File Path="../.github/.github/workflows/release-nuget.yml" />
+		<File Path="../.github/.github/workflows/scatter-the-runes.yml" />
+		<File Path="../.github/.github/workflows/sound-gjallarhorn.yml" />
+		<File Path="../.github/.github/workflows/update-bifrost.yml" />
+	</Folder>
+	<Folder Name="/Configuration/config/">
+		<File Path="../.github/config/.editorconfig" />
+		<File Path="../.github/config/.gitattributes" />
+		<File Path="../.github/config/.gitignore" />
+		<File Path="../.github/config/Directory.Build.props" />
+		<File Path="../.github/config/global.json" />
+		<File Path="../.github/config/LICENSE" />
+		<File Path="../.github/config/manifest.psd1" />
+		<File Path="../.github/config/nuget.config" />
+	</Folder>
+	<Folder Name="/Configuration/config/.github/" />
+	<Folder Name="/Configuration/config/.github/workflows/">
+		<File Path="../.github/config/.github/workflows/auto-approve.yml" />
+		<File Path="../.github/config/.github/workflows/release.yml" />
+		<File Path="../.github/config/.github/workflows/update-bifrost.yml" />
+	</Folder>
+	<Folder Name="/Configuration/config/src/">
+		<File Path="../.github/config/src/Directory.Build.props" />
+		<File Path="../.github/config/src/Directory.Build.targets" />
+	</Folder>
+	<Folder Name="/Configuration/config/tests/">
+		<File Path="../.github/config/tests/Directory.Build.props" />
+		<File Path="../.github/config/tests/Directory.Build.targets" />
+	</Folder>
+	<Folder Name="/Configuration/profile/">
+		<File Path="../.github/profile/README.md" />
+	</Folder>
+	<Folder Name="/Configuration/scripts/">
+		<File Path="../.github/scripts/carve-the-laws.ps1" />
+		<File Path="../.github/scripts/scatter-the-runes.ps1" />
+		<File Path="../.github/scripts/sound-gjallarhorn.ps1" />
+	</Folder>
+	<Folder Name="/Documentation/" />
 	<Folder Name="/EntityFramework/">
 		<File Path="Urdarbrunnr/.editorconfig" />
 		<File Path="Urdarbrunnr/.gitattributes" />
@@ -71,6 +124,13 @@
 		<File Path="Yggdrasil/README.md" />
 		<File Path="Yggdrasil/Yggdrasil.slnx" />
 	</Folder>
+	<Folder Name="/Hosting/.github/" />
+	<Folder Name="/Hosting/.github/workflows/">
+		<File Path="Yggdrasil/.github/workflows/auto-approve.yml" />
+		<File Path="Yggdrasil/.github/workflows/ci.yml" />
+		<File Path="Yggdrasil/.github/workflows/release.yml" />
+		<File Path="Yggdrasil/.github/workflows/update-bifrost.yml" />
+	</Folder>
 	<Folder Name="/Hosting/src/">
 		<File Path="Yggdrasil/src/Directory.Build.props" />
 		<File Path="Yggdrasil/src/Directory.Build.targets" />
@@ -109,6 +169,21 @@
 		<Project Path="Midgard/tests/Infrastructure.Migrations.Tests/Infrastructure.Migrations.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Orchestration/">
+		<File Path=".editorconfig" />
+		<File Path=".gitattributes" />
+		<File Path=".gitignore" />
+		<File Path=".gitmodules" />
+		<File Path="aspire.config.json" />
+		<File Path="CLAUDE.md" />
+		<File Path="Directory.Build.props" />
+		<File Path="Directory.Build.targets" />
+		<File Path="dotnet-tools.json" />
+		<File Path="global.json" />
+		<File Path="LICENSE" />
+		<File Path="nuget.config" />
+		<File Path="README.md" />
+	</Folder>
+	<Folder Name="/Orchestration/src/">
 		<Project Path="src/Orchestration.AppHost/Orchestration.AppHost.csproj" />
 	</Folder>
 	<Folder Name="/Primitives/">
@@ -132,20 +207,5 @@
 		<File Path="Svartalfheim/tests/Directory.Build.props" />
 		<File Path="Svartalfheim/tests/Directory.Build.targets" />
 		<Project Path="Svartalfheim/tests/Primitives.Tests/Primitives.Tests.csproj" />
-	</Folder>
-	<Folder Name="/Solution Items/">
-		<File Path=".editorconfig" />
-		<File Path=".gitattributes" />
-		<File Path=".gitignore" />
-		<File Path=".gitmodules" />
-		<File Path="aspire.config.json" />
-		<File Path="CLAUDE.md" />
-		<File Path="Directory.Build.props" />
-		<File Path="Directory.Build.targets" />
-		<File Path="dotnet-tools.json" />
-		<File Path="global.json" />
-		<File Path="LICENSE" />
-		<File Path="nuget.config" />
-		<File Path="README.md" />
 	</Folder>
 </Solution>
