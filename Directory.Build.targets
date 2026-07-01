@@ -3,6 +3,7 @@
 		<When Condition="'$(UseProjectReferences)' == 'true'">
 			<ItemGroup Condition="'@(NorseRef)' != ''">
 				<ProjectReference Include="@(NorseRef->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity)/%(Identity).csproj')" />
+				<ProjectReference Include="@(NorseRef->WithMetadataValue('Generator', 'true')->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity).Generator/%(Identity).Generator.csproj')" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 			</ItemGroup>
 			<ItemGroup Condition="'@(NorseDesignRef)' != ''">
 				<ProjectReference Include="@(NorseDesignRef->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity)/%(Identity).csproj')">
@@ -27,4 +28,11 @@
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
+	<!--
+		The duplicate-generator strip target (Gap 2 in the design doc below) lives in the
+		Ginnungagap-scattered src/tests Directory.Build.targets templates, not here — it must also
+		work in a genuinely standalone checkout with no Bifrost ancestor, which this file can never
+		be part of by definition. Full design:
+		Glitnir/docs/Platform/specs/2026-07-01-norseref-generator-forwarding-design.md
+	-->
 </Project>
