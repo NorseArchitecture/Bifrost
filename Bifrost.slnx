@@ -146,6 +146,30 @@
 		<Project Path="Yggdrasil/tests/Hosting.Web.Server.Tests/Hosting.Web.Server.Tests.csproj" />
 		<Project Path="Yggdrasil/tests/Hosting.Worker.Tests/Hosting.Worker.Tests.csproj" />
 	</Folder>
+	<Folder Name="/Identity/">
+		<File Path="Himinbjorg/.editorconfig" />
+		<File Path="Himinbjorg/.gitattributes" />
+		<File Path="Himinbjorg/.gitignore" />
+		<File Path="Himinbjorg/CLAUDE.md" />
+		<File Path="Himinbjorg/Directory.Build.props" />
+		<File Path="Himinbjorg/global.json" />
+		<File Path="Himinbjorg/Himinbjorg.slnx" />
+		<File Path="Himinbjorg/LICENSE" />
+		<File Path="Himinbjorg/nuget.config" />
+		<File Path="Himinbjorg/README.md" />
+	</Folder>
+	<Folder Name="/Identity/src/">
+		<File Path="Himinbjorg/src/Directory.Build.props" />
+		<File Path="Himinbjorg/src/Directory.Build.targets" />
+		<Project Path="Himinbjorg/src/Identity.Migrations/Identity.Migrations.csproj" />
+		<Project Path="Himinbjorg/src/Identity/Identity.csproj" />
+	</Folder>
+	<Folder Name="/Identity/tests/">
+		<File Path="Himinbjorg/tests/Directory.Build.props" />
+		<File Path="Himinbjorg/tests/Directory.Build.targets" />
+		<Project Path="Himinbjorg/tests/Identity.Migrations.Tests/Identity.Migrations.Tests.csproj" />
+		<Project Path="Himinbjorg/tests/Identity.Tests/Identity.Tests.csproj" />
+	</Folder>
 	<Folder Name="/Infrastructure/">
 		<File Path="Midgard/.editorconfig" />
 		<File Path="Midgard/.gitattributes" />
