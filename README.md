@@ -8,6 +8,21 @@
 
 The local developer meta-repository for the Norse platform — `Norse.Orchestration.*`, the .NET Aspire AppHost that composes every resource required to run and develop the platform: services, databases, queues, and configuration. Clone once, cross the bridge, and every realm grown on Yggdrasil is running.
 
+## What's live: the migrations framework
+
+Six realms, one dependency order, zero shortcuts. The first piece of runtime composition Bifröst exists to prove — a real service, wired into the Aspire dashboard, doing real work against a real database — landed end to end:
+
+- **Asgard** declared `IMigrationContributor` — no `Order`, no `DependsOn`, because contributors are physically incapable of seeing each other's data.
+- **Midgard** built `MigrationRunnerService`, the hosted service that runs every contributor and exits clean — or throws loud and hard, no swallowed exceptions.
+- **Urdarbrunnr** shipped the EF foundation and this platform's first Roslyn source generator: it discovers every contributor at compile time and emits `AddNorseMigrations()`, proven identical whether contributors arrive as `ProjectReference` (this repo, today) or `PackageReference` (NuGet, tomorrow).
+- **Himinbjörg** proved it against the hardest brownfield case there is: the full ASP.NET Core Identity v3 + OpenIddict schema, entities and all, landing in a real `norse_identity` Postgres database.
+- **Yggdrasil**'s migrations service went from a `Placeholder.cs` stub to a three-line `Program.cs` that never has to change again, no matter how many bounded contexts join the platform.
+- **Bifröst** wired a Postgres primary + streaming replica into the Aspire dashboard and pointed the migrations service at it.
+
+Run it: `dotnet run --project src/Orchestration.AppHost`, watch `migrations` clear the dashboard green, then check `norse_identity` — the schema is real, not a sketch. Full design and task-by-task ship log: [Glitnir's migrations framework plan](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Platform/plans/2026-06-28-migrations-framework-identity-schema.md).
+
+**Where this is headed:** identity was the proving vehicle, not the destination. The same six-step relay — contract in Asgard, runner in Midgard, EF chassis in Urdarbrunnr, schema in the owning realm, wiring in Yggdrasil, composition in Bifröst — is now the template every future bounded context follows to get its own `norse_{context}` database online. Broker and cache containers are next in the open decisions queue.
+
 ## The realms on the bridge
 
 Each realm is a git submodule, pinned to track `master`. Repositories carry the lore; namespaces carry the function:
