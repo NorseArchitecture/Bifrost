@@ -38,3 +38,11 @@
 	path = Ratatoskr
 	url = ../Ratatoskr
 	branch = master
+[submodule "Mimir"]
+	path = Mimir
+	url = ../Mimir.git
+	branch = master
+[submodule "Mimisbrunnr"]
+	path = Mimisbrunnr
+	url = ../Mimisbrunnr.git
+	branch = master
