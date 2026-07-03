@@ -103,6 +103,7 @@
 		<Project Path="Urdarbrunnr/src/EntityFramework.Migrations.PostgreSQL/EntityFramework.Migrations.PostgreSQL.csproj" />
 		<Project Path="Urdarbrunnr/src/EntityFramework.Migrations/EntityFramework.Migrations.csproj" />
 		<Project Path="Urdarbrunnr/src/EntityFramework/EntityFramework.csproj" />
+		<Project Path="Urdarbrunnr/src/EntityFramework.Generator/EntityFramework.Generator.csproj" />
 	</Folder>
 	<Folder Name="/EntityFramework/tests/">
 		<File Path="Urdarbrunnr/tests/Directory.Build.props" />
@@ -110,6 +111,7 @@
 		<Project Path="Urdarbrunnr/tests/EntityFramework.Migrations.PostgreSQL.Generator.Tests/EntityFramework.Migrations.PostgreSQL.Generator.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/EntityFramework.Migrations.Tests/EntityFramework.Migrations.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/EntityFramework.Tests/EntityFramework.Tests.csproj" />
+		<Project Path="Urdarbrunnr/tests/EntityFramework.Generator.Tests/EntityFramework.Generator.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Hosting/">
 		<File Path="Yggdrasil/.editorconfig" />
