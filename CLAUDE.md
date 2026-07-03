@@ -32,6 +32,8 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 | Yggdrasil | `Norse.Hosting.*` | Hosting runtimes and deployables: web server, worker, migration service, WASM client, and MAUI app |
 | Himinbjörg | `Norse.Identity.*` | EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
 | Heimdall | `Norse.Access.*` | Auth services on Himinbjörg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
+| Mímisbrunnr | `Norse.ReferenceData.Data` | Entities, view models, TSV seeders (nietras Sep), and migrations for canonical reference data — ISO country/currency codes, IANA time zones |
+| Mímir | `Norse.ReferenceData.Components` / `.Web.Server` / `.Worker` | Serving layer on Mímisbrunnr: Blazor components, gRPC service host, and the background worker that keeps reference data current |
 | Naglfar | `Norse.DesignSystem.*` | Design tokens, radii, and component primitives — standalone for now, no declared consumers |
 | Glitnir | — (documents only) | Design court: specs, plans, and proof-of-concept verdicts |
 | **Bifröst** (this repo) | `Norse.Orchestration.*` | Aspire AppHost composing the local development environment |
