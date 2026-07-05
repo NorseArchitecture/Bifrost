@@ -37,6 +37,11 @@ pgPrimary.WithPgAdmin(container => container
 // already-shipped code, so the WithReference below re-maps it via the connectionName override.
 var norseIdentity = pgPrimary.AddDatabase("norse-identity", databaseName: "norse_identity");
 
+// Mímisbrunnr's published NorseReferenceDataMigrationContributor is decorated
+// [MigrationConnectionString("norse_referencedata")] — same ASPIRE006 dash-vs-underscore split as
+// norse-identity above, re-mapped via the connectionName override on WithReference below.
+var norseReferenceData = pgPrimary.AddDatabase("norse-referencedata", databaseName: "norse_referencedata");
+
 builder
 	.AddContainer("pg-replica", "postgres")
 	.WithContainerDefaults("19beta1-trixie")
@@ -56,6 +61,8 @@ builder
 var migrationsService = builder
 	.AddProject<Projects.Hosting_Migrations_Service>("migrations")
 	.WithReference(norseIdentity, connectionName: "norse_identity")
-	.WaitFor(norseIdentity);
+	.WithReference(norseReferenceData, connectionName: "norse_referencedata")
+	.WaitFor(norseIdentity)
+	.WaitFor(norseReferenceData);
 
 await builder.Build().RunAsync().ConfigureAwait(false);
