@@ -34,7 +34,7 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 | Heimdall | `Norse.Access.*` | Auth services on Himinbjörg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
 | Mímisbrunnr | `Norse.ReferenceData.Data` | Entities, view models, TSV seeders (nietras Sep), and migrations for canonical reference data — ISO country/currency codes, IANA time zones |
 | Mímir | `Norse.ReferenceData.Components` / `.Web.Server` / `.Worker` | Serving layer on Mímisbrunnr: Blazor components, gRPC service host, and the background worker that keeps reference data current |
-| Naglfar | `Norse.DesignSystem.*` | Design tokens, radii, and component primitives — standalone for now, no declared consumers |
+| Naglfar | `Norse.DesignSystem.*` | first token pipeline live (`@norsearchitecture/design-tokens`); FluentUI Blazor is a validated but not yet platform-decided consumer — see Midgard's open component-library question |
 | Glitnir | — (documents only) | Design court: specs, plans, and proof-of-concept verdicts |
 | **Bifröst** (this repo) | `Norse.Orchestration.*` | Aspire AppHost composing the local development environment |
 | Ginnungagap (`.github`) | — (org-defaults only) | The primordial void: community-health files, reusable workflows, config scatter, and the Law of the Æsir — everything that exists before and beneath the realms |
