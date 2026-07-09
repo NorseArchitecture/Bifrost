@@ -1,8 +1,5 @@
 {
   "permissions": {
-    "additionalDirectories": [
-      "../"
-    ],
     "allow": [
       "Edit",
       "Write",
@@ -45,9 +42,18 @@
       "Bash(dotnet nuget push*)",
       "Bash(gh repo delete*)",
       "Bash(dotnet ef database drop*)"
+    ],
+    "additionalDirectories": [
+      "../"
     ]
   },
   "enabledPlugins": {
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "postman@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true
   }
 }
