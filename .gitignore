@@ -486,6 +486,3 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 coverage-report/
-
-# Superpowers brainstorming visual companion (mockups persisted for the session)
-.superpowers/
