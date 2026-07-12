@@ -31,7 +31,7 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 | Ratatoskr | `Norse.NServiceBus.*` | NServiceBus endpoint configuration, saga infrastructure, message conventions, and transport wiring — the squirrel that carries messages between the realms |
 | Yggdrasil | `Norse.Hosting.*` | Hosting runtimes and deployables: web server, worker, migration service, WASM client, and MAUI app |
 | Himinbjörg | `Norse.Identity.*` | EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
-| Heimdall | `Norse.Access.*` | Auth services on Himinbjörg: one access ruleset across Blazor Server, WASM, and MAUI, with admin Blazor components and the backing gRPC service |
+| Heimdall | `Norse.AuthN.*` | The authn story on Himinbjörg's identity record: login, register, forgot-password, 2FA setup, recovery, and reset, uniform across Blazor Server, WASM, and MAUI, with the backing gRPC service |
 | Mímisbrunnr | `Norse.ReferenceData.Data` | Entities, view models, TSV seeders (nietras Sep), and migrations for canonical reference data — ISO country/currency codes, IANA time zones |
 | Mímir | `Norse.ReferenceData.Components` / `.Web.Server` / `.Worker` | Serving layer on Mímisbrunnr: Blazor components, gRPC service host, and the background worker that keeps reference data current |
 | Naglfar | `Norse.DesignSystem.*` | first token pipeline live (`@norsearchitecture/design-tokens`); FluentUI Blazor is a validated but not yet platform-decided consumer — see Midgard's open component-library question |
