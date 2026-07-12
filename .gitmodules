@@ -46,3 +46,7 @@
 	path = Mimisbrunnr
 	url = ../Mimisbrunnr.git
 	branch = master
+[submodule "Bragi"]
+	path = Bragi
+	url = ../Bragi.git
+	branch = master
