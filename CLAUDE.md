@@ -29,12 +29,12 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 | Midgard | `Norse.Infrastructure.*` | Embodied law: concrete persistence, mediator runtime, API, UI Composition framework |
 | Urdarbrunnr | `Norse.EntityFramework.*` | Entity base types, DbContext foundations, conventions, value converters, and the migrations chassis |
 | Ratatoskr | `Norse.NServiceBus.*` | NServiceBus endpoint configuration, saga infrastructure, message conventions, and transport wiring — the squirrel that carries messages between the realms |
-| Yggdrasil | `Norse.Hosting.*` | Hosting runtimes and deployables: web server, worker, migration service, WASM client, and MAUI app |
+| Yggdrasil | `Norse.Hosting.*` | Hosting runtimes and deployables: web server, worker, migration service, WASM client, MAUI app, and the BlazingStory catalog host (`Hosting.Stories.Client`/`.Server`) |
 | Himinbjörg | `Norse.Identity.*` | EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
 | Heimdall | `Norse.AuthN.*` | The authn story on Himinbjörg's identity record: login, register, forgot-password, 2FA setup, recovery, and reset, uniform across Blazor Server, WASM, and MAUI, with the backing gRPC service |
 | Mímisbrunnr | `Norse.ReferenceData.Data` | Entities, view models, TSV seeders (nietras Sep), and migrations for canonical reference data — ISO country/currency codes, IANA time zones |
 | Mímir | `Norse.ReferenceData.Components` / `.Web.Server` / `.Worker` | Serving layer on Mímisbrunnr: Blazor components, gRPC service host, and the background worker that keeps reference data current |
-| Naglfar | `Norse.DesignSystem.*` | first token pipeline live (`@norsearchitecture/design-tokens`); FluentUI Blazor is a validated but not yet platform-decided consumer — see Midgard's open component-library question |
+| Naglfar | `Norse.DesignSystem.*` | token pipeline live (`@norsearchitecture/design-tokens`); `DesignSystem.Stories` is a content-only RCL of `.stories.razor`/markdown catalog pages — the runnable BlazingStory host lives in Yggdrasil, not here (`../Glitnir/docs/Platform/specs/2026-07-12-designsystem-stories-hosting-design.md`) |
 | Glitnir | — (documents only) | Design court: specs, plans, and proof-of-concept verdicts |
 | **Bifröst** (this repo) | `Norse.Orchestration.*` | Aspire AppHost composing the local development environment |
 | Ginnungagap (`.github`) | — (org-defaults only) | The primordial void: community-health files, reusable workflows, config scatter, and the Law of the Æsir — everything that exists before and beneath the realms |
