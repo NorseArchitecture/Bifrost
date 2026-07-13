@@ -16,7 +16,7 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 
 | Repository | Local path | Purpose |
 |---|---|---|
-| Ginnungagap (`.github`) | `../.github` | The primordial void: org-default community-health files, reusable GitHub Actions workflows (`ci-build-test.yml`, `release-nuget.yml`, `update-bifrost.yml`), config scatter (`scatter-the-runes.ps1`, `manifest.psd1`), and the Law of the Æsir. Referenced by realms as `NorseArchitecture/.github/.github/workflows/*.yml@master`. |
+| Ginnungagap (`.github`) | `../.github` | The primordial void: org-default community-health files, reusable GitHub Actions workflows (`ci-build-test.yml`, `publish-nuget.yml`, `create-release.yml`, `update-bifrost.yml`), config scatter (`scatter-the-runes.ps1`, `manifest.psd1`), and the Law of the Æsir. Referenced by realms as `NorseArchitecture/.github/.github/workflows/*.yml@master`. |
 
 ## 2. The Naming Model
 
