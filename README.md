@@ -71,6 +71,27 @@ To pull each realm's latest `master` after the initial clone:
 git submodule update --remote
 ```
 
+### HTTPS dev certificate trust (WSL2 + Windows)
+
+If you run `dotnet run`/`dotnet watch` inside WSL2 but browse from bare-metal Windows Chrome, `dotnet dev-certs https --trust` on either side is not enough — WSL2 and Windows each keep their own independent user cert store, so each OS generates and trusts its **own separate self-signed dev cert**. Running `--trust` (or even `--check`, which only reports "a valid certificate is already present" — a non-expired-cert check, not a trust check) on one side has zero effect on the other. Kestrel running inside WSL presents *its* cert; Windows Chrome only trusts *its own*, unrelated one — hence `net::ERR_CERT_AUTHORITY_INVALID` or resources getting blocked by SRI even after trusting "the" dev cert.
+
+The documented fix is `dotnet dev-certs https --import` — sharing one cert across the boundary — but as of the .NET 11 preview SDK (`11.0.100-preview.5.26302.115`) that flag is broken: it fails identically on both WSL and Windows with a generic `Specify --help for a list of available options and commands.` parse error, regardless of password or quoting. Revisit `--import` once a later SDK drops; until then, do it by hand:
+
+```shell
+# In WSL — export the cert Kestrel actually presents, private key included
+dotnet dev-certs https --export-path /mnt/c/Users/<you>/wsl-dev-cert.pfx -p <temp-password>
+```
+
+```powershell
+# In Windows PowerShell — install that exact cert as trusted, bypassing the broken --import
+$securePwd = ConvertTo-SecureString -String '<temp-password>' -AsPlainText -Force
+$cert = Import-PfxCertificate -FilePath 'C:\Users\<you>\wsl-dev-cert.pfx' -CertStoreLocation Cert:\CurrentUser\My -Password $securePwd
+$root = New-Object System.Security.Cryptography.X509Certificates.X509Store('Root','CurrentUser')
+$root.Open('ReadWrite'); $root.Add($cert); $root.Close()
+```
+
+Delete the `.pfx` from both sides afterward — it carries the private key. `dotnet dev-certs https --check` will still call this cert "Invalid" on the Windows side (`Import-PfxCertificate` marks the key non-exportable by default); that's the CLI's own bookkeeping opinion, not a browser trust problem — Chrome trusts it fine once it's in `CurrentUser\Root`.
+
 ## Staying current
 
 Clone it once, then leave it for a month — run these two scripts to get back to a known-good state:
