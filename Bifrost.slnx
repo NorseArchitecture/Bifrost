@@ -188,11 +188,15 @@
 		<File Path="Midgard/src/Directory.Build.props" />
 		<File Path="Midgard/src/Directory.Build.targets" />
 		<Project Path="Midgard/src/Infrastructure.Migrations/Infrastructure.Migrations.csproj" />
+		<Project Path="Midgard/src/Infrastructure.Web.Server/Infrastructure.Web.Server.csproj" />
+		<Project Path="Midgard/src/Infrastructure.Web.Client/Infrastructure.Web.Client.csproj" />
 	</Folder>
 	<Folder Name="/Infrastructure/tests/">
 		<File Path="Midgard/tests/Directory.Build.props" />
 		<File Path="Midgard/tests/Directory.Build.targets" />
 		<Project Path="Midgard/tests/Infrastructure.Migrations.Tests/Infrastructure.Migrations.Tests.csproj" />
+		<Project Path="Midgard/tests/Infrastructure.Web.Server.Tests/Infrastructure.Web.Server.Tests.csproj" />
+		<Project Path="Midgard/tests/Infrastructure.Web.Client.Tests/Infrastructure.Web.Client.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Orchestration/">
 		<File Path=".editorconfig" />
