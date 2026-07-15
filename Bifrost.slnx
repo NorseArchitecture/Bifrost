@@ -31,6 +31,29 @@
 		<Project Path="Asgard/tests/Abstractions.Web.Server.Tests/Abstractions.Web.Server.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Worker.Tests/Abstractions.Worker.Tests.csproj" />
 	</Folder>
+	<Folder Name="/AuthN/">
+		<File Path="Heimdall/.editorconfig" />
+		<File Path="Heimdall/.gitattributes" />
+		<File Path="Heimdall/.gitignore" />
+		<File Path="Heimdall/CLAUDE.md" />
+		<File Path="Heimdall/Directory.Build.props" />
+		<File Path="Heimdall/global.json" />
+		<File Path="Heimdall/Heimdall.slnx" />
+		<File Path="Heimdall/LICENSE" />
+		<File Path="Heimdall/nuget.config" />
+		<File Path="Heimdall/README.md" />
+	</Folder>
+	<Folder Name="/AuthN/src/">
+		<File Path="Heimdall/src/Directory.Build.props" />
+		<File Path="Heimdall/src/Directory.Build.targets" />
+		<Project Path="Heimdall/src/AuthN.Components/AuthN.Components.csproj" />
+		<Project Path="Heimdall/src/AuthN.Components.FluentUI/AuthN.Components.FluentUI.csproj" />
+	</Folder>
+	<Folder Name="/AuthN/tests/">
+		<File Path="Heimdall/tests/Directory.Build.props" />
+		<File Path="Heimdall/tests/Directory.Build.targets" />
+		<Project Path="Heimdall/tests/AuthN.Components.Tests/AuthN.Components.Tests.csproj" />
+	</Folder>
 	<Folder Name="/Configuration/">
 		<File Path="../.github/.gitattributes" />
 		<File Path="../.github/CLAUDE.md" />
@@ -165,12 +188,14 @@
 		<File Path="Himinbjorg/src/Directory.Build.targets" />
 		<Project Path="Himinbjorg/src/Identity.Migrations/Identity.Migrations.csproj" />
 		<Project Path="Himinbjorg/src/Identity/Identity.csproj" />
+		<Project Path="Himinbjorg/src/Identity.Web.Server/Identity.Web.Server.csproj" />
 	</Folder>
 	<Folder Name="/Identity/tests/">
 		<File Path="Himinbjorg/tests/Directory.Build.props" />
 		<File Path="Himinbjorg/tests/Directory.Build.targets" />
 		<Project Path="Himinbjorg/tests/Identity.Migrations.Tests/Identity.Migrations.Tests.csproj" />
 		<Project Path="Himinbjorg/tests/Identity.Tests/Identity.Tests.csproj" />
+		<Project Path="Himinbjorg/tests/Identity.Web.Server.Tests/Identity.Web.Server.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Infrastructure/">
 		<File Path="Midgard/.editorconfig" />

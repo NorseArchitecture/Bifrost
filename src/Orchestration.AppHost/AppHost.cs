@@ -65,4 +65,10 @@ var migrationsService = builder
 	.WaitFor(norseIdentity)
 	.WaitFor(norseReferenceData);
 
+builder
+	.AddProject<Projects.Hosting_Web_Server>("web")
+	.WithReference(norseIdentity, connectionName: "norse_identity")
+	.WaitFor(norseIdentity)
+	.WaitForCompletion(migrationsService);
+
 await builder.Build().RunAsync().ConfigureAwait(false);
