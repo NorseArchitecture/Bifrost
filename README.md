@@ -14,14 +14,14 @@ Six realms, one dependency order, zero shortcuts. The first piece of runtime com
 
 - **Asgard** declared `IMigrationContributor` — no `Order`, no `DependsOn`, because contributors are physically incapable of seeing each other's data.
 - **Midgard** built `MigrationRunnerService`, the hosted service that runs every contributor and exits clean — or throws loud and hard, no swallowed exceptions.
-- **Urdarbrunnr** shipped the EF foundation and this platform's first Roslyn source generator: it discovers every contributor at compile time and emits `AddNorseMigrations()`, proven identical whether contributors arrive as `ProjectReference` (this repo, today) or `PackageReference` (NuGet, tomorrow).
+- **Urðarbrunnr** shipped the EF foundation and this platform's first Roslyn source generator: it discovers every contributor at compile time and emits `AddNorseMigrations()`, proven identical whether contributors arrive as `ProjectReference` (this repo, today) or `PackageReference` (NuGet, tomorrow).
 - **Himinbjörg** proved it against the hardest brownfield case there is: the full ASP.NET Core Identity v3 + OpenIddict schema, entities and all, landing in a real `norse_identity` Postgres database.
 - **Yggdrasil**'s migrations service went from a `Placeholder.cs` stub to a three-line `Program.cs` that never has to change again, no matter how many bounded contexts join the platform.
 - **Bifröst** wired a Postgres primary + streaming replica into the Aspire dashboard and pointed the migrations service at it.
 
 Run it: `dotnet run --project src/Orchestration.AppHost`, watch `migrations` clear the dashboard green, then check `norse_identity` — the schema is real, not a sketch. Full design and task-by-task ship log: [Glitnir's migrations framework plan](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Platform/plans/2026-06-28-migrations-framework-identity-schema.md).
 
-**Where this is headed:** identity was the proving vehicle, not the destination. The same six-step relay — contract in Asgard, runner in Midgard, EF chassis in Urdarbrunnr, schema in the owning realm, wiring in Yggdrasil, composition in Bifröst — is now the template every future bounded context follows to get its own `norse_{context}` database online. Broker and cache containers are next in the open decisions queue.
+**Where this is headed:** identity was the proving vehicle, not the destination. The same six-step relay — contract in Asgard, runner in Midgard, EF chassis in Urðarbrunnr, schema in the owning realm, wiring in Yggdrasil, composition in Bifröst — is now the template every future bounded context follows to get its own `norse_{context}` database online — Mímisbrunnr already rode it days later to stand up `norse_referencedata`, no new framework code required. Broker and cache containers are next in the open decisions queue.
 
 ## The realms on the bridge
 
@@ -29,12 +29,12 @@ Each realm is a git submodule, pinned to track `master`. Repositories carry the 
 
 | Submodule | The function |
 |---|---|
-| [Svartalfheim](https://github.com/NorseArchitecture/Svartalfheim) | `Norse.Primitives.*` — the forge: `Result<T>`, the parsing stack, and the analyzers and BuildCheck rules that strike when law is broken |
+| [Svartálfheim](https://github.com/NorseArchitecture/Svartalfheim) | `Norse.Primitives.*` — the forge: `Result<T>`, the parsing stack, and the analyzers and BuildCheck rules that strike when law is broken |
 | [Asgard](https://github.com/NorseArchitecture/Asgard) | `Norse.Abstractions.*` — declared law: contracts, attribute model, plugin interfaces, mediator law |
 | [Midgard](https://github.com/NorseArchitecture/Midgard) | `Norse.Infrastructure.*` — embodied law: concrete persistence, mediator runtime, API, UI Composition framework |
-| [Urdarbrunnr](https://github.com/NorseArchitecture/Urdarbrunnr) | `Norse.EntityFramework.*` — entity base types, DbContext foundations, conventions, value converters, and the migrations chassis |
+| [Urðarbrunnr](https://github.com/NorseArchitecture/Urdarbrunnr) | `Norse.EntityFramework.*` — entity base types, DbContext foundations, conventions, value converters, and the migrations chassis |
 | [Ratatoskr](https://github.com/NorseArchitecture/Ratatoskr) | `Norse.NServiceBus.*` — NServiceBus endpoint configuration, saga infrastructure, message conventions, and transport wiring; the squirrel that carries messages between the realms |
-| [Yggdrasil](https://github.com/NorseArchitecture/Yggdrasil) | `Norse.Hosting.*` — hosting runtimes and deployables: web server, worker, migration service, WASM client, and MAUI app |
+| [Yggdrasil](https://github.com/NorseArchitecture/Yggdrasil) | `Norse.Hosting.*` — hosting runtimes and deployables: web server, worker, migration service, WASM client, MAUI app, and the BlazingStory catalog host (`Hosting.Stories.Client`/`.Server`) |
 | [Himinbjörg](https://github.com/NorseArchitecture/Himinbjorg) | `Norse.Identity.*` — EF persistence for ASP.NET Identity and OpenIddict: entities, conventions, and migrations; sealed server-side, never referenced from WASM or MAUI |
 | [Heimdall](https://github.com/NorseArchitecture/Heimdall) | `Norse.AuthN.*` — the authn story on Himinbjörg's identity record: login, register, forgot-password, 2FA setup, recovery, and reset, uniform across Blazor Server, WASM, and MAUI, with the backing gRPC service |
 | [Mímisbrunnr](https://github.com/NorseArchitecture/Mimisbrunnr) | `Norse.ReferenceData.Data` — entities, view models, TSV seeders (nietras Sep), and migrations for canonical reference data: ISO country/currency codes, IANA time zones |
@@ -129,7 +129,7 @@ Workloads install SDK components — build targets, platform SDKs, and bundled t
 | `xunit.v3.templates` | `xunit3`, `xunit3-extension` | Creates correctly wired xUnit v3 test projects on Microsoft.Testing.Platform. The built-in `xunit` template installs v2 packages and produces projects that fail at MTP startup with `MissingMethodException`. |
 | `ParticularTemplates` | `nsbendpoint`, `nsbhandler`, `nsbsaga` | Official NServiceBus scaffolding from Particular Software — endpoint, message handler, and saga stubs wired to NServiceBus conventions. Ratatoskr (`Norse.NServiceBus.*`) is the realm that consumes these. |
 | `Aspire.ProjectTemplates` | `aspire-apphost`, `aspire-servicedefaults`, and others | Official Aspire scaffolding. `aspire-apphost` is the template for new bridge AppHost projects; `aspire-servicedefaults` scaffolds the service-defaults project the platform intentionally places in Midgard (`Norse.Infrastructure.*`) rather than the AppHost. The starter and test templates (`aspire-starter`, `aspire-xunit`, etc.) are bundled but unused here. |
-| `BenchmarkDotNet.Templates` | `benchmark` | Scaffolds a BenchmarkDotNet project with the correct harness wiring. Used when profiling hot paths in the forge (Svartalfheim) or any realm where allocation and throughput matter. |
+| `BenchmarkDotNet.Templates` | `benchmark` | Scaffolds a BenchmarkDotNet project with the correct harness wiring. Used when profiling hot paths in the forge (Svartálfheim) or any realm where allocation and throughput matter. |
 
 ## Build your own bridge
 
@@ -139,7 +139,7 @@ The intended pattern is to **create your own meta-repository from the constituen
 
 Two consequences of that design, both deliberate:
 
-- **Contributions belong in the realms.** Changes to primitives go to Svartalfheim, contracts to Asgard, implementations to Midgard, hosting to Yggdrasil. Pull requests here should be rare — composition fixes, not features.
+- **Contributions belong in the realms.** Changes to primitives go to Svartálfheim, contracts to Asgard, implementations to Midgard, hosting to Yggdrasil. Pull requests here should be rare — composition fixes, not features.
 - **Submodule URLs are relative** (`../Svartalfheim.git`), resolved against whatever remote you cloned Bifröst from. That's what makes HTTPS and SSH both work from a single `.gitmodules` — and it means a *fork* of Bifröst resolves submodules against the fork's owner, failing loudly unless the realms are forked alongside it. If you find yourself forking Bifröst, that's the signal you've reached the moment to build your own bridge instead.
 
 ## Soundtrack: Across the Rainbow Bridge
