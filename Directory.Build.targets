@@ -3,7 +3,7 @@
 		<When Condition="'$(UseProjectReferences)' == 'true'">
 			<ItemGroup Condition="'@(NorseRef)' != ''">
 				<ProjectReference Include="@(NorseRef->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity)/%(Identity).csproj')" />
-				<ProjectReference Include="@(NorseRef->WithMetadataValue('Generator', 'true')->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity).Generator/%(Identity).Generator.csproj')" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+				<ProjectReference Include="@(NorseRef->WithMetadataValue('Generator', 'true')->'$(MSBuildThisFileDirectory)%(Repo)/gen/%(Identity).Generator/%(Identity).Generator.csproj')" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 			</ItemGroup>
 			<ItemGroup Condition="'@(NorseDesignRef)' != ''">
 				<ProjectReference Include="@(NorseDesignRef->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity)/%(Identity).csproj')">

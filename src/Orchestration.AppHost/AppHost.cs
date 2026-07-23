@@ -12,10 +12,10 @@ var pgPassword = builder.AddParameter("postgres-password", secret: true);
 
 var pgPrimary = builder
 	.AddPostgres("pg-primary", password: pgPassword, port: 5432)
-	.WithContainerDefaults("19beta1-trixie")
+	.WithContainerDefaults("19beta2")
 	// WithDataVolume() mis-detects the data directory for beta-tagged images: it parses the major
-	// version by int-parsing the tag segment before the first hyphen, and "19beta1" (no separator
-	// between the version and "beta1") fails to parse, so it silently falls back to the pre-18
+	// version by int-parsing the tag segment before the first hyphen, and "19beta2" (no separator
+	// between the version and "beta2") fails to parse, so it silently falls back to the pre-18
 	// path (/var/lib/postgresql/data) even though this image's real PGDATA nests under
 	// /var/lib/postgresql/19/docker. Mount the parent directory directly instead.
 	.WithVolume("norse-pg-primary", "/var/lib/postgresql")
@@ -38,13 +38,13 @@ pgPrimary.WithPgAdmin(container => container
 var norseIdentity = pgPrimary.AddDatabase("norse-identity", databaseName: "norse_identity");
 
 // Mímisbrunnr's published NorseReferenceDataMigrationContributor is decorated
-// [MigrationConnectionString("norse_referencedata")] — same ASPIRE006 dash-vs-underscore split as
+// [MigrationConnectionString("norse_reference")] — same ASPIRE006 dash-vs-underscore split as
 // norse-identity above, re-mapped via the connectionName override on WithReference below.
-var norseReferenceData = pgPrimary.AddDatabase("norse-referencedata", databaseName: "norse_referencedata");
+var norseReference = pgPrimary.AddDatabase("norse-reference", databaseName: "norse_reference");
 
 builder
 	.AddContainer("pg-replica", "postgres")
-	.WithContainerDefaults("19beta1-trixie")
+	.WithContainerDefaults("19beta2")
 	// Mount the named volume at the image's own declared VOLUME path (/var/lib/postgresql), not a
 	// subdirectory of it — otherwise Docker still auto-creates an anonymous volume for the
 	// declared path itself (uncovered by a child-path mount), same class of bug as the primary's
@@ -61,9 +61,9 @@ builder
 var migrationsService = builder
 	.AddProject<Projects.Hosting_Migrations_Service>("migrations")
 	.WithReference(norseIdentity, connectionName: "norse_identity")
-	.WithReference(norseReferenceData, connectionName: "norse_referencedata")
+	.WithReference(norseReference, connectionName: "norse_reference")
 	.WaitFor(norseIdentity)
-	.WaitFor(norseReferenceData);
+	.WaitFor(norseReference);
 
 builder
 	.AddProject<Projects.Hosting_Web_Server>("web")
