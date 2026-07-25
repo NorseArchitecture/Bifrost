@@ -80,6 +80,7 @@ Code style, indentation, `var`, accessibility, and naming rules: global `~/.clau
 
 ## 6. Process
 
+- **NEVER branch Bifröst itself.** Stay on `master` — near-absolute, not a default-with-exceptions. The one narrow exception requires both: (1) the feature genuinely lives in Bifröst's own tracked files (`Orchestration.AppHost`, `Bifrost.slnx`, `.gitmodules`, root build plumbing), not a submodule pointer bump; and (2) every other realm submodule is on `master`, nothing else in flight. If either fails, stay on `master`. `master` absorbs constant bot traffic (CPM bumps, config scatter, release fan-in, submodule pointer updates) that a feature branch would have to carry and reconcile against — expensive and painful in a way an isolated realm repo isn't.
 - **No automatic git commits.** Stage and show the diff; the human commits. When in doubt, stop and wait.
 - **No force-pushing to `master`.** No skipping git hooks. No committing secrets — local dev configuration uses user secrets or Aspire-managed values, never checked-in credentials.
 - **Implementation is subagent-driven and test-driven, always.** `superpowers:subagent-driven-development` is the default — `executing-plans` is the narrow separate-session fallback, never interchangeable. Pairs with `superpowers:test-driven-development` on every coding task. Full rule: `../Glitnir/CLAUDE.md` §2.8.

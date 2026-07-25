@@ -48,11 +48,13 @@
 		<File Path="Heimdall/src/Directory.Build.targets" />
 		<Project Path="Heimdall/src/AuthN.Components/AuthN.Components.csproj" />
 		<Project Path="Heimdall/src/AuthN.Components.FluentUI/AuthN.Components.FluentUI.csproj" />
+		<Project Path="Heimdall/src/AuthN.Services/AuthN.Services.csproj" />
 	</Folder>
 	<Folder Name="/AuthN/tests/">
 		<File Path="Heimdall/tests/Directory.Build.props" />
 		<File Path="Heimdall/tests/Directory.Build.targets" />
 		<Project Path="Heimdall/tests/AuthN.Components.Tests/AuthN.Components.Tests.csproj" />
+		<Project Path="Heimdall/tests/AuthN.Services.Tests/AuthN.Services.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Configuration/">
 		<File Path="../.github/.gitattributes" />
@@ -131,6 +133,10 @@
 		<File Path="Yggdrasil/src/Directory.Build.props" />
 		<File Path="Yggdrasil/src/Directory.Build.targets" />
 		<Project Path="Yggdrasil/src/Hosting.Migrations.Service/Hosting.Migrations.Service.csproj" />
+		<Project Path="Yggdrasil/src/Hosting.Stories.Client/Hosting.Stories.Client.csproj" />
+		<Project Path="Yggdrasil/src/Hosting.Stories.Server/Hosting.Stories.Server.csproj" />
+		<Project Path="Yggdrasil/src/Hosting.Web.Client/Hosting.Web.Client.csproj" />
+		<Project Path="Yggdrasil/src/Hosting.Web.Components/Hosting.Web.Components.csproj" />
 		<Project Path="Yggdrasil/src/Hosting.Web.Server/Hosting.Web.Server.csproj" />
 		<Project Path="Yggdrasil/src/Hosting.Worker/Hosting.Worker.csproj" />
 	</Folder>
@@ -139,6 +145,7 @@
 		<File Path="Yggdrasil/tests/Directory.Build.targets" />
 		<File Path="Yggdrasil/tests/Directory.Packages.props" />
 		<Project Path="Yggdrasil/tests/Hosting.Migrations.Service.Tests/Hosting.Migrations.Service.Tests.csproj" />
+		<Project Path="Yggdrasil/tests/Hosting.Stories.Server.Tests/Hosting.Stories.Server.Tests.csproj" />
 		<Project Path="Yggdrasil/tests/Hosting.Web.Server.Tests/Hosting.Web.Server.Tests.csproj" />
 		<Project Path="Yggdrasil/tests/Hosting.Worker.Tests/Hosting.Worker.Tests.csproj" />
 	</Folder>
@@ -158,14 +165,16 @@
 		<File Path="Himinbjorg/src/Directory.Build.props" />
 		<File Path="Himinbjorg/src/Directory.Build.targets" />
 		<Project Path="Himinbjorg/src/Identity.Migrations/Identity.Migrations.csproj" />
-		<Project Path="Himinbjorg/src/Identity/Identity.csproj" />
+		<Project Path="Himinbjorg/src/Identity.Migrations.PostgreSQL/Identity.Migrations.PostgreSQL.csproj" />
+		<Project Path="Himinbjorg/src/Identity.Migrations.SqlServer/Identity.Migrations.SqlServer.csproj" />
 		<Project Path="Himinbjorg/src/Identity.Web.Server/Identity.Web.Server.csproj" />
 	</Folder>
 	<Folder Name="/Identity/tests/">
 		<File Path="Himinbjorg/tests/Directory.Build.props" />
 		<File Path="Himinbjorg/tests/Directory.Build.targets" />
+		<Project Path="Himinbjorg/tests/Identity.Migrations.PostgreSQL.Tests/Identity.Migrations.PostgreSQL.Tests.csproj" />
+		<Project Path="Himinbjorg/tests/Identity.Migrations.SqlServer.Tests/Identity.Migrations.SqlServer.Tests.csproj" />
 		<Project Path="Himinbjorg/tests/Identity.Migrations.Tests/Identity.Migrations.Tests.csproj" />
-		<Project Path="Himinbjorg/tests/Identity.Tests/Identity.Tests.csproj" />
 		<Project Path="Himinbjorg/tests/Identity.Web.Server.Tests/Identity.Web.Server.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Infrastructure/">
@@ -235,12 +244,17 @@
 		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.PostgreSQL/Persistence.EntityFramework.PostgreSQL.csproj" />
 		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.SqlServer/Persistence.EntityFramework.SqlServer.csproj" />
 		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Design/Persistence.EntityFramework.Design.csproj" />
-		<File Path="Urdarbrunnr/src/Persistence.EntityFramework.Design.Generator.Shared/MigrationContributorDiscovery.cs" />
-		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Design.PostgreSQL.Generator/Persistence.EntityFramework.Design.PostgreSQL.Generator.csproj" />
 		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Design.PostgreSQL/Persistence.EntityFramework.Design.PostgreSQL.csproj" />
-		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Design.SqlServer.Generator/Persistence.EntityFramework.Design.SqlServer.Generator.csproj" />
 		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Design.SqlServer/Persistence.EntityFramework.Design.SqlServer.csproj" />
-		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Generator/Persistence.EntityFramework.Generator.csproj" />
+	</Folder>
+	<Folder Name="/Persistence/gen/">
+		<File Path="Urdarbrunnr/gen/Directory.Build.props" />
+		<File Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.Generator.Shared/CSharpEmit.cs" />
+		<File Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.Generator.Shared/MigrationContributorDiscovery.cs" />
+		<File Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.Generator.Shared/StringSyntaxAttribute.cs" />
+		<Project Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.PostgreSQL.Generator/Persistence.EntityFramework.Design.PostgreSQL.Generator.csproj" />
+		<Project Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.SqlServer.Generator/Persistence.EntityFramework.Design.SqlServer.Generator.csproj" />
+		<Project Path="Urdarbrunnr/gen/Persistence.EntityFramework.Generator/Persistence.EntityFramework.Generator.csproj" />
 	</Folder>
 	<Folder Name="/Persistence/tests/">
 		<File Path="Urdarbrunnr/tests/Directory.Build.props" />
@@ -249,6 +263,8 @@
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.PostgreSQL.Tests/Persistence.EntityFramework.PostgreSQL.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.SqlServer.Tests/Persistence.EntityFramework.SqlServer.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.Tests/Persistence.EntityFramework.Design.Tests.csproj" />
+		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.PostgreSQL.Tests/Persistence.EntityFramework.Design.PostgreSQL.Tests.csproj" />
+		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.SqlServer.Tests/Persistence.EntityFramework.Design.SqlServer.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.PostgreSQL.Generator.Tests/Persistence.EntityFramework.Design.PostgreSQL.Generator.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.SqlServer.Generator.Tests/Persistence.EntityFramework.Design.SqlServer.Generator.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Generator.Tests/Persistence.EntityFramework.Generator.Tests.csproj" />
@@ -284,7 +300,7 @@
 		<Project Path="Svartalfheim/tests/smoke/Primitives.Aot.Smoke/Primitives.Aot.Smoke.csproj" />
 		<Project Path="Svartalfheim/tests/smoke/Primitives.Ingestion.Aot.Smoke/Primitives.Ingestion.Aot.Smoke.csproj" />
 	</Folder>
-	<Folder Name="/ReferenceData/">
+	<Folder Name="/Reference/">
 		<File Path="Mimisbrunnr/.editorconfig" />
 		<File Path="Mimisbrunnr/.gitattributes" />
 		<File Path="Mimisbrunnr/.gitignore" />
@@ -296,21 +312,23 @@
 		<File Path="Mimisbrunnr/nuget.config" />
 		<File Path="Mimisbrunnr/README.md" />
 	</Folder>
-	<Folder Name="/ReferenceData/src/">
+	<Folder Name="/Reference/src/">
 		<File Path="Mimisbrunnr/src/Directory.Build.props" />
 		<File Path="Mimisbrunnr/src/Directory.Build.targets" />
-		<Project Path="Mimisbrunnr/src/ReferenceData.Data/ReferenceData.Data.csproj" />
-		<Project Path="Mimisbrunnr/src/ReferenceData.Data.Migrations/ReferenceData.Data.Migrations.csproj" />
+		<Project Path="Mimisbrunnr/src/Reference.Data.Migrations.PostgreSQL/Reference.Data.Migrations.PostgreSQL.csproj" />
+		<Project Path="Mimisbrunnr/src/Reference.Data.Migrations.SqlServer/Reference.Data.Migrations.SqlServer.csproj" />
+		<Project Path="Mimisbrunnr/src/Reference.Data.Migrations/Reference.Data.Migrations.csproj" />
+		<Project Path="Mimisbrunnr/src/Reference.Data/Reference.Data.csproj" />
 	</Folder>
-	<Folder Name="/ReferenceData/tools/">
+	<Folder Name="/Reference/tests/">
+		<File Path="Mimisbrunnr/tests/Directory.Build.props" />
+		<File Path="Mimisbrunnr/tests/Directory.Build.targets" />
+		<Project Path="Mimisbrunnr/tests/Reference.Data.Tests/Reference.Data.Tests.csproj" />
+		<Project Path="Mimisbrunnr/tests/SeedTool.Tests/SeedTool.Tests.csproj" />
+	</Folder>
+	<Folder Name="/Reference/tools/">
 		<File Path="Mimisbrunnr/tools/Directory.Build.props" />
 		<File Path="Mimisbrunnr/tools/Directory.Build.targets" />
 		<Project Path="Mimisbrunnr/tools/SeedTool/SeedTool.csproj" />
-	</Folder>
-	<Folder Name="/ReferenceData/tests/">
-		<File Path="Mimisbrunnr/tests/Directory.Build.props" />
-		<File Path="Mimisbrunnr/tests/Directory.Build.targets" />
-		<Project Path="Mimisbrunnr/tests/ReferenceData.Data.Tests/ReferenceData.Data.Tests.csproj" />
-		<Project Path="Mimisbrunnr/tests/SeedTool.Tests/SeedTool.Tests.csproj" />
 	</Folder>
 </Solution>
