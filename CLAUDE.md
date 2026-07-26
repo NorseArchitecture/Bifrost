@@ -79,6 +79,7 @@ Code style, indentation, `var`, accessibility, and naming rules: global `~/.clau
 - **`.slnx` solution format** (`dotnet new sln --format slnx`); project layout `src/{ProjectName}/{ProjectName}.csproj` with brand-free project names (see §2). Each realm's solution file is named for the lore (`Svartalfheim.slnx`), matching its repo.
 - **`sealed` by default** — `internal sealed` is the default for every new type; open only when a concrete subtype exists.
 - **Relative paths only in documents** (hard law, 2026-06-11): repo-relative or workspace-relative (`../Glitnir/docs/...`); machine-local absolute paths never enter the record — environment variables name machine locations when unavoidable.
+- **Generator emitters never call `AppendLine` directly.** Always `sb.AppendCSharp(...)` (`Norse.Abstractions.Emit.CSharpEmit`, a `[StringSyntax("C#")]`-annotated `AppendLine` wrapper) — including single-line appends. What would otherwise be multiple sequential `AppendLine` calls collapses into one `AppendCSharp` call with a raw string literal (`"""..."""`), so the generated shape reads as a block instead of being reconstructed line-by-line at the call site. Design: `../Glitnir/docs/Asgard/specs/2026-07-25-generator-authoring-toolkit-and-raw-string-house-style-design.md`.
 
 ## 6. Process
 
