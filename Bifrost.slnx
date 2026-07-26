@@ -21,11 +21,15 @@
 		<Project Path="Asgard/src/Abstractions.Web.Server/Abstractions.Web.Server.csproj" />
 		<Project Path="Asgard/src/Abstractions.Worker/Abstractions.Worker.csproj" />
 	</Folder>
+	<Folder Name="/Abstractions/gen/">
+		<Project Path="Asgard/gen/Abstractions.Contracts.Generator/Abstractions.Contracts.Generator.csproj" />
+	</Folder>
 	<Folder Name="/Abstractions/tests/">
 		<File Path="Asgard/tests/Directory.Build.props" />
 		<File Path="Asgard/tests/Directory.Build.targets" />
 		<Project Path="Asgard/tests/Abstractions.Backend.Tests/Abstractions.Backend.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Components.Tests/Abstractions.Components.Tests.csproj" />
+		<Project Path="Asgard/tests/Abstractions.Contracts.Generator.Tests/Abstractions.Contracts.Generator.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Contracts.Tests/Abstractions.Contracts.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Migrations.Tests/Abstractions.Migrations.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Web.Server.Tests/Abstractions.Web.Server.Tests.csproj" />
@@ -53,6 +57,7 @@
 	<Folder Name="/AuthN/tests/">
 		<File Path="Heimdall/tests/Directory.Build.props" />
 		<File Path="Heimdall/tests/Directory.Build.targets" />
+		<Project Path="Heimdall/tests/AuthN.Components.FluentUI.Tests/AuthN.Components.FluentUI.Tests.csproj" />
 		<Project Path="Heimdall/tests/AuthN.Components.Tests/AuthN.Components.Tests.csproj" />
 		<Project Path="Heimdall/tests/AuthN.Services.Tests/AuthN.Services.Tests.csproj" />
 	</Folder>
@@ -107,6 +112,18 @@
 		<File Path="../.github/scripts/carve-the-laws.ps1" />
 		<File Path="../.github/scripts/scatter-the-runes.ps1" />
 		<File Path="../.github/scripts/sound-gjallarhorn.ps1" />
+	</Folder>
+	<Folder Name="/DesignSystem/src/">
+		<Project Path="Naglfar/src/DesignSystem.Tokens/DesignSystem.Tokens.csproj" />
+	</Folder>
+	<Folder Name="/DesignSystem/tests/">
+		<Project Path="Naglfar/tests/DesignSystem.Tokens.Tests/DesignSystem.Tokens.Tests.csproj" />
+	</Folder>
+	<Folder Name="/DesignSystem.Stories/src/">
+		<Project Path="Bragi/src/DesignSystem.Stories/DesignSystem.Stories.csproj" />
+	</Folder>
+	<Folder Name="/DesignSystem.Stories/tests/">
+		<Project Path="Bragi/tests/DesignSystem.Stories.Tests/DesignSystem.Stories.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Documentation/" />
 	<Folder Name="/Hosting/">
