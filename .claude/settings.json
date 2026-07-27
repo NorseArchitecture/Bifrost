@@ -1,11 +1,13 @@
 {
+  "model": "sonnet",
   "permissions": {
     "allow": [
       "Edit",
       "Write",
       "Bash",
       "WebFetch",
-      "WebSearch"
+      "WebSearch",
+      "Skill(superpowers:*)"
     ],
     "deny": [
       "Bash(rm -rf *)",
