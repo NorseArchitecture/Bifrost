@@ -23,6 +23,10 @@ Run it: `dotnet run --project src/Orchestration.AppHost`, watch `migrations` cle
 
 **Where this is headed:** identity was the proving vehicle, not the destination. The same six-step relay — contract in Asgard, runner in Midgard, EF chassis in Urðarbrunnr, schema in the owning realm, wiring in Yggdrasil, composition in Bifröst — is now the template every future bounded context follows to get its own `norse_{context}` database online — Mímisbrunnr already rode it days later to stand up `norse_reference`, no new framework code required. Broker and cache containers are next in the open decisions queue.
 
+## What's live: the mediator pipeline
+
+The transport-neutral invocation pipeline landed in two passes. The first (2026-07-25) proved the envelope and wire encoding behind generator-composed gateways; a same-day code audit two days later found most of that generator machinery dead on arrival — an interceptor that was implemented, tested, and never registered, generated gateways with zero test coverage, and a WASM wire path that reached handlers with no server-side validation or authorization at all. The second pass (2026-07-27) subtracted it: Midgard now composes the chain once, in DI, around the handlers — `AddNorsePipeline()` plus a hand-rolled `Sender` folding `IBehavior<,>` instances, no MediatR, no martinothamar/Mediator, no package underneath it at all (a claim six documents made at the time, none of them accurate). Every channel — Blazor Server circuit and gRPC wire alike — now runs through the same four behaviors, so the wire path finally gets the validation and authorization the gateway design promised but never wired. Components inject `I{Context}Service` directly; `IAuthenticationGateway` is gone. Full verdict: [Glitnir's mediator-pipeline design](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Platform/specs/2026-07-27-mediator-pipeline-retires-gateway-design.md).
+
 ## The realms on the bridge
 
 Each realm is a git submodule, pinned to track `master`. Repositories carry the lore; namespaces carry the function:

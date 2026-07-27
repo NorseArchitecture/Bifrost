@@ -1,5 +1,4 @@
 {
-  "model": "sonnet",
   "permissions": {
     "allow": [
       "Edit",
@@ -63,6 +62,7 @@
       "../"
     ]
   },
+  "model": "sonnet",
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
@@ -70,7 +70,6 @@
     "code-simplifier@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "postman@claude-plugins-official": true,
-    "claude-code-setup@claude-plugins-official": true,
-    "csharp-lsp@claude-plugins-official": true
+    "claude-code-setup@claude-plugins-official": true
   }
 }
