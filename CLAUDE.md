@@ -81,7 +81,17 @@ Code style, indentation, `var`, accessibility, and naming rules: global `~/.clau
 - **Relative paths only in documents** (hard law, 2026-06-11): repo-relative or workspace-relative (`../Glitnir/docs/...`); machine-local absolute paths never enter the record — environment variables name machine locations when unavoidable.
 - **Generator emitters never call `AppendLine` directly.** Always `sb.AppendCSharp(...)` (`Norse.Abstractions.Emit.CSharpEmit`, a `[StringSyntax("C#")]`-annotated `AppendLine` wrapper) — including single-line appends. What would otherwise be multiple sequential `AppendLine` calls collapses into one `AppendCSharp` call with a raw string literal (`"""..."""`), so the generated shape reads as a block instead of being reconstructed line-by-line at the call site. Design: `../Glitnir/docs/Asgard/specs/2026-07-25-generator-authoring-toolkit-and-raw-string-house-style-design.md`.
 
-## 6. Process
+## 6. Operating Modes
+
+Every session runs in one of three modes. Wall clock is the metric: ceremony nobody asked for — git-status narration, unsolicited commit/PR offers, reflexive skill invocation, "here's what I changed" epilogues — is waste, not diligence. A dirty working tree is the expected steady state, not an anomaly; Buvy is routinely curating the same tree in parallel. Never flag, stash, warn about, or narrate uncommitted changes unless they're directly implicated in the task at hand.
+
+**Mode 1 — Debugging.** `superpowers:systematic-debugging`, or the session is plainly "fix this broken thing." Fix the issue at hand; that is the entire scope. Pending changes elsewhere in the tree are invisible — don't mention them, don't treat them as suspicious. Exception: if the pending changes are the root cause, fix them (still fixing the issue) without editorializing about the dirty state. No opportunistic "while I was in here" cleanup.
+
+**Mode 2 — Cleanup/chore/curation.** Doc sweeps, renames, stale-data fixes, pragma removal, and similar mechanical work. Do the item asked for and nothing else. **No skill invocation** — none are needed for chore work; this overrides the reflexive skill-check default for this mode specifically. No git-state checks — in-flight changes are expected. No extra builds. No commit/PR offers or commit-message summaries. The only verification gate: the touched project's tests still pass. Run them, confirm green, stop.
+
+**Mode 3 — Feature pipeline.** `superpowers:brainstorming` → `superpowers:writing-plans` → `superpowers:subagent-driven-development`. `writing-plans` always reads `Glitnir/docs/house-rules.md` first and always plans for TDD — tests first, structurally, not as an option. `subagent-driven-development` forks the next task the moment the current one reaches review, but never gets more than one task ahead of review, so a requested change stays small-blast-radius; on a genuine implementation wall, halt and ask — never improvise around it, never guess, never "make progress elsewhere" while blocked. Every stage transition (brainstorm → plan, plan → code) is a human gate, never inferred from momentum or a prior session. The sole exception is permission stated explicitly and in advance for unattended continuation ("finish this off while I sleep") — never assumed.
+
+## 7. Process
 
 - **NEVER branch Bifröst itself.** Stay on `master` — near-absolute, not a default-with-exceptions. The one narrow exception requires both: (1) the feature genuinely lives in Bifröst's own tracked files (`Orchestration.AppHost`, `Bifrost.slnx`, `.gitmodules`, root build plumbing), not a submodule pointer bump; and (2) every other realm submodule is on `master`, nothing else in flight. If either fails, stay on `master`. `master` absorbs constant bot traffic (CPM bumps, config scatter, release fan-in, submodule pointer updates) that a feature branch would have to carry and reconcile against — expensive and painful in a way an isolated realm repo isn't.
 - **No automatic git commits.** Stage and show the diff; the human commits. When in doubt, stop and wait.
@@ -89,7 +99,7 @@ Code style, indentation, `var`, accessibility, and naming rules: global `~/.clau
 - **Implementation is subagent-driven and test-driven, always.** `superpowers:subagent-driven-development` is the default — `executing-plans` is the narrow separate-session fallback, never interchangeable. Pairs with `superpowers:test-driven-development` on every coding task. Full rule: `../Glitnir/CLAUDE.md` §2.8.
 - **README.md and CLAUDE.md stay in sync — boy-scout law.** The pair tells one story at two altitudes: README is the public narrative, CLAUDE.md the working law. Any change touching what either describes — submodules, naming, conventions, composition — updates both in the same change, and the realm tables in both files must match `.gitmodules` exactly. Touch a repo, check its pair before you leave.
 
-## 7. CI/CD Patterns
+## 8. CI/CD Patterns
 
 Coverage CI and release pipeline proven on Svartálfheim (PRs #4, #6). Full design and gotchas: `../Glitnir/docs/Platform/specs/2026-06-26-code-coverage-ci-design.md`.
 
@@ -103,7 +113,7 @@ Coverage CI and release pipeline proven on Svartálfheim (PRs #4, #6). Full desi
 - **No `.runsettings`** — silently ignored by MTP; `git rm` any that exist.
 - **Coverage floor is 0.1** in the shared workflow (`FLOOR=0.1` in `ci-build-test.yml`, temporarily lowered until the ASP.NET Identity template is out of Yggdrasil — see Ginnungagap's `CLAUDE.md`); `minimum_coverage` input default is `0`. Effective = `max(0.1, input)`. Corrected 2026-07-25 — previously logged here as 60, which the workflow source does not support.
 
-## 8. Open Decisions
+## 9. Open Decisions
 
 Raise these before writing code that touches them; do not silently proceed:
 
