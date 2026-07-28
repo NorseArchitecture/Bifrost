@@ -216,6 +216,7 @@
 		<Project Path="Midgard/src/Infrastructure.Components.Theme.FluentUI/Infrastructure.Components.Theme.FluentUI.csproj" />
 		<Project Path="Midgard/src/Infrastructure.Web.Server/Infrastructure.Web.Server.csproj" />
 		<Project Path="Midgard/src/Infrastructure.Web.Client/Infrastructure.Web.Client.csproj" />
+		<Project Path="Midgard/src/Infrastructure.Web.Grpc/Infrastructure.Web.Grpc.csproj" />
 	</Folder>
 	<Folder Name="/Infrastructure/tests/">
 		<File Path="Midgard/tests/Directory.Build.props" />
@@ -225,6 +226,7 @@
 		<Project Path="Midgard/tests/Infrastructure.Components.Theme.FluentUI.Tests/Infrastructure.Components.Theme.FluentUI.Tests.csproj" />
 		<Project Path="Midgard/tests/Infrastructure.Web.Server.Tests/Infrastructure.Web.Server.Tests.csproj" />
 		<Project Path="Midgard/tests/Infrastructure.Web.Client.Tests/Infrastructure.Web.Client.Tests.csproj" />
+		<Project Path="Midgard/tests/Infrastructure.Web.Grpc.Tests/Infrastructure.Web.Grpc.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Orchestration/">
 		<File Path=".editorconfig" />
