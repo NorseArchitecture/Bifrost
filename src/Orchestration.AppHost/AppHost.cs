@@ -71,4 +71,10 @@ builder
 	.WaitFor(norseIdentity)
 	.WaitForCompletion(migrationsService);
 
+builder
+	.AddProject<Projects.Hosting_Worker>("worker")
+	.WaitForCompletion(migrationsService);
+
+builder.AddProject<Projects.Hosting_Stories_Server>("stories");
+
 await builder.Build().RunAsync().ConfigureAwait(false);
