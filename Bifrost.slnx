@@ -23,17 +23,19 @@
 		<Project Path="Asgard/src/Abstractions.Worker/Abstractions.Worker.csproj" />
 	</Folder>
 	<Folder Name="/Abstractions/gen/">
-		<Project Path="Asgard/gen/Abstractions.Contracts.Generator/Abstractions.Contracts.Generator.csproj" />
+		<File Path="Asgard/gen/Directory.Build.props" />
+		<File Path="Asgard/gen/Directory.Build.targets" />
+		<Project Path="Asgard/gen/Abstractions.Web.Server.Generator/Abstractions.Web.Server.Generator.csproj" />
 	</Folder>
 	<Folder Name="/Abstractions/tests/">
 		<File Path="Asgard/tests/Directory.Build.props" />
 		<File Path="Asgard/tests/Directory.Build.targets" />
 		<Project Path="Asgard/tests/Abstractions.Backend.Tests/Abstractions.Backend.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Components.Tests/Abstractions.Components.Tests.csproj" />
-		<Project Path="Asgard/tests/Abstractions.Contracts.Generator.Tests/Abstractions.Contracts.Generator.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Contracts.Tests/Abstractions.Contracts.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Emit.Tests/Abstractions.Emit.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Migrations.Tests/Abstractions.Migrations.Tests.csproj" />
+		<Project Path="Asgard/tests/Abstractions.Web.Server.Generator.Tests/Abstractions.Web.Server.Generator.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Web.Server.Tests/Abstractions.Web.Server.Tests.csproj" />
 		<Project Path="Asgard/tests/Abstractions.Worker.Tests/Abstractions.Worker.Tests.csproj" />
 	</Folder>
@@ -76,9 +78,13 @@
 	</Folder>
 	<Folder Name="/Configuration/.github/" />
 	<Folder Name="/Configuration/.github/workflows/">
+		<File Path="../.github/.github/workflows/ci-build-test-npm.yml" />
 		<File Path="../.github/.github/workflows/ci-build-test.yml" />
-		<File Path="../.github/.github/workflows/release-container.yml" />
-		<File Path="../.github/.github/workflows/release-nuget.yml" />
+		<File Path="../.github/.github/workflows/codeql.yml" />
+		<File Path="../.github/.github/workflows/create-release.yml" />
+		<File Path="../.github/.github/workflows/publish-container.yml" />
+		<File Path="../.github/.github/workflows/publish-npm.yml" />
+		<File Path="../.github/.github/workflows/publish-nuget.yml" />
 		<File Path="../.github/.github/workflows/scatter-the-runes.yml" />
 		<File Path="../.github/.github/workflows/sound-gjallarhorn.yml" />
 		<File Path="../.github/.github/workflows/update-bifrost.yml" />
@@ -165,6 +171,7 @@
 		<File Path="Yggdrasil/tests/Directory.Packages.props" />
 		<Project Path="Yggdrasil/tests/Hosting.Migrations.Service.Tests/Hosting.Migrations.Service.Tests.csproj" />
 		<Project Path="Yggdrasil/tests/Hosting.Stories.Server.Tests/Hosting.Stories.Server.Tests.csproj" />
+		<Project Path="Yggdrasil/tests/Hosting.Web.Client.Tests/Hosting.Web.Client.Tests.csproj" />
 		<Project Path="Yggdrasil/tests/Hosting.Web.Server.Tests/Hosting.Web.Server.Tests.csproj" />
 		<Project Path="Yggdrasil/tests/Hosting.Worker.Tests/Hosting.Worker.Tests.csproj" />
 	</Folder>
@@ -212,20 +219,32 @@
 		<File Path="Midgard/src/Directory.Build.props" />
 		<File Path="Midgard/src/Directory.Build.targets" />
 		<Project Path="Midgard/src/Infrastructure.Migrations/Infrastructure.Migrations.csproj" />
+		<Project Path="Midgard/src/Infrastructure.ServiceDefaults/Infrastructure.ServiceDefaults.csproj" />
+		<Project Path="Midgard/src/Infrastructure.ServiceDefaults.AspNet/Infrastructure.ServiceDefaults.AspNet.csproj" />
 		<Project Path="Midgard/src/Infrastructure.Components.Theme/Infrastructure.Components.Theme.csproj" />
 		<Project Path="Midgard/src/Infrastructure.Components.Theme.FluentUI/Infrastructure.Components.Theme.FluentUI.csproj" />
 		<Project Path="Midgard/src/Infrastructure.Web.Server/Infrastructure.Web.Server.csproj" />
 		<Project Path="Midgard/src/Infrastructure.Web.Client/Infrastructure.Web.Client.csproj" />
 		<Project Path="Midgard/src/Infrastructure.Web.Grpc/Infrastructure.Web.Grpc.csproj" />
 	</Folder>
+	<Folder Name="/Infrastructure/gen/">
+		<File Path="Midgard/gen/Directory.Build.props" />
+		<File Path="Midgard/gen/Directory.Build.targets" />
+		<Project Path="Midgard/gen/Infrastructure.Web.Server.Generator/Infrastructure.Web.Server.Generator.csproj" />
+		<Project Path="Midgard/gen/Infrastructure.Web.Client.Generator/Infrastructure.Web.Client.Generator.csproj" />
+	</Folder>
 	<Folder Name="/Infrastructure/tests/">
 		<File Path="Midgard/tests/Directory.Build.props" />
 		<File Path="Midgard/tests/Directory.Build.targets" />
 		<Project Path="Midgard/tests/Infrastructure.Migrations.Tests/Infrastructure.Migrations.Tests.csproj" />
+		<Project Path="Midgard/tests/Infrastructure.ServiceDefaults.Tests/Infrastructure.ServiceDefaults.Tests.csproj" />
+		<Project Path="Midgard/tests/Infrastructure.ServiceDefaults.AspNet.Tests/Infrastructure.ServiceDefaults.AspNet.Tests.csproj" />
 		<Project Path="Midgard/tests/Infrastructure.Components.Theme.Tests/Infrastructure.Components.Theme.Tests.csproj" />
 		<Project Path="Midgard/tests/Infrastructure.Components.Theme.FluentUI.Tests/Infrastructure.Components.Theme.FluentUI.Tests.csproj" />
 		<Project Path="Midgard/tests/Infrastructure.Web.Server.Tests/Infrastructure.Web.Server.Tests.csproj" />
 		<Project Path="Midgard/tests/Infrastructure.Web.Client.Tests/Infrastructure.Web.Client.Tests.csproj" />
+		<Project Path="Midgard/tests/Infrastructure.Web.Server.Generator.Tests/Infrastructure.Web.Server.Generator.Tests.csproj" />
+		<Project Path="Midgard/tests/Infrastructure.Web.Client.Generator.Tests/Infrastructure.Web.Client.Generator.Tests.csproj" />
 		<Project Path="Midgard/tests/Infrastructure.Web.Grpc.Tests/Infrastructure.Web.Grpc.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Orchestration/">
@@ -265,17 +284,13 @@
 		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.PostgreSQL/Persistence.EntityFramework.PostgreSQL.csproj" />
 		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.SqlServer/Persistence.EntityFramework.SqlServer.csproj" />
 		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Design/Persistence.EntityFramework.Design.csproj" />
-		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Design.PostgreSQL/Persistence.EntityFramework.Design.PostgreSQL.csproj" />
-		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Design.SqlServer/Persistence.EntityFramework.Design.SqlServer.csproj" />
+		<Project Path="Urdarbrunnr/src/Persistence.EntityFramework.Migrations/Persistence.EntityFramework.Migrations.csproj" />
 	</Folder>
 	<Folder Name="/Persistence/gen/">
 		<File Path="Urdarbrunnr/gen/Directory.Build.props" />
-		<File Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.Generator.Shared/CSharpEmit.cs" />
-		<File Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.Generator.Shared/MigrationContributorDiscovery.cs" />
-		<File Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.Generator.Shared/StringSyntaxAttribute.cs" />
-		<Project Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.PostgreSQL.Generator/Persistence.EntityFramework.Design.PostgreSQL.Generator.csproj" />
-		<Project Path="Urdarbrunnr/gen/Persistence.EntityFramework.Design.SqlServer.Generator/Persistence.EntityFramework.Design.SqlServer.Generator.csproj" />
+		<File Path="Urdarbrunnr/gen/Directory.Build.targets" />
 		<Project Path="Urdarbrunnr/gen/Persistence.EntityFramework.Generator/Persistence.EntityFramework.Generator.csproj" />
+		<Project Path="Urdarbrunnr/gen/Persistence.EntityFramework.Migrations.Generator/Persistence.EntityFramework.Migrations.Generator.csproj" />
 	</Folder>
 	<Folder Name="/Persistence/tests/">
 		<File Path="Urdarbrunnr/tests/Directory.Build.props" />
@@ -284,11 +299,9 @@
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.PostgreSQL.Tests/Persistence.EntityFramework.PostgreSQL.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.SqlServer.Tests/Persistence.EntityFramework.SqlServer.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.Tests/Persistence.EntityFramework.Design.Tests.csproj" />
-		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.PostgreSQL.Tests/Persistence.EntityFramework.Design.PostgreSQL.Tests.csproj" />
-		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.SqlServer.Tests/Persistence.EntityFramework.Design.SqlServer.Tests.csproj" />
-		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.PostgreSQL.Generator.Tests/Persistence.EntityFramework.Design.PostgreSQL.Generator.Tests.csproj" />
-		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Design.SqlServer.Generator.Tests/Persistence.EntityFramework.Design.SqlServer.Generator.Tests.csproj" />
 		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Generator.Tests/Persistence.EntityFramework.Generator.Tests.csproj" />
+		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Migrations.Tests/Persistence.EntityFramework.Migrations.Tests.csproj" />
+		<Project Path="Urdarbrunnr/tests/Persistence.EntityFramework.Migrations.Generator.Tests/Persistence.EntityFramework.Migrations.Generator.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Primitives/">
 		<File Path="Svartalfheim/.editorconfig" />
@@ -344,6 +357,9 @@
 	<Folder Name="/Reference/tests/">
 		<File Path="Mimisbrunnr/tests/Directory.Build.props" />
 		<File Path="Mimisbrunnr/tests/Directory.Build.targets" />
+		<Project Path="Mimisbrunnr/tests/Reference.Data.Migrations.PostgreSQL.Tests/Reference.Data.Migrations.PostgreSQL.Tests.csproj" />
+		<Project Path="Mimisbrunnr/tests/Reference.Data.Migrations.SqlServer.Tests/Reference.Data.Migrations.SqlServer.Tests.csproj" />
+		<Project Path="Mimisbrunnr/tests/Reference.Data.Migrations.Tests/Reference.Data.Migrations.Tests.csproj" />
 		<Project Path="Mimisbrunnr/tests/Reference.Data.Tests/Reference.Data.Tests.csproj" />
 		<Project Path="Mimisbrunnr/tests/SeedTool.Tests/SeedTool.Tests.csproj" />
 	</Folder>
