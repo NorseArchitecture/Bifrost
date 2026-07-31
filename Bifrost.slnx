@@ -190,6 +190,7 @@
 	<Folder Name="/Identity/src/">
 		<File Path="Himinbjorg/src/Directory.Build.props" />
 		<File Path="Himinbjorg/src/Directory.Build.targets" />
+		<Project Path="Himinbjorg/src/Identity.EntityFramework/Identity.EntityFramework.csproj" />
 		<Project Path="Himinbjorg/src/Identity.Migrations/Identity.Migrations.csproj" />
 		<Project Path="Himinbjorg/src/Identity.Migrations.PostgreSQL/Identity.Migrations.PostgreSQL.csproj" />
 		<Project Path="Himinbjorg/src/Identity.Migrations.SqlServer/Identity.Migrations.SqlServer.csproj" />
@@ -198,6 +199,7 @@
 	<Folder Name="/Identity/tests/">
 		<File Path="Himinbjorg/tests/Directory.Build.props" />
 		<File Path="Himinbjorg/tests/Directory.Build.targets" />
+		<Project Path="Himinbjorg/tests/Identity.EntityFramework.Tests/Identity.EntityFramework.Tests.csproj" />
 		<Project Path="Himinbjorg/tests/Identity.Migrations.PostgreSQL.Tests/Identity.Migrations.PostgreSQL.Tests.csproj" />
 		<Project Path="Himinbjorg/tests/Identity.Migrations.SqlServer.Tests/Identity.Migrations.SqlServer.Tests.csproj" />
 		<Project Path="Himinbjorg/tests/Identity.Migrations.Tests/Identity.Migrations.Tests.csproj" />
