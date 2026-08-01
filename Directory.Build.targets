@@ -34,5 +34,12 @@
 		work in a genuinely standalone checkout with no Bifrost ancestor, which this file can never
 		be part of by definition. Full design:
 		Glitnir/docs/Platform/specs/2026-07-01-norseref-generator-forwarding-design.md
+
+		The Choose block above is not an implementation detail — it is platform doctrine. Every
+		NorseRef item resolves to one of two genuinely different mechanisms depending on
+		$(UseProjectReferences), and reasoning about a NorseRef consumer (an analyzer, a build
+		target, anything downstream) requires knowing which crossing produced it. Doctrine, and
+		the postmortem on the one time this platform's own tooling got that wrong:
+		Glitnir/docs/the-two-crossings.md
 	-->
 </Project>

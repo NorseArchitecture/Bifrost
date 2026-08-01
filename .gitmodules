@@ -50,3 +50,7 @@
 	path = Bragi
 	url = ../Bragi.git
 	branch = master
+[submodule "Vafthrudnir"]
+	path = Vafthrudnir
+	url = ../Vafthrudnir
+	branch = master

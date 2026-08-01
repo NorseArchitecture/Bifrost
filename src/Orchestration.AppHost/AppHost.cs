@@ -68,7 +68,9 @@ var migrationsService = builder
 builder
 	.AddProject<Projects.Hosting_Web_Server>("web")
 	.WithReference(norseIdentity, connectionName: "norse_identity")
+	.WithReference(norseReference, connectionName: "norse_reference")
 	.WaitFor(norseIdentity)
+	.WaitFor(norseReference)
 	.WaitForCompletion(migrationsService);
 
 builder
