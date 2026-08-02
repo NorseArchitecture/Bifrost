@@ -5,6 +5,19 @@
 				<ProjectReference Include="@(NorseRef->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity)/%(Identity).csproj')" />
 				<ProjectReference Include="@(NorseRef->WithMetadataValue('Generator', 'true')->'$(MSBuildThisFileDirectory)%(Repo)/gen/%(Identity).Generator/%(Identity).Generator.csproj')" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 			</ItemGroup>
+			<!--
+				A NorseRef library that bundles more than one Roslyn generator (the default
+				{Identity}.Generator above, plus one that doesn't fit the 1:1 naming convention —
+				e.g. Infrastructure.Web.Server ships both its gRPC wiring generator and
+				Infrastructure.Web.Server.Xml.Generator) can't express the second one via the
+				Generator="true" boolean. NorseGeneratorRef is a separate, empty-by-default opt-in
+				item list for exactly that: no matching src/ library, analyzer-only, deliberately
+				decoupled from NorseRef's Generator="true" so every existing single-generator
+				consumer is untouched.
+			-->
+			<ItemGroup Condition="'@(NorseGeneratorRef)' != ''">
+				<ProjectReference Include="@(NorseGeneratorRef->'$(MSBuildThisFileDirectory)%(Repo)/gen/%(Identity)/%(Identity).csproj')" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+			</ItemGroup>
 			<ItemGroup Condition="'@(NorseDesignRef)' != ''">
 				<ProjectReference Include="@(NorseDesignRef->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity)/%(Identity).csproj')">
 					<PrivateAssets>all</PrivateAssets>
