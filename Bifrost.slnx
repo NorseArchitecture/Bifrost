@@ -121,17 +121,14 @@
 		<File Path="../.github/scripts/scatter-the-runes.ps1" />
 		<File Path="../.github/scripts/sound-gjallarhorn.ps1" />
 	</Folder>
+	<Folder Name="/DesignSystem/" />
 	<Folder Name="/DesignSystem/src/">
+		<Project Path="Bragi/src/DesignSystem.Stories/DesignSystem.Stories.csproj" />
 		<Project Path="Naglfar/src/DesignSystem.Tokens/DesignSystem.Tokens.csproj" />
 	</Folder>
 	<Folder Name="/DesignSystem/tests/">
-		<Project Path="Naglfar/tests/DesignSystem.Tokens.Tests/DesignSystem.Tokens.Tests.csproj" />
-	</Folder>
-	<Folder Name="/DesignSystem.Stories/src/">
-		<Project Path="Bragi/src/DesignSystem.Stories/DesignSystem.Stories.csproj" />
-	</Folder>
-	<Folder Name="/DesignSystem.Stories/tests/">
 		<Project Path="Bragi/tests/DesignSystem.Stories.Tests/DesignSystem.Stories.Tests.csproj" />
+		<Project Path="Naglfar/tests/DesignSystem.Tokens.Tests/DesignSystem.Tokens.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Documentation/" />
 	<Folder Name="/Hosting/">
