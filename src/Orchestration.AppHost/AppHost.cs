@@ -20,7 +20,7 @@ var pgPrimary = builder
 	// /var/lib/postgresql/19/docker. Mount the parent directory directly instead.
 	.WithVolume("norse-pg-primary", "/var/lib/postgresql")
 	.WithArgs(
-		"-c", "wal_level=replica",
+		"-c", "wal_level=logical",
 		"-c", "max_wal_senders=10",
 		"-c", "max_replication_slots=10",
 		"-c", "hot_standby=on")
