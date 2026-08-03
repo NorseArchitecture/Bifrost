@@ -23,6 +23,15 @@
 					<PrivateAssets>all</PrivateAssets>
 				</ProjectReference>
 			</ItemGroup>
+			<!--
+				The Law of the Realms (NORSE070-073) attaches to every workspace compilation
+				unconditionally — no NorseRef opt-in, no realm opt-out. The analyzer project
+				itself is the one exclusion (self-reference). Spec:
+				Glitnir/docs/Platform/specs/2026-08-03-realm-dependency-law-compiler-enforcement-design.md
+			-->
+			<ItemGroup Condition="'$(MSBuildProjectName)' != 'Architecture.Analyzers'">
+				<ProjectReference Include="$(MSBuildThisFileDirectory)Svartalfheim/gen/Architecture.Analyzers/Architecture.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+			</ItemGroup>
 		</When>
 		<When Condition="'$(ManagePackageVersionsCentrally)' == 'true'">
 			<ItemGroup>
@@ -41,6 +50,15 @@
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
+	<ItemGroup>
+		<!--
+			The .NET 11 SDK injects this namespace as an implicit global using; it is a banned wire-format
+			root (NORSE070), so the injection is removed at the source platform-wide. Must live at targets
+			evaluation time — a props-level Remove precedes the SDK's Include and removes nothing. An
+			authored `using System.Net.Http.Json;` still convicts; Midgard/Yggdrasil re-add locally where legal.
+		-->
+		<Using Remove="System.Net.Http.Json" />
+	</ItemGroup>
 	<!--
 		The duplicate-generator strip target (Gap 2 in the design doc below) lives in the
 		Ginnungagap-scattered src/tests Directory.Build.targets templates, not here — it must also
