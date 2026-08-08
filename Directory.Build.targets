@@ -1,8 +1,25 @@
 <Project>
+	<!--
+		Aggregates every realm's analyzer manifest (Directory.Analyzers.props, realm-owned,
+		never scattered). A realm landing its first analyzer edits only its own repo; this
+		file never needs touching again. A wildcard that matches nothing imports nothing —
+		this is path expansion, not item expansion, so the Import-resolves-at-properties-pass
+		law (the-runes.md ch. 4) is not violated.
+	-->
+	<Import Project="$(MSBuildThisFileDirectory)*/Directory.Analyzers.props" />
 	<Choose>
 		<When Condition="'$(UseProjectReferences)' == 'true'">
 			<ItemGroup Condition="'@(NorseRef)' != ''">
-				<ProjectReference Include="@(NorseRef->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity)/%(Identity).csproj')" />
+				<ProjectReference Include="@(NorseRef->WithMetadataValue('Rules', '')->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity)/%(Identity).csproj')" />
+				<!--
+					Rules="true": a DacFx schema-diagnostics library (project suffix .Rules, an
+					ordinary src/ library) consumed analyzer-shaped — never compiled against. The
+					three-suffix taxonomy (.Generator / .Rules / .Analyzers) and why Analyzer=
+					metadata never exists on this platform: the-runes.md ch. 5. Custom metadata
+					(e.g. DatabaseSqlCmdVariable) passes through transforms untouched, so database
+					NorseRefs carry their SqlCmd wiring into both crossings for free.
+				-->
+				<ProjectReference Include="@(NorseRef->WithMetadataValue('Rules', 'true')->'$(MSBuildThisFileDirectory)%(Repo)/src/%(Identity)/%(Identity).csproj')" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 				<ProjectReference Include="@(NorseRef->WithMetadataValue('Generator', 'true')->'$(MSBuildThisFileDirectory)%(Repo)/gen/%(Identity).Generator/%(Identity).Generator.csproj')" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 			</ItemGroup>
 			<!--
@@ -24,38 +41,21 @@
 				</ProjectReference>
 			</ItemGroup>
 			<!--
-				The Law of the Realms (NORSE070-073) attaches to every workspace compilation
-				unconditionally — no NorseRef opt-in, no realm opt-out. Two exclusions: the analyzer
-				project itself (self-reference), and any Aspire AppHost ($(IsAspireHost) — set by
-				Aspire.AppHost.Sdk's own Sdk.props, true for any current or future AppHost project,
-				not just Orchestration.AppHost by name). An AppHost is container-orchestration wiring,
-				not shipped application code — it declares which resources run and how they're wired,
-				never touches wire formats or PII types, and Aspire's own tooling already warns
-				(ASPIRE004) when an analyzer-only ProjectReference shows up among its resources, since
-				it can't tell the difference between "a service to orchestrate" and "a build-time-only
-				reference." Spec:
-				Glitnir/docs/Platform/specs/2026-08-03-realm-dependency-law-compiler-enforcement-design.md
+				Realm law attaches to every workspace compilation — no NorseRef opt-in, no realm
+				opt-out — sourced from the aggregated realm manifests (wildcard import at the top
+				of this file). Deliberately broader than the package crossing's closure-scoped
+				delivery: fail earlier, fail locally; analyzers no-op where their subject is
+				absent. Exclusions: any project that is itself a manifest-declared analyzer
+				(covers self-reference and analyzer-on-analyzer, matched on normalized full
+				path, never bare name), and any Aspire AppHost ($(IsAspireHost) — see
+				the-runes.md ch. 5 for why an AppHost is orchestration wiring, not shipped code).
+				Standalone builds get the same analyzers realm-internally from the canonical
+				realm-root Directory.Build.targets reading the realm's own manifest — the two
+				attach sites are condition-disjoint by construction, so nothing double-attaches.
 			-->
-			<ItemGroup Condition="'$(MSBuildProjectName)' != 'Architecture.Analyzers' AND '$(MSBuildProjectName)' != 'Primitives.Analyzers' AND '$(IsAspireHost)' != 'true'">
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Svartalfheim/gen/Architecture.Analyzers/Architecture.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-			</ItemGroup>
-			<!--
-				Primitives.Analyzers (NORSE060-062 — Result<T> egress, the PII retention gate) is
-				bundled into Norse.Primitives's own package (analyzers/dotnet/cs/) rather than
-				packed standalone, so in NuGet mode it already attaches unconditionally to any
-				consumer of Norse.Primitives — no PackageReference-side opt-in exists or is needed.
-				This block is dev-mode's equivalent: an ordinary ProjectReference's OutputItemType
-				doesn't propagate through a further ProjectReference the way a NuGet package's
-				analyzer asset propagates through the whole reference closure, so a consuming
-				project that only reaches Primitives transitively (e.g. via a NorseRef'd sibling
-				project, never declaring its own <NorseRef Include="Primitives">) silently never
-				saw NORSE061/062 locally — the exact gap that let a PII-bearing test fixture ship
-				ungated: 2026-08-04, Urdarbrunnr, feature/protected-pii-converter. Unconditional,
-				same shape (and same two exclusions, analyzer self-reference and $(IsAspireHost)) as
-				the Architecture.Analyzers block above.
-			-->
-			<ItemGroup Condition="'$(MSBuildProjectName)' != 'Primitives.Analyzers' AND '$(MSBuildProjectName)' != 'Architecture.Analyzers' AND '$(IsAspireHost)' != 'true'">
-				<ProjectReference Include="$(MSBuildThisFileDirectory)Svartalfheim/gen/Primitives.Analyzers/Primitives.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+			<ItemGroup Condition="'$(IsAspireHost)' != 'true'">
+				<_NorseRealmAnalyzerSelf Include="@(NorseRealmAnalyzer->WithMetadataValue('FullPath', '$(MSBuildProjectFullPath)'))" />
+				<ProjectReference Include="@(NorseRealmAnalyzer)" OutputItemType="Analyzer" ReferenceOutputAssembly="false" Condition="'@(_NorseRealmAnalyzerSelf)' == ''" />
 			</ItemGroup>
 		</When>
 		<When Condition="'$(ManagePackageVersionsCentrally)' == 'true'">
@@ -86,9 +86,9 @@
 	</ItemGroup>
 	<!--
 		The duplicate-generator strip target (Gap 2 in the design doc below) lives in the
-		Ginnungagap-scattered src/tests Directory.Build.targets templates, not here — it must also
-		work in a genuinely standalone checkout with no Bifrost ancestor, which this file can never
-		be part of by definition. Full design:
+		Ginnungagap-scattered realm-root Directory.Build.targets template (one per realm, now also
+		covering gen/), not here — it must also work in a genuinely standalone checkout with no
+		Bifrost ancestor, which this file can never be part of by definition. Full design:
 		Glitnir/docs/Platform/specs/2026-07-01-norseref-generator-forwarding-design.md
 
 		The Choose block above is not an implementation detail — it is platform doctrine. Every
@@ -96,6 +96,6 @@
 		$(UseProjectReferences), and reasoning about a NorseRef consumer (an analyzer, a build
 		target, anything downstream) requires knowing which crossing produced it. Doctrine, and
 		the postmortem on the one time this platform's own tooling got that wrong:
-		Glitnir/docs/the-two-crossings.md
+		Glitnir/docs/the-runes.md
 	-->
 </Project>
