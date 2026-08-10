@@ -367,12 +367,12 @@
 		<Project Path="Mimisbrunnr/src/Reference.Data.EntityFramework.Migrations.PostgreSQL/Reference.Data.EntityFramework.Migrations.PostgreSQL.csproj" />
 		<Project Path="Mimisbrunnr/src/Reference.Data.EntityFramework.Migrations.SqlServer/Reference.Data.EntityFramework.Migrations.SqlServer.csproj" />
 		<Project Path="Mimisbrunnr/src/Reference.Data.Namespaces/Reference.Data.Namespaces.csproj" />
-		<Project Path="Mimisbrunnr/src/Reference.Data.Primitives/Reference.Data.Primitives.csproj" />
+		<Project Path="Mimisbrunnr/src/Reference.Data.Contracts/Reference.Data.Contracts.csproj" />
 	</Folder>
 	<Folder Name="/Reference/gen/">
 		<File Path="Mimisbrunnr/gen/Directory.Build.props" />
 		<File Path="Mimisbrunnr/gen/Directory.Build.targets" />
-		<Project Path="Mimisbrunnr/gen/Reference.Data.Primitives.Generator/Reference.Data.Primitives.Generator.csproj" />
+		<Project Path="Mimisbrunnr/gen/Reference.Data.Contracts.Generator/Reference.Data.Contracts.Generator.csproj" />
 	</Folder>
 	<Folder Name="/Reference/tests/">
 		<File Path="Mimir/tests/Directory.Build.props" />
@@ -386,8 +386,8 @@
 		<Project Path="Mimisbrunnr/tests/Reference.Data.EntityFramework.Migrations.Tests/Reference.Data.EntityFramework.Migrations.Tests.csproj" />
 		<Project Path="Mimisbrunnr/tests/Reference.Data.EntityFramework.Tests/Reference.Data.EntityFramework.Tests.csproj" />
 		<Project Path="Mimisbrunnr/tests/Reference.Data.Namespaces.Tests/Reference.Data.Namespaces.Tests.csproj" />
-		<Project Path="Mimisbrunnr/tests/Reference.Data.Primitives.Generator.Tests/Reference.Data.Primitives.Generator.Tests.csproj" />
-		<Project Path="Mimisbrunnr/tests/Reference.Data.Primitives.Tests/Reference.Data.Primitives.Tests.csproj" />
+		<Project Path="Mimisbrunnr/tests/Reference.Data.Contracts.Generator.Tests/Reference.Data.Contracts.Generator.Tests.csproj" />
+		<Project Path="Mimisbrunnr/tests/Reference.Data.Contracts.Tests/Reference.Data.Contracts.Tests.csproj" />
 		<Project Path="Mimisbrunnr/tests/SeedTool.Tests/SeedTool.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Reference/tools/">
