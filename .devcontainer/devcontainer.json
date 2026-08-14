@@ -57,6 +57,23 @@
     "dotnet-certs-volume": "docker volume create norse-dotnet-certs"
   },
 
+  // Statically declared so VS Code's forwarding is deterministic instead of purely
+  // heuristic auto-detection — an undeclared port can silently remap (e.g. 5002 -> 50020)
+  // if VS Code thinks the "real" host port is already taken by a stale forward. These are
+  // the AppHost's own fixed, unproxied ports (see Orchestration.AppHost/AppHost.cs and its
+  // WithContainerDefaults/WithHostPort usage) plus Aspire's own dashboard ports — not the
+  // dynamic per-project Kestrel ports DCP proxies behind them.
+  "forwardPorts": [5000, 5001, 5002, 5050, 5432, 5433, 21000],
+  "portsAttributes": {
+    "5000": { "label": "Aspire Dashboard", "requireLocalPort": true, "protocol": "https" },
+    "5001": { "label": "web", "requireLocalPort": true, "protocol": "https" },
+    "5002": { "label": "stories", "requireLocalPort": true, "protocol": "https" },
+    "5050": { "label": "pgAdmin", "requireLocalPort": true, "protocol": "http" },
+    "5432": { "label": "pg-primary", "requireLocalPort": true },
+    "5433": { "label": "pg-replica", "requireLocalPort": true },
+    "21000": { "label": "Aspire OTLP/gRPC", "requireLocalPort": true, "protocol": "https" }
+  },
+
   "remoteEnv": {
     // Feeds NuGet.Config's <github> source (packageSourceCredentials %NUGET_AUTH_TOKEN%,
     // scoped via packageSourceMapping to Norse.* and Npgsql.EntityFrameworkCore.* — the
