@@ -54,8 +54,7 @@
   "initializeCommand": {
     "nuget-cache-volume": "docker volume create norse-nuget",
     "npm-cache-volume": "docker volume create norse-npm",
-    "dotnet-certs-volume": "docker volume create norse-dotnet-certs",
-    "playwright-browsers-volume": "docker volume create norse-playwright-browsers"
+    "dotnet-certs-volume": "docker volume create norse-dotnet-certs"
   },
 
   "remoteEnv": {
@@ -73,7 +72,10 @@
     "DOTNET_CLI_TELEMETRY_OPTOUT": "1"
   },
 
-  // Object form runs these concurrently; they're independent.
+  // Object form runs these concurrently; they're independent — except apt-get, which
+  // isn't safe to run from two entries at once (dpkg lock contention races
+  // /var/lib/dpkg/lock-frontend and randomly fails whichever entry loses). Every
+  // apt-using step below lives in the single "dev-cert-trust" entry for that reason.
   "postCreateCommand": {
     // Fresh named volumes land root-owned when the target doesn't exist in the image,
     // which fails `dotnet restore` / `npm i` for the vscode user until it's chowned.
@@ -111,21 +113,21 @@
     // narrowing this to the cryptography subdir left that sentinel write failing with
     // UnauthorizedAccessException, taking down the whole postCreateCommand step.
     // `--trust` itself exits 4 on this base image — no NSS/certutil trust store for
-    // dotnet dev-certs to register into — even though the export it's bundled with still
-    // succeeds. `|| true` swallows that so the chain reaches the cp + update-ca-certificates
-    // pair, which is the actual Linux trust mechanism per the comment above.
-    "dev-cert-trust": "sudo chown -R vscode:vscode /home/vscode/.dotnet && mkdir -p ${containerWorkspaceFolder}/.devcontainer/certs && (dotnet dev-certs https --trust --export-path ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt --format PEM || true) && sudo cp ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt /usr/local/share/ca-certificates/aspnetcore-dev.crt && sudo update-ca-certificates",
-    // Chromium for the Playwright MCP server (.mcp.json) — lets Claude Code drive a real
-    // headless browser against localhost sites from inside the container. The OS-level
-    // native libs (install-deps) need root and can't be baked into the Dockerfile — that
-    // stage runs before the node feature layers on, so no npx exists yet at that point.
-    // `sudo npx` alone 404s — the node feature installs under nvm, off sudo's secure_path,
-    // and even `sudo $(command -v npx)` still fails because npx's own `#!/usr/bin/env node`
-    // shebang re-resolves node through that same restricted PATH — hence `sudo env
-    // "PATH=$PATH"` forwarding it through explicitly. Browser binary itself installs as
-    // vscode (no sudo), so it lands in vscode's cache — the norse-playwright-browsers volume
-    // persists it, so only the very first container build ever pays the ~300MB download.
-    "playwright-browser": "sudo chown -R vscode:vscode /home/vscode/.cache/ms-playwright && sudo env \"PATH=$PATH\" npx -y playwright install-deps chromium && npx -y playwright install chromium"
+    // dotnet dev-certs to register into (that store is installed further down this same
+    // chain, but doesn't exist yet at the point --trust runs) — even though the export
+    // it's bundled with still succeeds. `|| true` swallows that so the chain reaches the
+    // cp + update-ca-certificates pair, which is the actual Linux trust mechanism for
+    // curl/HttpClient/openssl-backed callers per the comment above.
+    // The apt/certutil tail imports the same cert into the NSS shared DB at ~/.pki/nssdb
+    // (trusted-peer flag "P,," — this is a CA:FALSE leaf/self-signed cert, not a CA, so
+    // NSS's "C,," CA-trust flag builds no chain from it and silently leaves it untrusted).
+    // chromium rides the same apt-get install as libnss3-tools (not a separate entry —
+    // see the postCreateCommand-level comment above on why apt can't be split out).
+    // Debian's actual browser package is `chromium`, not Ubuntu's `chromium-browser`.
+    // Real system Chromium (not Playwright's own downloaded Chrome-for-Testing build) for
+    // the Playwright MCP server (.mcp.json, --browser=chromium) to drive against localhost
+    // sites from inside the container.
+    "dev-cert-trust": "sudo chown -R vscode:vscode /home/vscode/.dotnet && mkdir -p ${containerWorkspaceFolder}/.devcontainer/certs && (dotnet dev-certs https --trust --export-path ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt --format PEM || true) && sudo cp ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt /usr/local/share/ca-certificates/aspnetcore-dev.crt && sudo update-ca-certificates && sudo apt-get update -qq && sudo apt-get install -y -qq libnss3-tools chromium && mkdir -p ~/.pki/nssdb && ([ -f ~/.pki/nssdb/cert9.db ] || certutil -d sql:$HOME/.pki/nssdb -N --empty-password) && (certutil -d sql:$HOME/.pki/nssdb -D -n aspnetcore-dev || true) && certutil -d sql:$HOME/.pki/nssdb -A -t \"P,,\" -n aspnetcore-dev -i ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt"
   },
 
   "customizations": {

@@ -26,12 +26,6 @@ services:
       # Persisting the store keeps the cert (and its fingerprint) stable across rebuilds, so
       # the one-time scripts/Trust-DevCert.ps1 step on Windows only ever has to run once.
       - norse-dotnet-certs:/home/vscode/.dotnet/corefx/cryptography/x509stores
-      # Chromium binary for the Playwright MCP server (.mcp.json) — lets Claude Code drive a
-      # real headless browser against localhost sites from inside the container. ~150MB;
-      # persisting it means only the first-ever container build pays that download, not
-      # every rebuild. Shared with any .NET Microsoft.Playwright test runs too, since both
-      # cache into the same well-known path, keyed by their own browser revision.
-      - norse-playwright-browsers:/home/vscode/.cache/ms-playwright
 
 volumes:
   norse-nuget:
@@ -39,6 +33,4 @@ volumes:
   norse-npm:
     external: true
   norse-dotnet-certs:
-    external: true
-  norse-playwright-browsers:
     external: true
