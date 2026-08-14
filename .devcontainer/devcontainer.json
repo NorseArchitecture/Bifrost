@@ -77,7 +77,12 @@
   "postCreateCommand": {
     // Fresh named volumes land root-owned when the target doesn't exist in the image,
     // which fails `dotnet restore` / `npm i` for the vscode user until it's chowned.
-    "caches": "sudo chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.npm",
+    // Also chowns .cache itself (not just its ms-playwright child, mounted below) —
+    // mounting norse-playwright-browsers at a nested path makes Docker create the
+    // .cache parent as root, which then blocks anything else vscode wants to write
+    // there, e.g. the C# Dev Kit's Roslyn language server creating its own
+    // "Microsoft DevDiv" telemetry-id cache dir.
+    "caches": "sudo chown vscode:vscode /home/vscode/.cache && sudo chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.npm",
     "safe-directory": "git config --global --add safe.directory ${containerWorkspaceFolder}",
     // npm 12 blocks lifecycle scripts unless the package is named in allow-scripts, so
     // the claude-code feature's `npm install -g` silently skips the postinstall that
@@ -85,6 +90,13 @@
     // This runs that postinstall directly. Drop it if the feature turns npm-12-aware,
     // or if npm gets pinned back to 11.
     "claude-native-binary": "sudo \"$(command -v node)\" \"$(npm root -g)/@anthropic-ai/claude-code/install.cjs\"",
+    // The dirien codex feature installs @openai/codex globally during image build, as
+    // root — everything else under lib/node_modules is vscode:nvm (group-writable), but
+    // @openai/codex itself lands root:nvm, so `npm install -g @openai/codex` as vscode
+    // (e.g. to self-update) fails renaming the old dir out of the way: EACCES. Chown the
+    // whole global node_modules tree rather than just @openai, in case a later feature
+    // adds another package the same way.
+    "codex-ownership": "sudo chown -R vscode:nvm \"$(npm root -g)\"",
     // Own chown+generate chain (not folded into "caches" above) so it never races that
     // entry's chown under the concurrent object-form execution. Generates (or reuses, once
     // norse-dotnet-certs makes the store persistent) the ASP.NET Core dev cert, trusts it
