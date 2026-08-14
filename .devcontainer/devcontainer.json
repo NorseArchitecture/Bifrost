@@ -1,0 +1,131 @@
+// .devcontainer/devcontainer.json
+{
+  "name": "bifrost",
+  // Compose, purely to control naming: container `bifrost`, image `vsc-bifrost`.
+  // The base image (plain Ubuntu LTS, not dotnet:11.0-preview — that tag is stuck on
+  // preview 6, built 2026-07-30) is in .devcontainer/Dockerfile; everything else is
+  // features below.
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "bifrost",
+  "workspaceFolder": "/workspaces/Bifrost",
+
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
+    // base:ubuntu is Ubuntu 26.04 (resolute) as of 2026-08. Microsoft ships no
+    // moby-* packages for resolute, so this takes Docker CE from download.docker.com
+    // instead. Pinning the image to :ubuntu-24.04 would let moby default back on.
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {
+        "moby": false
+    },
+    // The only SDK in the container. Preview 7 is the last preview — bump this line
+    // to 11.0.100-rc.1.* when RC1 drops, then rc.2, then RTM.
+    // The ASP.NET Core 10 runtime is not for our code — it's what the C# extension's
+    // Roslyn language server runs on. Baking it into the image (one layer, cached)
+    // stops the extension re-downloading its own private copy into ~/.vscode-server
+    // on every single rebuild. See dotnetAcquisitionExtension.* below.
+    "ghcr.io/devcontainers/features/dotnet:2": {
+        "version": "11.0.100-preview.7.26381.103",
+        "aspNetCoreRuntimeVersions": "10.0"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    // scripts/*.ps1 (sync-the-realms, pull-the-images, summarize-the-branches,
+    // Verify-Runes) and Ginnungagap's scatter-the-runes.ps1 need pwsh to run at all —
+    // it wasn't in the image before this.
+    "ghcr.io/devcontainers/features/powershell:2": {},
+    "ghcr.io/devcontainers/features/node:2": {
+        "version": "24",
+        "npmVersion": "12"
+    },
+    // Not used by anything in-repo yet — added ahead of a planned CSnakes integration
+    // (embeds Python in a .NET process). Revisit the pinned version against whatever
+    // CSnakes requires when that lands.
+    "ghcr.io/devcontainers/features/python:1": {
+        "version": "3.14"
+    },
+    "ghcr.io/dirien/devcontainer-feature-codex/codex:0": {}
+  },
+
+  // The shared caches are declared external in docker-compose.yml, and compose refuses
+  // to create external volumes itself. Idempotent — `docker volume create` on an
+  // existing volume just prints its name. Runs on the host, before the build.
+  // /var/lib/docker is deliberately not mounted anywhere here: docker-in-docker binds
+  // its own dind-var-lib-docker-${devcontainerId} volume there, and a second mount on
+  // the same target is a hard "Duplicate mount point" failure at container create.
+  "initializeCommand": {
+    "nuget-cache-volume": "docker volume create norse-nuget",
+    "npm-cache-volume": "docker volume create norse-npm",
+    "dotnet-certs-volume": "docker volume create norse-dotnet-certs",
+    "playwright-browsers-volume": "docker volume create norse-playwright-browsers"
+  },
+
+  "remoteEnv": {
+    // Feeds NuGet.Config's <github> source (packageSourceCredentials %NUGET_AUTH_TOKEN%,
+    // scoped via packageSourceMapping to Norse.* and Npgsql.EntityFrameworkCore.* — the
+    // rest resolves from nuget.org). Needs a GitHub PAT (classic, read:packages scope,
+    // NorseArchitecture org access) set as NUGET_AUTH_TOKEN in the host environment
+    // before the container starts — this only forwards it in, it doesn't supply it.
+    "NUGET_AUTH_TOKEN": "${localEnv:NUGET_AUTH_TOKEN}",
+    "NUGET_PACKAGES": "/home/vscode/.nuget/packages",
+    // Redirect build churn off the 9p mount onto container-native disk
+    "NORSE_CONTAINER_BUILD": "1",
+    // inotify doesn't cross the mount; anything watching must poll
+    "DOTNET_USE_POLLING_FILE_WATCHER": "1",
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1"
+  },
+
+  // Object form runs these concurrently; they're independent.
+  "postCreateCommand": {
+    // Fresh named volumes land root-owned when the target doesn't exist in the image,
+    // which fails `dotnet restore` / `npm i` for the vscode user until it's chowned.
+    "caches": "sudo chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.npm",
+    "safe-directory": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+    // npm 12 blocks lifecycle scripts unless the package is named in allow-scripts, so
+    // the claude-code feature's `npm install -g` silently skips the postinstall that
+    // places the native binary — `claude` then exits with "native binary not installed".
+    // This runs that postinstall directly. Drop it if the feature turns npm-12-aware,
+    // or if npm gets pinned back to 11.
+    "claude-native-binary": "sudo \"$(command -v node)\" \"$(npm root -g)/@anthropic-ai/claude-code/install.cjs\"",
+    // Own chown+generate chain (not folded into "caches" above) so it never races that
+    // entry's chown under the concurrent object-form execution. Generates (or reuses, once
+    // norse-dotnet-certs makes the store persistent) the ASP.NET Core dev cert, trusts it
+    // for in-container callers, and exports the public cert (no private key, no password —
+    // see .devcontainer/certs/aspnetcore-dev.crt) for the one-time Windows-side trust step
+    // in scripts/Trust-DevCert.ps1. Linux chain trust via update-ca-certificates is best
+    // effort — see README's HTTPS dev cert trust section for why some internal HttpClient
+    // callers route around it via ASPIRE_ALLOW_UNSECURED_TRANSPORT instead.
+    // Chown targets the whole ~/.dotnet tree, not just corefx/cryptography: the dotnet
+    // feature's image-build step leaves ~/.dotnet itself root-owned, and `dotnet dev-certs`
+    // writes a first-run sentinel file directly under it before touching the cert store —
+    // narrowing this to the cryptography subdir left that sentinel write failing with
+    // UnauthorizedAccessException, taking down the whole postCreateCommand step.
+    // `--trust` itself exits 4 on this base image — no NSS/certutil trust store for
+    // dotnet dev-certs to register into — even though the export it's bundled with still
+    // succeeds. `|| true` swallows that so the chain reaches the cp + update-ca-certificates
+    // pair, which is the actual Linux trust mechanism per the comment above.
+    "dev-cert-trust": "sudo chown -R vscode:vscode /home/vscode/.dotnet && mkdir -p ${containerWorkspaceFolder}/.devcontainer/certs && (dotnet dev-certs https --trust --export-path ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt --format PEM || true) && sudo cp ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt /usr/local/share/ca-certificates/aspnetcore-dev.crt && sudo update-ca-certificates",
+    // Chromium for the Playwright MCP server (.mcp.json) — lets Claude Code drive a real
+    // headless browser against localhost sites from inside the container. The OS-level
+    // native libs (install-deps) need root and can't be baked into the Dockerfile — that
+    // stage runs before the node feature layers on, so no npx exists yet at that point.
+    // `sudo npx` alone 404s — the node feature installs under nvm, off sudo's secure_path,
+    // and even `sudo $(command -v npx)` still fails because npx's own `#!/usr/bin/env node`
+    // shebang re-resolves node through that same restricted PATH — hence `sudo env
+    // "PATH=$PATH"` forwarding it through explicitly. Browser binary itself installs as
+    // vscode (no sudo), so it lands in vscode's cache — the norse-playwright-browsers volume
+    // persists it, so only the very first container build ever pays the ~300MB download.
+    "playwright-browser": "sudo chown -R vscode:vscode /home/vscode/.cache/ms-playwright && sudo env \"PATH=$PATH\" npx -y playwright install-deps chromium && npx -y playwright install chromium"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-dotnettools.csdevkit"],
+      "settings": {
+        // Point the .NET Install Tool at the container's own install so csharp/csdevkit
+        // stop acquiring private runtimes under ~/.vscode-server. Shared form covers
+        // every extension that asks; the per-extension array form is
+        // dotnetAcquisitionExtension.existingDotnetPath if this ever needs splitting.
+        "dotnetAcquisitionExtension.sharedExistingDotnetPath": "/usr/share/dotnet/dotnet"
+      }
+    }
+  }
+}

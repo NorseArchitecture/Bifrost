@@ -1,0 +1,44 @@
+# Compose mode exists for one reason: it's the only way to name the image.
+# The image/Dockerfile paths both bake features into vsc-bifrost-<64-char-hash>-features;
+# here the tag below is the final name, features and all.
+name: bifrost
+
+services:
+  bifrost:
+    image: vsc-bifrost
+    container_name: bifrost
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # No long-running process in the base image, and the dev container has to outlive
+    # the build. docker-in-docker's entrypoint is layered in front of this automatically.
+    command: sleep infinity
+    volumes:
+      - ..:/workspaces/Bifrost:cached
+      # Declared external so they stay plain `norse-*` and remain shared with every other
+      # Norse container. Left to compose they'd be created as `bifrost_norse-nuget`,
+      # scoped to this project, which defeats the point of a shared cache.
+      - norse-nuget:/home/vscode/.nuget/packages
+      - norse-npm:/home/vscode/.npm
+      # dotnet dev-certs stores its self-signed HTTPS cert here. Without this volume it's
+      # ephemeral container filesystem — every rebuild mints a brand-new cert with a new
+      # fingerprint, silently invalidating any trust already granted on the Windows side.
+      # Persisting the store keeps the cert (and its fingerprint) stable across rebuilds, so
+      # the one-time scripts/Trust-DevCert.ps1 step on Windows only ever has to run once.
+      - norse-dotnet-certs:/home/vscode/.dotnet/corefx/cryptography/x509stores
+      # Chromium binary for the Playwright MCP server (.mcp.json) — lets Claude Code drive a
+      # real headless browser against localhost sites from inside the container. ~150MB;
+      # persisting it means only the first-ever container build pays that download, not
+      # every rebuild. Shared with any .NET Microsoft.Playwright test runs too, since both
+      # cache into the same well-known path, keyed by their own browser revision.
+      - norse-playwright-browsers:/home/vscode/.cache/ms-playwright
+
+volumes:
+  norse-nuget:
+    external: true
+  norse-npm:
+    external: true
+  norse-dotnet-certs:
+    external: true
+  norse-playwright-browsers:
+    external: true

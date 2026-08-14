@@ -105,6 +105,28 @@ $root.Open('ReadWrite'); $root.Add($cert); $root.Close()
 
 Delete the `.pfx` from both sides afterward — it carries the private key. `dotnet dev-certs https --check` will still call this cert "Invalid" on the Windows side (`Import-PfxCertificate` marks the key non-exportable by default); that's the CLI's own bookkeeping opinion, not a browser trust problem — Chrome trusts it fine once it's in `CurrentUser\Root`.
 
+### HTTPS dev cert trust (devcontainer + Windows)
+
+Running inside `.devcontainer` instead of native WSL2 adds a third cert store to the mix — the container's own — but also removes the need for the PFX/password dance above. Windows only needs to trust the *public* cert to stop warning; it never needs the private key, since Kestrel inside the container holds that and never has to share it.
+
+`postCreateCommand`'s `dev-cert-trust` step handles the container side automatically on every rebuild: it generates (or reuses) the dev cert, trusts it in-container, and exports the public half to `.devcontainer/certs/aspnetcore-dev.crt` (gitignored, regenerated per-machine — never commit it). The cert itself persists across rebuilds via the `norse-dotnet-certs` Docker volume, so its fingerprint stays stable — trust it once on Windows and it stays trusted through every future `devcontainer rebuild`, no re-import needed unless that volume itself is deleted.
+
+The Windows side is the one step that can't be automated from inside the container — Windows' cert store is outside its authority. Run it once, ever, per machine:
+
+```powershell
+pwsh scripts/Trust-DevCert.ps1
+```
+
+After that, `https://localhost:5000` (the AppHost dashboard) and every other Aspire-forwarded port load without a browser warning.
+
+Internal AppHost-to-AppHost traffic (the dashboard's own calls to its OTLP/resource-service endpoints) sidesteps cert trust entirely — `src/Orchestration.AppHost/Properties/launchSettings.json` points those two at `http://`, not `https://`, since it's loopback-only traffic with no real adversary and Linux chain validation of the raw ASP.NET Core dev cert (a leaf cert without `CA:TRUE`) is unreliable regardless of what's in `/etc/ssl/certs` — the `dev-cert-trust` step's `update-ca-certificates` call is best-effort for other in-container HTTPS callers, not load-bearing for the AppHost itself.
+
+### Browser automation (Playwright MCP)
+
+`.mcp.json` registers the [Playwright MCP server](https://github.com/microsoft/playwright-mcp), letting Claude Code drive a real headless Chromium against any of Bifröst's localhost sites — the AppHost dashboard, Yggdrasil's web/stories hosts — instead of guessing at what a page renders. `postCreateCommand`'s `playwright-browser` step provisions it automatically: OS-level native libs via `playwright install-deps` (root, can't be baked into the Dockerfile — that stage runs before the `node` feature layers on), then the Chromium binary itself as the `vscode` user. The `norse-playwright-browsers` Docker volume persists the ~300MB browser download across rebuilds, same pattern as the nuget/npm/dev-cert caches above.
+
+No devcontainer Feature exists for this yet ([microsoft/playwright#33610](https://github.com/microsoft/playwright/issues/33610) is still open) — this is scripted install, not a feature, until one ships.
+
 ## Staying current
 
 Clone it once, then leave it for a month — run these two scripts to get back to a known-good state:

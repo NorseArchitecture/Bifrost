@@ -8,4 +8,8 @@
 		<TargetFramework>net11.0</TargetFramework>
 		<UseProjectReferences>true</UseProjectReferences>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(NORSE_CONTAINER_BUILD)' == '1'">
+  		<BaseIntermediateOutputPath>/tmp/norse-artifacts/$(MSBuildProjectName)/obj/</BaseIntermediateOutputPath>
+  		<BaseOutputPath>/tmp/norse-artifacts/$(MSBuildProjectName)/bin/</BaseOutputPath>
+	</PropertyGroup>
 </Project>

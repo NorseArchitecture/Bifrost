@@ -1,0 +1,4 @@
+{
+    "dotnet.backgroundAnalysis.compilerDiagnosticsScope": "none",
+    "dotnet.defaultSolution": "disable"
+}
