@@ -28,6 +28,13 @@ var pgPrimary = builder
 
 pgPrimary.WithPgAdmin(container => container
 	.WithParentRelationship(pgPrimary)
+	// Aspire's Aspire.Hosting.PostgreSQL pins pgAdmin's own image tag at 9.15.0 — stale enough that
+	// pgAdmin's in-app "new version available" modal fires on every login. WithContainerDefaults'
+	// unproxied fixed port matches the Postgres primary/replica above; WithHostPort is the pgAdmin-
+	// specific overload (no port: parameter on WithPgAdmin itself) that gives it a deterministic
+	// host port instead of Aspire's dynamic proxy port.
+	.WithContainerDefaults("latest")
+	.WithHostPort(5050)
 	.WithUrlForEndpoint("http", static url => url.DisplayText = "pgAdmin"));
 
 // Aspire resource names allow only ASCII letters, digits, and hyphens (ASPIRE006) — "norse_identity"
