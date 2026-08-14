@@ -125,9 +125,14 @@
     // see the postCreateCommand-level comment above on why apt can't be split out).
     // Debian's actual browser package is `chromium`, not Ubuntu's `chromium-browser`.
     // Real system Chromium (not Playwright's own downloaded Chrome-for-Testing build) for
-    // the Playwright MCP server (.mcp.json, --browser=chromium) to drive against localhost
-    // sites from inside the container.
-    "dev-cert-trust": "sudo chown -R vscode:vscode /home/vscode/.dotnet && mkdir -p ${containerWorkspaceFolder}/.devcontainer/certs && (dotnet dev-certs https --trust --export-path ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt --format PEM || true) && sudo cp ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt /usr/local/share/ca-certificates/aspnetcore-dev.crt && sudo update-ca-certificates && sudo apt-get update -qq && sudo apt-get install -y -qq libnss3-tools chromium && mkdir -p ~/.pki/nssdb && ([ -f ~/.pki/nssdb/cert9.db ] || certutil -d sql:$HOME/.pki/nssdb -N --empty-password) && (certutil -d sql:$HOME/.pki/nssdb -D -n aspnetcore-dev || true) && certutil -d sql:$HOME/.pki/nssdb -A -t \"P,,\" -n aspnetcore-dev -i ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt"
+    // the Playwright MCP server (.mcp.json, --executable-path /usr/bin/chromium) to drive
+    // against localhost sites from inside the container.
+    // `dpkg --configure -a` guards against a dpkg left "interrupted" by something outside
+    // this command's control (container pause/rebuild, OOM, etc. mid-transaction on a
+    // previous run) — an interrupted dpkg fails every subsequent apt-get in this chain,
+    // including this one, until it's reconciled; `|| true` because a clean dpkg state has
+    // nothing to configure and exits non-zero for that, which isn't a real failure here.
+    "dev-cert-trust": "sudo chown -R vscode:vscode /home/vscode/.dotnet && mkdir -p ${containerWorkspaceFolder}/.devcontainer/certs && (dotnet dev-certs https --trust --export-path ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt --format PEM || true) && sudo cp ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt /usr/local/share/ca-certificates/aspnetcore-dev.crt && sudo update-ca-certificates && (sudo dpkg --configure -a || true) && sudo apt-get update -qq && sudo apt-get install -y -qq libnss3-tools chromium && mkdir -p ~/.pki/nssdb && ([ -f ~/.pki/nssdb/cert9.db ] || certutil -d sql:$HOME/.pki/nssdb -N --empty-password) && (certutil -d sql:$HOME/.pki/nssdb -D -n aspnetcore-dev || true) && certutil -d sql:$HOME/.pki/nssdb -A -t \"P,,\" -n aspnetcore-dev -i ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt"
   },
 
   "customizations": {
