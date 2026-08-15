@@ -6,7 +6,9 @@
       "Bash",
       "WebFetch",
       "WebSearch",
-      "Skill(superpowers:*)"
+      "Skill(superpowers:*)",
+      "mcp__playwright",
+      "mcp__claude_ai_Microsoft_Learn__microsoft_docs_search"
     ],
     "deny": [
       "Bash(rm -rf *)",
@@ -56,12 +58,18 @@
       "Bash(gh repo delete*)",
       "Bash(gh api *protection -X DELETE*)",
       "Bash(gh ruleset delete*)",
-      "Bash(dotnet ef database drop*)"
+      "Bash(dotnet ef database drop*)",
+      "Edit(/workspaces/PriorArt/**)",
+      "Write(/workspaces/PriorArt/**)"
     ],
     "additionalDirectories": [
-      "../"
+      "../",
+      "/workspaces/PriorArt"
     ]
   },
+  "enabledMcpjsonServers": [
+    "playwright"
+  ],
   "model": "sonnet",
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
@@ -69,7 +77,6 @@
     "claude-md-management@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "postman@claude-plugins-official": true,
     "claude-code-setup@claude-plugins-official": true
   }
 }

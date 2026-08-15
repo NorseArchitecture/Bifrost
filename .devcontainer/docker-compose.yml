@@ -14,7 +14,18 @@ services:
     # the build. docker-in-docker's entrypoint is layered in front of this automatically.
     command: sleep infinity
     volumes:
-      - ..:/workspaces/Bifrost:cached
+      # Mounts the whole NorseArchitecture org folder (Bifrost's parent on the host), not
+      # just Bifrost itself — .github (Ginnungagap) and Glitnir sit as host-level siblings
+      # to Bifrost and are referenced by sibling-relative path from realm CLAUDE.md files;
+      # they need to actually be on disk in the container for those paths to resolve.
+      # devcontainer.json's workspaceFolder still points at the nested Bifrost subdirectory,
+      # so VS Code/terminal cwd and Claude Code's project-root resolution are unaffected.
+      - ../..:/workspaces/NorseArchitecture:cached
+      # Prior art, read-only. Peer to NorseArchitecture on the host, not part of it — kept
+      # readable-but-not-writable at both layers: the :ro mount is the real enforcement,
+      # and .claude/settings.json's Edit/Write deny rules make Claude refuse before ever
+      # hitting it, instead of surfacing an OS-level I/O error.
+      - ../../../PriorArt:/workspaces/PriorArt:ro
       # Declared external so they stay plain `norse-*` and remain shared with every other
       # Norse container. Left to compose they'd be created as `bifrost_norse-nuget`,
       # scoped to this project, which defeats the point of a shared cache.

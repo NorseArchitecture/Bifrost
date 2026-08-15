@@ -7,7 +7,12 @@
   // features below.
   "dockerComposeFile": "docker-compose.yml",
   "service": "bifrost",
-  "workspaceFolder": "/workspaces/Bifrost",
+  // Nested one level inside the mounted NorseArchitecture folder (see docker-compose.yml's
+  // volumes comment) — VS Code/terminal cwd and Claude Code's project-root resolution both
+  // follow this, so every contributor's session still lands in Bifrost and still picks up
+  // its CLAUDE.md/.claude/settings.json automatically, while ../.github and ../Glitnir
+  // (referenced by sibling-relative path from realm CLAUDE.md files) now actually resolve.
+  "workspaceFolder": "/workspaces/NorseArchitecture/Bifrost",
 
   "features": {
     "ghcr.io/anthropics/devcontainer-features/claude-code:1": {},
