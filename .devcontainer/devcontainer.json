@@ -86,6 +86,13 @@
     // NorseArchitecture org access) set as NUGET_AUTH_TOKEN in the host environment
     // before the container starts — this only forwards it in, it doesn't supply it.
     "NUGET_AUTH_TOKEN": "${localEnv:NUGET_AUTH_TOKEN}",
+    // Per-contributor git identity, forwarded the same way as NUGET_AUTH_TOKEN above.
+    // Set GIT_USER_NAME/GIT_USER_EMAIL in the host environment before the container
+    // starts; configure-git-ssh-signing.sh applies them to git config --global and,
+    // once set, builds ~/.ssh/allowed_signers from GIT_USER_EMAIL plus whatever key
+    // the forwarded SSH agent is holding. Unset means the script skips both steps.
+    "GIT_USER_NAME": "${localEnv:GIT_USER_NAME}",
+    "GIT_USER_EMAIL": "${localEnv:GIT_USER_EMAIL}",
     "NUGET_PACKAGES": "/home/vscode/.nuget/packages",
     // Redirect build churn off the 9p mount onto container-native disk
     "NORSE_CONTAINER_BUILD": "1",
@@ -121,9 +128,6 @@
     "git-ssh-signing": "bash ${containerWorkspaceFolder}/.devcontainer/configure-git-ssh-signing.sh",
     // posh-git isn't part of the powershell feature -- installed from the gallery here.
     "posh-git": "pwsh -NoLogo -NoProfile -File ${containerWorkspaceFolder}/.devcontainer/configure-posh-git.ps1",
-    // bash stays the default terminal (contributors aren't all on pwsh) -- this gives it
-    // the same posh-git-style prompt via the bash port, scoped to /workspaces.
-    "posh-git-sh": "bash ${containerWorkspaceFolder}/.devcontainer/configure-posh-git-sh.sh",
     // npm 12 blocks lifecycle scripts unless the package is named in allow-scripts, so
     // the claude-code feature's `npm install -g` silently skips the postinstall that
     // places the native binary — `claude` then exits with "native binary not installed".

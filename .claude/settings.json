@@ -59,18 +59,17 @@
       "Bash(gh api *protection -X DELETE*)",
       "Bash(gh ruleset delete*)",
       "Bash(dotnet ef database drop*)",
-      "Edit(/workspaces/PriorArt/**)",
-      "Write(/workspaces/PriorArt/**)"
+      "Edit(/workspaces/PriorArt/**)"
     ],
     "additionalDirectories": [
       "../",
       "/workspaces/PriorArt"
     ]
   },
+  "model": "sonnet",
   "enabledMcpjsonServers": [
     "playwright"
   ],
-  "model": "sonnet",
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
