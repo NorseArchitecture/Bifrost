@@ -99,10 +99,10 @@
     "DOTNET_CLI_TELEMETRY_OPTOUT": "1"
   },
 
-  // Object form runs these concurrently; they're independent — except apt-get, which
-  // isn't safe to run from two entries at once (dpkg lock contention races
-  // /var/lib/dpkg/lock-frontend and randomly fails whichever entry loses). Every
-  // apt-using step below lives in the single "dev-cert-trust" entry for that reason.
+  // Object form runs these concurrently; they're independent. (libnss3-tools/chromium/
+  // chromium-sandbox used to be apt-installed here too, sharing dpkg's lock with nothing
+  // else in this object — they moved into a Dockerfile RUN layer so Docker caches the
+  // install instead of re-running it on every "Rebuild Container"; see the Dockerfile.)
   "postCreateCommand": {
     // No chown pass needed for the mount itself: unlike a volume mounted at a nested
     // path that doesn't exist yet in the image (which Docker creates root-owned),
@@ -159,21 +159,14 @@
     // it's bundled with still succeeds. `|| true` swallows that so the chain reaches the
     // cp + update-ca-certificates pair, which is the actual Linux trust mechanism for
     // curl/HttpClient/openssl-backed callers per the comment above.
-    // The apt/certutil tail imports the same cert into the NSS shared DB at ~/.pki/nssdb
+    // The certutil tail imports the same cert into the NSS shared DB at ~/.pki/nssdb
     // (trusted-peer flag "P,," — this is a CA:FALSE leaf/self-signed cert, not a CA, so
     // NSS's "C,," CA-trust flag builds no chain from it and silently leaves it untrusted).
-    // chromium rides the same apt-get install as libnss3-tools (not a separate entry —
-    // see the postCreateCommand-level comment above on why apt can't be split out).
-    // Debian's actual browser package is `chromium`, not Ubuntu's `chromium-browser`.
-    // Real system Chromium (not Playwright's own downloaded Chrome-for-Testing build) for
-    // the Playwright MCP server (.mcp.json, --executable-path /usr/bin/chromium) to drive
-    // against localhost sites from inside the container.
-    // `dpkg --configure -a` guards against a dpkg left "interrupted" by something outside
-    // this command's control (container pause/rebuild, OOM, etc. mid-transaction on a
-    // previous run) — an interrupted dpkg fails every subsequent apt-get in this chain,
-    // including this one, until it's reconciled; `|| true` because a clean dpkg state has
-    // nothing to configure and exits non-zero for that, which isn't a real failure here.
-    "dev-cert-trust": "sudo chown -R vscode:vscode /home/vscode/.dotnet && mkdir -p ${containerWorkspaceFolder}/.devcontainer/certs && (dotnet dev-certs https --trust --export-path ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt --format PEM || true) && sudo cp ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt /usr/local/share/ca-certificates/aspnetcore-dev.crt && sudo update-ca-certificates && (sudo dpkg --configure -a || true) && sudo apt-get update -qq && sudo apt-get install -y -qq libnss3-tools chromium && mkdir -p ~/.pki/nssdb && ([ -f ~/.pki/nssdb/cert9.db ] || certutil -d sql:$HOME/.pki/nssdb -N --empty-password) && (certutil -d sql:$HOME/.pki/nssdb -D -n aspnetcore-dev || true) && certutil -d sql:$HOME/.pki/nssdb -A -t \"P,,\" -n aspnetcore-dev -i ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt"
+    // certutil itself comes from libnss3-tools, baked into the image by the Dockerfile
+    // (see its comment for why chromium/chromium-sandbox moved there alongside it) —
+    // this step no longer installs anything, just configures the NSS DB with what's
+    // already present.
+    "dev-cert-trust": "sudo chown -R vscode:vscode /home/vscode/.dotnet && mkdir -p ${containerWorkspaceFolder}/.devcontainer/certs && (dotnet dev-certs https --trust --export-path ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt --format PEM || true) && sudo cp ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt /usr/local/share/ca-certificates/aspnetcore-dev.crt && sudo update-ca-certificates && mkdir -p ~/.pki/nssdb && ([ -f ~/.pki/nssdb/cert9.db ] || certutil -d sql:$HOME/.pki/nssdb -N --empty-password) && (certutil -d sql:$HOME/.pki/nssdb -D -n aspnetcore-dev || true) && certutil -d sql:$HOME/.pki/nssdb -A -t \"P,,\" -n aspnetcore-dev -i ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt"
   },
 
   "customizations": {
