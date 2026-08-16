@@ -1,0 +1,69 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Bifröst (Aspire)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build: AppHost",
+      // NORSE_CONTAINER_BUILD=1 (set in devcontainer.json's remoteEnv, ambient in every
+      // process VS Code spawns here) redirects build output to /tmp/norse-artifacts
+      // instead of src/Orchestration.AppHost/bin -- see root Directory.Build.props.
+      // This path only resolves inside the devcontainer for that reason.
+      "program": "/tmp/norse-artifacts/Orchestration.AppHost/bin/Debug/net11.0/Norse.Orchestration.AppHost.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/Orchestration.AppHost",
+      "stopAtEntry": false,
+      // serverReadyAction only sees output routed through the debug adapter's own
+      // stream -- integratedTerminal/externalTerminal write straight to a pty and
+      // bypass that, so this has to be internalConsole for the action below to fire.
+      "console": "internalConsole",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      // Confirmed against this AppHost's actual output: Aspire logs
+      // "Now listening on: https://bifrost.dev.localhost:5000" once the dashboard is
+      // up. openExternally calls vscode.env.openExternal on the client side, which
+      // is the host's real default browser -- not VS Code's Simple Browser tab.
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      }
+    },
+    {
+      // Runs just Yggdrasil's Hosting.Stories.Server (which serves Bragi's
+      // DesignSystem.Stories catalog via BlazingStory) standalone -- no AppHost, no
+      // Postgres, no DCP orchestration. Verified: builds and serves HTTP 200 on its
+      // own. Its own launchSettings.json already names the applicationUrl for this
+      // (bragi.dev.localhost:5002), matching devcontainer.json's "stories" port label.
+      "name": "Bragi (Stories, standalone)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build: Stories.Server",
+      "program": "/tmp/norse-artifacts/Hosting.Stories.Server/bin/Debug/net11.0/Norse.Hosting.Stories.Server.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Yggdrasil/src/Hosting.Stories.Server",
+      "stopAtEntry": false,
+      "console": "internalConsole",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      // This host logs "Now listening on:" twice (bragi.dev.localhost, then bare
+      // localhost) -- the hostname is pinned in the pattern so this fires once, not
+      // twice with a stray second tab.
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https://bragi\\.dev\\.localhost\\S*)"
+      }
+    },
+    {
+      // Fallback for stepping into a child resource the AppHost orchestrates (e.g.
+      // Yggdrasil's Hosting.Web.Server) when it doesn't auto-attach: F5 the AppHost
+      // config above first, find the child process's PID on the Aspire dashboard's
+      // resource detail pane, then run this and pick it from the process list.
+      "name": ".NET: Attach to running process",
+      "type": "coreclr",
+      "request": "attach"
+    }
+  ]
+}
