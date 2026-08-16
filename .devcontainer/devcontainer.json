@@ -117,8 +117,12 @@
     // ${containerWorkspaceFolder} covers Bifrost itself; .github (Ginnungagap) is a
     // separate host-level clone bind-mounted as a sibling (see docker-compose.yml's
     // volumes comment) and lands root-owned through that mount, so git's dubious-
-    // ownership check rejects it too until it's added explicitly.
-    "safe-directory": "git config --global --add safe.directory ${containerWorkspaceFolder} && git config --global --add safe.directory ${containerWorkspaceFolder}/../.github",
+    // ownership check rejects it too until it's added explicitly. Same story for every
+    // realm submodule -- each is its own git repository, so safe.directory doesn't
+    // inherit from the Bifrost entry above it; `git submodule foreach` adds one entry
+    // per realm currently checked out, so a newly-added realm (see CLAUDE.md §3) picks
+    // this up automatically on the next rebuild without editing this line by hand.
+    "safe-directory": "git config --global --add safe.directory ${containerWorkspaceFolder} && git config --global --add safe.directory ${containerWorkspaceFolder}/../.github && git -C ${containerWorkspaceFolder} submodule foreach --quiet 'git config --global --add safe.directory \"$toplevel/$sm_path\"'",
     // SSH agent forwarding itself needs no config here -- VS Code auto-forwards
     // whatever agent is running on the host (Bitwarden's bridge on WSL2/Fedora,
     // the native agent on Windows) into SSH_AUTH_SOCK. This just does the part

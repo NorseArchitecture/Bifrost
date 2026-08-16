@@ -142,6 +142,20 @@ Don't put these in a script that runs *inside* the devcontainer, and don't put t
 
 Run `ssh-add -l` on the host right before opening or rebuilding the container to confirm a key is actually loaded — an empty agent is the single most common reason signing silently doesn't happen.
 
+### VS Code "Manage Unsafe Repositories" toast
+
+Bifröst and every realm submodule are separate git repositories bind-mounted in from the host (see `docker-compose.yml`'s volumes comment), and on some hosts they land root-owned inside the container even though the `vscode` user can read/write them fine — the bind mount doesn't remap ownership, it just carries the host UID straight through, and that doesn't always line up with `vscode` (uid 1000). Git's dubious-ownership check keys off owning UID, not permission bits, so every root-owned repo needs its own `safe.directory` entry or git refuses to touch it — and VS Code's git extension surfaces every refusal it hits as one "Manage Unsafe Repositories" toast, not one per repo, so it looks like a single problem even though it's usually all 14 realms at once. Whether this bites you is purely a host/Docker-storage-driver detail — it shows up on some machines and not others (e.g. an x64 WSL2 box vs. an ARM/Snapdragon one) with no code-side difference to account for it, so don't read the absence of the toast on one machine as evidence it's "fixed" — it just means that host didn't hit it.
+
+`postCreateCommand`'s `safe-directory` step (`.devcontainer/devcontainer.json`) covers this automatically on every container create/rebuild: it trusts Bifröst itself, `../.github`, and then loops `git submodule foreach` to trust every currently-checked-out realm by path, so a newly-added realm (§3 of `CLAUDE.md`) is covered on the next rebuild with no line to edit by hand. Like the SSH signing config above, this lands in `~/.gitconfig`, which isn't a persisted volume — it re-runs, and can't be skipped the way SSH signing sometimes is, every single container create.
+
+If the toast still appears after a rebuild (e.g. you added a submodule mid-session without rebuilding, or ran `git submodule update --init` for a realm that wasn't already checked out when `postCreateCommand` ran):
+
+```shell
+git -C /workspaces/NorseArchitecture/Bifrost submodule foreach --quiet 'git config --global --add safe.directory "$toplevel/$sm_path"'
+```
+
+then reload the VS Code window (`Developer: Reload Window`) — no rebuild needed, the git extension just needs to re-scan.
+
 ### Once the container is up: authenticate the CLIs
 
 `docker-compose.yml` only persists `/home/vscode/.nuget`, `/home/vscode/.npm`, and the dev-certs store across rebuilds (see its `volumes:` list) — the rest of `/home/vscode`, including `gh`/`claude`/`codex`'s login state, is ephemeral container filesystem. Run this after every container create *and* every `Dev Containers: Rebuild Container`, not just the first time:
