@@ -84,6 +84,80 @@ To pull each realm's latest `master` after the initial clone:
 git submodule update --remote
 ```
 
+### Devcontainer setup: host environment variables
+
+`.devcontainer/devcontainer.json`'s `remoteEnv` block forwards `NUGET_AUTH_TOKEN`, `GIT_USER_NAME`, and `GIT_USER_EMAIL` in from the host — it never supplies them. Set all three in the host environment (whichever shell actually launches VS Code) *before* the container is created or rebuilt; `${localEnv:VAR}` resolves once, at that moment, so a value set afterward needs a rebuild to take effect.
+
+**Get the NuGet token with the `gh` CLI.** A classic PAT works too, but if you're already signed in with `gh` this is the shortest path — it needs `read:packages` scope and NorseArchitecture org access:
+
+```shell
+gh auth login                                  # skip if already logged in
+gh auth refresh -h github.com -s read:packages # add the scope to the existing session
+gh auth token                                  # prints the token — this is your NUGET_AUTH_TOKEN
+```
+
+**Set the variables on the host**, persistently, in whichever shell launches VS Code:
+
+```powershell
+# Windows PowerShell — persists across sessions; open a new terminal (or restart VS Code) to pick it up
+[Environment]::SetEnvironmentVariable('NUGET_AUTH_TOKEN', '<token from gh auth token>', 'User')
+[Environment]::SetEnvironmentVariable('GIT_USER_NAME', '<your name>', 'User')
+[Environment]::SetEnvironmentVariable('GIT_USER_EMAIL', '<your email>', 'User')
+```
+
+```shell
+# macOS — zsh is the default shell since Catalina; `source ~/.zshrc` or open a new terminal afterward
+echo 'export NUGET_AUTH_TOKEN="<token from gh auth token>"' >> ~/.zshrc
+echo 'export GIT_USER_NAME="<your name>"' >> ~/.zshrc
+echo 'export GIT_USER_EMAIL="<your email>"' >> ~/.zshrc
+```
+
+```shell
+# bash / Linux (including WSL2) — `source ~/.bashrc` or open a new terminal afterward
+echo 'export NUGET_AUTH_TOKEN="<token from gh auth token>"' >> ~/.bashrc
+echo 'export GIT_USER_NAME="<your name>"' >> ~/.bashrc
+echo 'export GIT_USER_EMAIL="<your email>"' >> ~/.bashrc
+```
+
+Don't put these in a script that runs *inside* the devcontainer, and don't put them in a repo-tracked file — they belong to the host shell that spawns VS Code, never the container and never git.
+
+**SSH agent — required on every platform, set up differently on each.** `configure-git-ssh-signing.sh` runs once per container create/rebuild and calls `ssh-add -L` to find a signing key; if the forwarded agent is empty at that moment it silently skips signing setup rather than failing the build, which just means commits go unsigned until a key is loaded and the container is rebuilt. VS Code's Dev Containers extension forwards whatever agent is live on the host into the container's `SSH_AUTH_SOCK` automatically — the part that isn't automatic is making sure a real agent, holding your key, exists on the host in the first place:
+
+- **Windows** — the native OpenSSH Agent Windows service. One-time enable, then load the key:
+  ```powershell
+  Get-Service ssh-agent | Set-Service -StartupType Automatic
+  Start-Service ssh-agent
+  ssh-add $env:USERPROFILE\.ssh\id_ed25519
+  ```
+- **macOS** — `ssh-agent` plus Keychain, so the key survives reboots without re-adding it by hand:
+  ```shell
+  eval "$(ssh-agent -s)"
+  ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+  ```
+- **bash / Linux (WSL2)** — WSL2 has no native bridge to a Windows agent, so either run an agent inside WSL and add the key there, or use an agent-forwarding bridge (e.g. Bitwarden's) — see `configure-git-ssh-signing.sh`'s own comments for the bridge this repo is set up against:
+  ```shell
+  eval "$(ssh-agent -s)"
+  ssh-add ~/.ssh/id_ed25519
+  ```
+
+Run `ssh-add -l` on the host right before opening or rebuilding the container to confirm a key is actually loaded — an empty agent is the single most common reason signing silently doesn't happen.
+
+### Once the container is up: authenticate the CLIs
+
+`docker-compose.yml` only persists `/home/vscode/.nuget`, `/home/vscode/.npm`, and the dev-certs store across rebuilds (see its `volumes:` list) — the rest of `/home/vscode`, including `gh`/`claude`/`codex`'s login state, is ephemeral container filesystem. Run this after every container create *and* every `Dev Containers: Rebuild Container`, not just the first time:
+
+```shell
+gh auth login   # GitHub CLI — interactive PR/issue use; separate from the NUGET_AUTH_TOKEN forwarded in from the host above
+claude          # Claude Code — first run opens a browser-based login prompt
+codex login     # OpenAI Codex CLI
+```
+
+While you're in there, pull in whatever Debian security/package patches have landed since the base image (`mcr.microsoft.com/devcontainers/base:debian`) was last built:
+
+```shell
+sudo apt update && sudo apt upgrade -y
+```
+
 ### HTTPS dev certificate trust (WSL2 + Windows)
 
 If you run `dotnet run`/`dotnet watch` inside WSL2 but browse from bare-metal Windows Chrome, `dotnet dev-certs https --trust` on either side is not enough — WSL2 and Windows each keep their own independent user cert store, so each OS generates and trusts its **own separate self-signed dev cert**. Running `--trust` (or even `--check`, which only reports "a valid certificate is already present" — a non-expired-cert check, not a trust check) on one side has zero effect on the other. Kestrel running inside WSL presents *its* cert; Windows Chrome only trusts *its own*, unrelated one — hence `net::ERR_CERT_AUTHORITY_INVALID` or resources getting blocked by SRI even after trusting "the" dev cert.
