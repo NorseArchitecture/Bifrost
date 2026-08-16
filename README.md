@@ -197,7 +197,7 @@ Delete the `.pfx` from both sides afterward — it carries the private key. `dot
 
 Running inside `.devcontainer` instead of native WSL2 adds a third cert store to the mix — the container's own — but also removes the need for the PFX/password dance above. Windows only needs to trust the *public* cert to stop warning; it never needs the private key, since Kestrel inside the container holds that and never has to share it.
 
-`postCreateCommand`'s `dev-cert-trust` step handles the container side automatically on every rebuild: it generates (or reuses) the dev cert, trusts it in-container, and exports the public half to `.devcontainer/certs/aspnetcore-dev.crt` (gitignored, regenerated per-machine — never commit it). The cert itself persists across rebuilds via the `norse-dotnet-certs` Docker volume, so its fingerprint stays stable — trust it once on Windows and it stays trusted through every future `devcontainer rebuild`, no re-import needed unless that volume itself is deleted.
+`postCreateCommand`'s `dev-cert-trust` step handles the container side automatically on every rebuild: it generates (or reuses) the dev cert, trusts it in-container, and exports the public half to `.devcontainer/certs/aspnetcore-dev.crt` (gitignored, regenerated per-machine — never commit it). The cert itself persists across rebuilds via the `norse-home` Docker volume, so its fingerprint stays stable — trust it once on Windows and it stays trusted through every future `devcontainer rebuild`, no re-import needed unless that volume itself is deleted.
 
 The Windows side is the one step that can't be automated from inside the container — Windows' cert store is outside its authority. Run it once, ever, per machine:
 

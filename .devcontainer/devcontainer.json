@@ -50,16 +50,14 @@
     "ghcr.io/dirien/devcontainer-feature-codex/codex:0": {}
   },
 
-  // The shared caches are declared external in docker-compose.yml, and compose refuses
-  // to create external volumes itself. Idempotent — `docker volume create` on an
-  // existing volume just prints its name. Runs on the host, before the build.
+  // The home volume is declared external in docker-compose.yml, and compose refuses to
+  // create external volumes itself. Idempotent — `docker volume create` on an existing
+  // volume just prints its name. Runs on the host, before the build.
   // /var/lib/docker is deliberately not mounted anywhere here: docker-in-docker binds
   // its own dind-var-lib-docker-${devcontainerId} volume there, and a second mount on
   // the same target is a hard "Duplicate mount point" failure at container create.
   "initializeCommand": {
-    "nuget-cache-volume": "docker volume create norse-nuget",
-    "npm-cache-volume": "docker volume create norse-npm",
-    "dotnet-certs-volume": "docker volume create norse-dotnet-certs"
+    "home-volume": "docker volume create norse-home"
   },
 
   // Statically declared so VS Code's forwarding is deterministic instead of purely
@@ -106,14 +104,11 @@
   // /var/lib/dpkg/lock-frontend and randomly fails whichever entry loses). Every
   // apt-using step below lives in the single "dev-cert-trust" entry for that reason.
   "postCreateCommand": {
-    // Fresh named volumes land root-owned when the target doesn't exist in the image,
-    // which fails `dotnet restore` / `npm i` for the vscode user until it's chowned.
-    // Also chowns .cache itself (not just its ms-playwright child, mounted below) —
-    // mounting norse-playwright-browsers at a nested path makes Docker create the
-    // .cache parent as root, which then blocks anything else vscode wants to write
-    // there, e.g. the C# Dev Kit's Roslyn language server creating its own
-    // "Microsoft DevDiv" telemetry-id cache dir.
-    "caches": "sudo chown vscode:vscode /home/vscode/.cache && sudo chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.npm",
+    // No chown pass needed for the mount itself: unlike a volume mounted at a nested
+    // path that doesn't exist yet in the image (which Docker creates root-owned),
+    // /home/vscode already exists, vscode-owned, in the base image — Docker copies that
+    // ownership into norse-home on its first mount. The dotnet feature's own build-time
+    // root-owned ~/.dotnet is the one exception, handled in "dev-cert-trust" below.
     // ${containerWorkspaceFolder} covers Bifrost itself; .github (Ginnungagap) is a
     // separate host-level clone bind-mounted as a sibling (see docker-compose.yml's
     // volumes comment) and lands root-owned through that mount, so git's dubious-
@@ -145,9 +140,9 @@
     // whole global node_modules tree rather than just @openai, in case a later feature
     // adds another package the same way.
     "codex-ownership": "sudo chown -R vscode:nvm \"$(npm root -g)\"",
-    // Own chown+generate chain (not folded into "caches" above) so it never races that
-    // entry's chown under the concurrent object-form execution. Generates (or reuses, once
-    // norse-dotnet-certs makes the store persistent) the ASP.NET Core dev cert, trusts it
+    // Own chown+generate chain, kept separate from the other entries above so it never
+    // races their work under the concurrent object-form execution. Generates (or reuses,
+    // once norse-home makes the store persistent) the ASP.NET Core dev cert, trusts it
     // for in-container callers, and exports the public cert (no private key, no password —
     // see .devcontainer/certs/aspnetcore-dev.crt) for the one-time Windows-side trust step
     // in scripts/Trust-DevCert.ps1. Linux chain trust via update-ca-certificates is best

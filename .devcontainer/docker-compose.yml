@@ -26,22 +26,14 @@ services:
       # and .claude/settings.json's Edit/Write deny rules make Claude refuse before ever
       # hitting it, instead of surfacing an OS-level I/O error.
       - ../../../PriorArt:/workspaces/PriorArt:ro
-      # Declared external so they stay plain `norse-*` and remain shared with every other
-      # Norse container. Left to compose they'd be created as `bifrost_norse-nuget`,
-      # scoped to this project, which defeats the point of a shared cache.
-      - norse-nuget:/home/vscode/.nuget/packages
-      - norse-npm:/home/vscode/.npm
-      # dotnet dev-certs stores its self-signed HTTPS cert here. Without this volume it's
-      # ephemeral container filesystem — every rebuild mints a brand-new cert with a new
-      # fingerprint, silently invalidating any trust already granted on the Windows side.
-      # Persisting the store keeps the cert (and its fingerprint) stable across rebuilds, so
-      # the one-time scripts/Trust-DevCert.ps1 step on Windows only ever has to run once.
-      - norse-dotnet-certs:/home/vscode/.dotnet/corefx/cryptography/x509stores
+      # Declared external so it stays plain `norse-home` instead of compose scoping it to
+      # `bifrost_norse-home`. The whole home directory, one durable volume: nuget/npm
+      # caches, the dotnet dev-certs store (see scripts/Trust-DevCert.ps1 — losing this
+      # volume mints a new cert fingerprint and re-triggers the one-time Windows trust
+      # step), and every CLI's own auth state (gh, claude, codex) all live under here, so
+      # none of it needs calling out by path individually or re-authenticating on rebuild.
+      - norse-home:/home/vscode
 
 volumes:
-  norse-nuget:
-    external: true
-  norse-npm:
-    external: true
-  norse-dotnet-certs:
+  norse-home:
     external: true

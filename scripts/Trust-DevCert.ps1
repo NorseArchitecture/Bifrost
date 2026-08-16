@@ -8,7 +8,7 @@
 #
 # Public certificate only — the private key never leaves the container, no password, no
 # cleanup step. Run once per Windows machine; re-running is a harmless no-op. Only needs to
-# run again if the norse-dotnet-certs Docker volume is ever deleted, since that forces the
+# run again if the norse-home Docker volume is ever deleted, since that forces the
 # devcontainer to mint a brand-new cert (new fingerprint) on next rebuild.
 #
 # Usage:
