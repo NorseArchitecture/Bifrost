@@ -107,7 +107,18 @@
     // there, e.g. the C# Dev Kit's Roslyn language server creating its own
     // "Microsoft DevDiv" telemetry-id cache dir.
     "caches": "sudo chown vscode:vscode /home/vscode/.cache && sudo chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.npm",
-    "safe-directory": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+    // ${containerWorkspaceFolder} covers Bifrost itself; .github (Ginnungagap) is a
+    // separate host-level clone bind-mounted as a sibling (see docker-compose.yml's
+    // volumes comment) and lands root-owned through that mount, so git's dubious-
+    // ownership check rejects it too until it's added explicitly.
+    "safe-directory": "git config --global --add safe.directory ${containerWorkspaceFolder} && git config --global --add safe.directory ${containerWorkspaceFolder}/../.github",
+    // SSH agent forwarding itself needs no config here -- VS Code auto-forwards
+    // whatever agent is running on the host (Bitwarden's bridge on WSL2/Fedora,
+    // the native agent on Windows) into SSH_AUTH_SOCK. This just does the part
+    // that isn't automatic: pointing git's SSH-based commit/tag signing at
+    // whatever key that forwarded agent is holding. See the script for why it's
+    // non-blocking when no agent/key is present yet.
+    "git-ssh-signing": "bash ${containerWorkspaceFolder}/.devcontainer/configure-git-ssh-signing.sh",
     // npm 12 blocks lifecycle scripts unless the package is named in allow-scripts, so
     // the claude-code feature's `npm install -g` silently skips the postinstall that
     // places the native binary — `claude` then exits with "native binary not installed".
