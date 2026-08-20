@@ -13,7 +13,7 @@
 		environment. The devcontainer sets this to /tmp/norse-artifacts (remoteEnv in
 		devcontainer.json); a bare-metal Windows/Visual Studio build against the same
 		ReFS-mounted tree needs it set on the host too (scripts/Redirect-BuildArtifacts.ps1)
-		-- otherwise one side's bin/obj (foreign RID, foreign paths baked into
+		otherwise one side's bin/obj (foreign RID, foreign paths baked into
 		obj/project.assets.json) lands in-tree and corrupts the other side's next build.
 	-->
 	<PropertyGroup Condition="'$(NORSE_BUILD_ARTIFACTS_DIR)' != ''">

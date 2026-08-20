@@ -1,6 +1,7 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.4.6">
+<Project Sdk="Aspire.AppHost.Sdk/13.5.0">
 
 	<PropertyGroup>
+		<AspireUseCliBundle>true</AspireUseCliBundle>
 		<OutputType>Exe</OutputType>
 		<UserSecretsId>norse-orchestration-apphost</UserSecretsId>
 	</PropertyGroup>

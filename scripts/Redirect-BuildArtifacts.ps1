@@ -15,10 +15,14 @@
 # folder is cleaned out by hand.
 #
 # Sets NORSE_BUILD_ARTIFACTS_DIR as a persistent user environment variable -- Visual Studio
-# inherits it at launch, so restart VS (and any open terminals) afterward -- and symlinks
-# every top-level realm's node_modules into the same target. Run once per Windows machine;
-# re-running is a harmless no-op. Creating the symlinks needs either an elevated shell or
-# Windows Developer Mode (Settings > Privacy & security > For developers) enabled.
+# inherits it at launch, so restart VS (and any open terminals) afterward -- and redirects
+# every top-level realm's node_modules into the same target via an NTFS junction, not a
+# symlink. npm's own reify step lstat()s node_modules before writing to it; a symlink reports
+# as a non-directory there (npm decides it's junk, deletes it, and reifies a fresh
+# node_modules back onto the shared ReFS tree -- the exact corruption this script exists to
+# prevent), while a junction reports as a real directory, same as it does inside `npm link`
+# on Windows internally. Run once per Windows machine; re-running is a harmless no-op.
+# Junctions need no elevation and no Developer Mode, unlike symlinks.
 #
 # Usage:
 #   pwsh scripts/Redirect-BuildArtifacts.ps1
@@ -42,19 +46,23 @@ Get-ChildItem -Path $RepoRoot -Filter 'package.json' -Recurse -Depth 1 | ForEach
 	New-Item -ItemType Directory -Path (Split-Path $Target) -Force | Out-Null
 
 	$Existing = Get-Item -Path $Link -Force -ErrorAction SilentlyContinue
-	if ($Existing -and $Existing.LinkType -eq 'SymbolicLink') {
+	if ($Existing -and $Existing.LinkType -eq 'Junction') {
 		Write-Host "$($RealmDir.Name): node_modules already redirected, skipping."
 		return
 	}
-	if ($Existing) {
+	if ($Existing -and $Existing.LinkType) {
+		Write-Host "$($RealmDir.Name): removing stale $($Existing.LinkType) node_modules link..."
+		(Get-Item -Path $Link -Force).Delete()
+	} elseif ($Existing) {
 		Write-Host "$($RealmDir.Name): moving existing node_modules to $Target..."
 		if (Test-Path $Target) { Remove-Item -Recurse -Force $Target }
 		Move-Item -Path $Link -Destination $Target
-	} else {
+	}
+	if (-not (Test-Path $Target)) {
 		New-Item -ItemType Directory -Path $Target -Force | Out-Null
 	}
 
-	New-Item -ItemType SymbolicLink -Path $Link -Target $Target -Force | Out-Null
+	New-Item -ItemType Junction -Path $Link -Target $Target -Force | Out-Null
 	Write-Host "$($RealmDir.Name): node_modules -> $Target" -ForegroundColor Green
 }
 
