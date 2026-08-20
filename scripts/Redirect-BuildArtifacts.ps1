@@ -5,24 +5,25 @@
 # Bare-metal Windows/Visual Studio builds share this exact file tree with the devcontainer
 # (docker-compose.yml binds the host NorseArchitecture folder straight into the container),
 # often over a ReFS Dev Drive the devcontainer only reaches through the WSL/Windows file
-# bridge. The devcontainer already redirects its own .NET bin/obj and every realm's npm
-# node_modules off that shared tree, onto container-native disk (NORSE_BUILD_ARTIFACTS_DIR
-# in devcontainer.json, root Directory.Build.props, postCreateCommand's
-# npm-node-modules-redirect step). Bare-metal Windows has no equivalent unless this script
-# runs once: without it, Windows-built bin/obj (win-x64 RIDs, Windows paths baked into
-# obj/project.assets.json) and Windows-native npm node_modules land directly in the shared
-# tree and corrupt the next container-side build/install until every bin/obj/node_modules
-# folder is cleaned out by hand.
+# bridge. The devcontainer already redirects its own .NET bin/obj onto container-native disk
+# (NORSE_BUILD_ARTIFACTS_DIR in devcontainer.json, root Directory.Build.props). Bare-metal
+# Windows has no equivalent unless this script runs once: without it, Windows-built bin/obj
+# (win-x64 RIDs, Windows paths baked into obj/project.assets.json) land directly in the
+# shared tree and corrupt the next container-side build until every bin/obj folder is
+# cleaned out by hand.
+#
+# npm's node_modules gets the same treatment, but not via this script: a symlink/junction
+# back into the repo doesn't work for node_modules -- one OS's reparse point is unreadable
+# to the other over the 9p-bridged mount, and npm's own reify step actively fights a symlink
+# there (lstat() sees a non-directory, decides it's junk, deletes it, and reifies a fresh
+# node_modules back onto the shared tree). Realms that need npm packages at build time (see
+# Naglfar's DesignSystem.Tokens.csproj) install straight into NORSE_BUILD_ARTIFACTS_DIR and
+# use a Node module customization hook to resolve against it, keyed off this same env var --
+# no reparse point involved on either OS.
 #
 # Sets NORSE_BUILD_ARTIFACTS_DIR as a persistent user environment variable -- Visual Studio
-# inherits it at launch, so restart VS (and any open terminals) afterward -- and redirects
-# every top-level realm's node_modules into the same target via an NTFS junction, not a
-# symlink. npm's own reify step lstat()s node_modules before writing to it; a symlink reports
-# as a non-directory there (npm decides it's junk, deletes it, and reifies a fresh
-# node_modules back onto the shared ReFS tree -- the exact corruption this script exists to
-# prevent), while a junction reports as a real directory, same as it does inside `npm link`
-# on Windows internally. Run once per Windows machine; re-running is a harmless no-op.
-# Junctions need no elevation and no Developer Mode, unlike symlinks.
+# inherits it at launch, so restart VS (and any open terminals) afterward. Run once per
+# Windows machine; re-running is a harmless no-op.
 #
 # Usage:
 #   pwsh scripts/Redirect-BuildArtifacts.ps1
@@ -33,37 +34,8 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$RepoRoot = Split-Path $PSScriptRoot
 
 Write-Host "Setting NORSE_BUILD_ARTIFACTS_DIR = $ArtifactsDir (User scope)..."
 [Environment]::SetEnvironmentVariable('NORSE_BUILD_ARTIFACTS_DIR', $ArtifactsDir, 'User')
-
-Get-ChildItem -Path $RepoRoot -Filter 'package.json' -Recurse -Depth 1 | ForEach-Object {
-	$RealmDir = $_.Directory
-	$Link = Join-Path $RealmDir.FullName 'node_modules'
-	$Target = Join-Path $ArtifactsDir "$($RealmDir.Name)\node_modules"
-
-	New-Item -ItemType Directory -Path (Split-Path $Target) -Force | Out-Null
-
-	$Existing = Get-Item -Path $Link -Force -ErrorAction SilentlyContinue
-	if ($Existing -and $Existing.LinkType -eq 'Junction') {
-		Write-Host "$($RealmDir.Name): node_modules already redirected, skipping."
-		return
-	}
-	if ($Existing -and $Existing.LinkType) {
-		Write-Host "$($RealmDir.Name): removing stale $($Existing.LinkType) node_modules link..."
-		(Get-Item -Path $Link -Force).Delete()
-	} elseif ($Existing) {
-		Write-Host "$($RealmDir.Name): moving existing node_modules to $Target..."
-		if (Test-Path $Target) { Remove-Item -Recurse -Force $Target }
-		Move-Item -Path $Link -Destination $Target
-	}
-	if (-not (Test-Path $Target)) {
-		New-Item -ItemType Directory -Path $Target -Force | Out-Null
-	}
-
-	New-Item -ItemType Junction -Path $Link -Target $Target -Force | Out-Null
-	Write-Host "$($RealmDir.Name): node_modules -> $Target" -ForegroundColor Green
-}
 
 Write-Host 'Done. Restart Visual Studio (and any open terminals) to pick up NORSE_BUILD_ARTIFACTS_DIR.' -ForegroundColor Green

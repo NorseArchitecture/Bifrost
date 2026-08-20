@@ -95,8 +95,9 @@
     // Redirect .NET build churn off the 9p mount onto container-native disk. Read by
     // the root Directory.Build.props; a bare-metal Windows/Visual Studio build against
     // the same ReFS-mounted tree sets this too, to its own local path -- see
-    // scripts/Redirect-BuildArtifacts.ps1. The npm-node-modules-redirect postCreateCommand
-    // step below reuses this same variable for the same reason, one realm down.
+    // scripts/Redirect-BuildArtifacts.ps1. Realms with npm build steps (see Naglfar's
+    // DesignSystem.Tokens.csproj) also install node_modules straight into this directory,
+    // one realm down.
     "NORSE_BUILD_ARTIFACTS_DIR": "/tmp/norse-artifacts",
     // inotify doesn't cross the mount; anything watching must poll
     "DOTNET_USE_POLLING_FILE_WATCHER": "1",
@@ -145,16 +146,6 @@
     // This runs that postinstall directly. Drop it if the feature turns npm-12-aware,
     // or if npm gets pinned back to 11.
     "claude-native-binary": "sudo \"$(command -v node)\" \"$(npm root -g)/@anthropic-ai/claude-code/install.cjs\"",
-    // Every realm with a package.json (Naglfar, Bragi) gets its node_modules symlinked
-    // onto container-native disk under NORSE_BUILD_ARTIFACTS_DIR, same reasoning as the
-    // .NET redirect above: node_modules otherwise writes thousands of small files across
-    // the 9p/WSL bridge the workspace mount crosses, which is slow, and would carry
-    // Linux-native optional-dependency binaries into a tree a Windows/Visual Studio
-    // build also touches. Idempotent: a pre-existing real node_modules (e.g. from before
-    // this step existed) is moved once, not deleted; re-running just recreates the same
-    // symlink. `npm install`/`npm ci` still runs by hand in each realm -- this only makes
-    // sure it lands somewhere fast when it does.
-    "npm-node-modules-redirect": "cd ${containerWorkspaceFolder} && for d in */; do d=${d%/}; if [ -f $d/package.json ]; then t=$NORSE_BUILD_ARTIFACTS_DIR/$d/node_modules; mkdir -p $(dirname $t); if [ -d $d/node_modules ] && [ ! -L $d/node_modules ]; then mv $d/node_modules $t; else mkdir -p $t; fi; ln -sfn $t $d/node_modules; fi; done",
     // The dirien codex feature installs @openai/codex globally during image build, as
     // root — everything else under lib/node_modules is vscode:nvm (group-writable), but
     // @openai/codex itself lands root:nvm, so `npm install -g @openai/codex` as vscode
