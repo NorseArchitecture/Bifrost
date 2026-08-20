@@ -121,6 +121,16 @@ echo 'export GIT_USER_EMAIL="<your email>"' >> ~/.bashrc
 
 Don't put these in a script that runs *inside* the devcontainer, and don't put them in a repo-tracked file — they belong to the host shell that spawns VS Code, never the container and never git.
 
+### Bare-metal Windows builds: redirecting build artifacts
+
+If this checkout lives on a Windows ReFS Dev Drive and you also build it directly in Visual Studio (not just inside the devcontainer), run this once, from a Windows PowerShell terminal at the repo root:
+
+```powershell
+pwsh scripts/Redirect-BuildArtifacts.ps1
+```
+
+The devcontainer already redirects its own .NET bin/obj and every realm's npm `node_modules` off the tree it shares with the host (`NORSE_BUILD_ARTIFACTS_DIR`, root `Directory.Build.props`, `devcontainer.json`'s `postCreateCommand`) — onto container-native disk, both for speed (off the WSL/Windows file bridge that mount crosses) and to avoid two OSes' build output colliding in the same files. Bare-metal Visual Studio builds against that same tree need the equivalent: this script sets `NORSE_BUILD_ARTIFACTS_DIR` as a persistent Windows user environment variable (default `<drive>:\tmp\norse-artifacts`, sibling to the `NorseArchitecture` folder — pass `-ArtifactsDir` to override) and symlinks each npm realm's `node_modules` into it. Skipping this step doesn't break bare-metal builds directly, but it does mean Windows-built `bin`/`obj` (and Windows-native `node_modules`) can land inside the tree the devcontainer also builds from and corrupt the container's next build until you manually clean every `bin`/`obj`/`node_modules` folder. Restart Visual Studio after running it so it picks up the new environment variable.
+
 **SSH agent — required on every platform, set up differently on each.** `configure-git-ssh-signing.sh` runs once per container create/rebuild and calls `ssh-add -L` to find a signing key; if the forwarded agent is empty at that moment it silently skips signing setup rather than failing the build, which just means commits go unsigned until a key is loaded and the container is rebuilt. VS Code's Dev Containers extension forwards whatever agent is live on the host into the container's `SSH_AUTH_SOCK` automatically — the part that isn't automatic is making sure a real agent, holding your key, exists on the host in the first place:
 
 - **Windows** — the native OpenSSH Agent Windows service. One-time enable, then load the key:

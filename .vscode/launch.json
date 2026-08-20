@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build: AppHost",
-      // NORSE_CONTAINER_BUILD=1 (set in devcontainer.json's remoteEnv, ambient in every
-      // process VS Code spawns here) redirects build output to /tmp/norse-artifacts
-      // instead of src/Orchestration.AppHost/bin -- see root Directory.Build.props.
+      // NORSE_BUILD_ARTIFACTS_DIR=/tmp/norse-artifacts (set in devcontainer.json's
+      // remoteEnv, ambient in every process VS Code spawns here) redirects build output
+      // there instead of src/Orchestration.AppHost/bin -- see root Directory.Build.props.
       // This path only resolves inside the devcontainer for that reason.
       "program": "/tmp/norse-artifacts/Orchestration.AppHost/bin/Debug/net11.0/Norse.Orchestration.AppHost.dll",
       "args": [],
