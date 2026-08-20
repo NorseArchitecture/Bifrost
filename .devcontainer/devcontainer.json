@@ -104,10 +104,12 @@
     "DOTNET_CLI_TELEMETRY_OPTOUT": "1"
   },
 
-  // Object form runs these concurrently; they're independent. (libnss3-tools/chromium/
-  // chromium-sandbox used to be apt-installed here too, sharing dpkg's lock with nothing
-  // else in this object — they moved into a Dockerfile RUN layer so Docker caches the
-  // install instead of re-running it on every "Rebuild Container"; see the Dockerfile.)
+  // Object form runs these concurrently; they're independent except git-config, whose
+  // two steps are chained internally with `&&` because both touch ~/.gitconfig (see its
+  // comment below). (libnss3-tools/chromium/chromium-sandbox used to be apt-installed
+  // here too, sharing dpkg's lock with nothing else in this object — they moved into a
+  // Dockerfile RUN layer so Docker caches the install instead of re-running it on every
+  // "Rebuild Container"; see the Dockerfile.)
   "postCreateCommand": {
     // No chown pass needed for the mount itself: unlike a volume mounted at a nested
     // path that doesn't exist yet in the image (which Docker creates root-owned),
@@ -122,14 +124,13 @@
     // inherit from the Bifrost entry above it; `git submodule foreach` adds one entry
     // per realm currently checked out, so a newly-added realm (see CLAUDE.md §3) picks
     // this up automatically on the next rebuild without editing this line by hand.
-    "safe-directory": "git config --global --add safe.directory ${containerWorkspaceFolder} && git config --global --add safe.directory ${containerWorkspaceFolder}/../.github && git -C ${containerWorkspaceFolder} submodule foreach --quiet 'git config --global --add safe.directory \"$toplevel/$sm_path\"'",
-    // SSH agent forwarding itself needs no config here -- VS Code auto-forwards
-    // whatever agent is running on the host (Bitwarden's bridge on WSL2/Fedora,
-    // the native agent on Windows) into SSH_AUTH_SOCK. This just does the part
-    // that isn't automatic: pointing git's SSH-based commit/tag signing at
-    // whatever key that forwarded agent is holding. See the script for why it's
-    // non-blocking when no agent/key is present yet.
-    "git-ssh-signing": "bash ${containerWorkspaceFolder}/.devcontainer/configure-git-ssh-signing.sh",
+    // Chained with git-ssh-signing.sh (rather than left as sibling object-form entries)
+    // because both write to ~/.gitconfig with plain `git config --global` calls, which
+    // take no lock-retry on contention -- run concurrently, two of these `git config`
+    // processes can hit the file at the same instant and one fails with "could not lock
+    // config file ... File exists", taking the whole postCreateCommand step down. `&&`
+    // here forces them to run one after the other instead.
+    "git-config": "git config --global --add safe.directory ${containerWorkspaceFolder} && git config --global --add safe.directory ${containerWorkspaceFolder}/../.github && git -C ${containerWorkspaceFolder} submodule foreach --quiet 'git config --global --add safe.directory \"$toplevel/$sm_path\"' && bash ${containerWorkspaceFolder}/.devcontainer/configure-git-ssh-signing.sh",
     // posh-git isn't part of the powershell feature -- installed from the gallery here.
     "posh-git": "pwsh -NoLogo -NoProfile -File ${containerWorkspaceFolder}/.devcontainer/configure-posh-git.ps1",
     // azure-cli deliberately isn't apt-installed in the Dockerfile (see its comment) --
