@@ -12,10 +12,17 @@ var pgPassword = builder.AddParameter("postgres-password", secret: true);
 
 var pgPrimary = builder
 	.AddPostgres("pg-primary", password: pgPassword, port: 5432)
-	.WithContainerDefaults("19beta2")
+	.WithContainerDefaults("19beta3")
+	// On Windows, "localhost" (Aspire's default TargetHost for an unproxied endpoint) resolves IPv6
+	// first; nothing listens on the container's published port over ::1, and Windows hangs the
+	// connection for the full timeout instead of refusing it immediately like Linux does. That starves
+	// every Npgsql health check and app connection. Pin the target host to the IPv4 loopback the
+	// container actually publishes to, sidestepping dual-stack resolution entirely — the sanctioned
+	// workaround for microsoft/aspire#10754 (closed not-planned; Aspire won't fix this upstream).
+	.WithEndpoint("tcp", static endpoint => endpoint.TargetHost = "127.0.0.1")
 	// WithDataVolume() mis-detects the data directory for beta-tagged images: it parses the major
-	// version by int-parsing the tag segment before the first hyphen, and "19beta2" (no separator
-	// between the version and "beta2") fails to parse, so it silently falls back to the pre-18
+	// version by int-parsing the tag segment before the first hyphen, and "19beta3" (no separator
+	// between the version and "beta3") fails to parse, so it silently falls back to the pre-18
 	// path (/var/lib/postgresql/data) even though this image's real PGDATA nests under
 	// /var/lib/postgresql/19/docker. Mount the parent directory directly instead.
 	.WithVolume("norse-pg-primary", "/var/lib/postgresql")
@@ -35,6 +42,8 @@ pgPrimary.WithPgAdmin(container => container
 	// host port instead of Aspire's dynamic proxy port.
 	.WithContainerDefaults("latest")
 	.WithHostPort(5050)
+	// Same Windows IPv6-loopback-hang workaround as pg-primary above.
+	.WithEndpoint("http", static endpoint => endpoint.TargetHost = "127.0.0.1")
 	.WithUrlForEndpoint("http", static url => url.DisplayText = "pgAdmin"));
 
 // Aspire resource names allow only ASCII letters, digits, and hyphens (ASPIRE006) — "norse_identity"
@@ -51,7 +60,7 @@ var norseReference = pgPrimary.AddDatabase("norse-reference", databaseName: "nor
 
 builder
 	.AddContainer("pg-replica", "postgres")
-	.WithContainerDefaults("19beta2")
+	.WithContainerDefaults("19beta3")
 	// Mount the named volume at the image's own declared VOLUME path (/var/lib/postgresql), not a
 	// subdirectory of it — otherwise Docker still auto-creates an anonymous volume for the
 	// declared path itself (uncovered by a child-path mount), same class of bug as the primary's
@@ -63,6 +72,8 @@ builder
 	.WithEntrypoint("/bin/bash")
 	.WithArgs("/entrypoint.sh")
 	.WithEndpoint(port: 5433, targetPort: 5432, name: "tcp", isProxied: false)
+	// Same Windows IPv6-loopback-hang workaround as pg-primary above.
+	.WithEndpoint("tcp", static endpoint => endpoint.TargetHost = "127.0.0.1")
 	.WaitFor(pgPrimary);
 
 var migrationsService = builder
