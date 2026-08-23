@@ -31,7 +31,7 @@
       }
     },
     {
-      // Runs just Yggdrasil's Hosting.Stories.Server (which serves Bragi's
+      // Runs just Yggdrasil's Hosting.Stories (which serves Bragi's
       // DesignSystem.Stories catalog via BlazingStory) standalone -- no AppHost, no
       // Postgres, no DCP orchestration. Verified: builds and serves HTTP 200 on its
       // own. Its own launchSettings.json already names the applicationUrl for this
@@ -39,10 +39,10 @@
       "name": "Bragi (Stories, standalone)",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build: Stories.Server",
-      "program": "/tmp/norse-artifacts/Hosting.Stories.Server/bin/Debug/net11.0/Norse.Hosting.Stories.Server.dll",
+      "preLaunchTask": "build: Stories",
+      "program": "/tmp/norse-artifacts/Hosting.Stories/bin/Debug/net11.0/Norse.Hosting.Stories.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/Yggdrasil/src/Hosting.Stories.Server",
+      "cwd": "${workspaceFolder}/Yggdrasil/src/Hosting.Stories",
       "stopAtEntry": false,
       "console": "internalConsole",
       "env": {

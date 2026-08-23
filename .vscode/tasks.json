@@ -14,12 +14,12 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "build: Stories.Server",
+      "label": "build: Stories",
       "type": "process",
       "command": "dotnet",
       "args": [
         "build",
-        "${workspaceFolder}/Yggdrasil/src/Hosting.Stories.Server/Hosting.Stories.Server.csproj",
+        "${workspaceFolder}/Yggdrasil/src/Hosting.Stories/Hosting.Stories.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],

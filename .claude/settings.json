@@ -1,4 +1,8 @@
 {
+  "env": {
+    "CLAUDE_CODE_EFFORT_LEVEL": "auto",
+    "CLAUDE_CODE_USE_POWERSHELL_TOOL": "1"
+  },
   "permissions": {
     "allow": [
       "Edit",
@@ -98,18 +102,13 @@
       "PowerShell(dotnet ef database drop*)",
       "Edit(/workspaces/PriorArt/**)"
     ],
+    "defaultMode": "default",
     "additionalDirectories": [
       "../",
       "/workspaces/PriorArt"
-    ],
-    "defaultMode": "manual"
+    ]
   },
   "model": "sonnet",
-  "env": {
-    "CLAUDE_CODE_EFFORT_LEVEL": "auto",
-    "CLAUDE_CODE_USE_POWERSHELL_TOOL": "1"
-  },
-  "spinnerTipsEnabled": false,
   "enabledMcpjsonServers": [
     "playwright"
   ],
@@ -120,5 +119,6 @@
     "code-simplifier@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "claude-code-setup@claude-plugins-official": true
-  }
+  },
+  "spinnerTipsEnabled": false
 }

@@ -95,6 +95,6 @@ builder
 	.AddProject<Projects.Hosting_Worker>("worker")
 	.WaitForCompletion(migrationsService);
 
-builder.AddProject<Projects.Hosting_Stories_Server>("stories");
+builder.AddProject<Projects.Hosting_Stories>("stories");
 
 await builder.Build().RunAsync().ConfigureAwait(false);

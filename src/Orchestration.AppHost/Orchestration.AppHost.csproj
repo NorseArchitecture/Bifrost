@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.5.1">
+<Project Sdk="Aspire.AppHost.Sdk/13.5.2">
 
 	<PropertyGroup>
 		<AspireUseCliBundle>true</AspireUseCliBundle>
@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.*" />
 		<ProjectReference Include="..\..\Yggdrasil\src\Hosting.Migrations.Service\Hosting.Migrations.Service.csproj" />
-		<ProjectReference Include="..\..\Yggdrasil\src\Hosting.Stories.Server\Hosting.Stories.Server.csproj" />
+		<ProjectReference Include="..\..\Yggdrasil\src\Hosting.Stories\Hosting.Stories.csproj" />
 		<ProjectReference Include="..\..\Yggdrasil\src\Hosting.Web.Server\Hosting.Web.Server.csproj" />
 		<ProjectReference Include="..\..\Yggdrasil\src\Hosting.Worker\Hosting.Worker.csproj" />
 	</ItemGroup>

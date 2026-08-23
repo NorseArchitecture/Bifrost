@@ -155,8 +155,7 @@
 		<File Path="Yggdrasil/src/Directory.Build.props" />
 		<File Path="Yggdrasil/src/Directory.Build.targets" />
 		<Project Path="Yggdrasil/src/Hosting.Migrations.Service/Hosting.Migrations.Service.csproj" />
-		<Project Path="Yggdrasil/src/Hosting.Stories.Client/Hosting.Stories.Client.csproj" />
-		<Project Path="Yggdrasil/src/Hosting.Stories.Server/Hosting.Stories.Server.csproj" />
+		<Project Path="Yggdrasil/src/Hosting.Stories/Hosting.Stories.csproj" />
 		<Project Path="Yggdrasil/src/Hosting.Web.Client/Hosting.Web.Client.csproj" />
 		<Project Path="Yggdrasil/src/Hosting.Web.Components/Hosting.Web.Components.csproj" />
 		<Project Path="Yggdrasil/src/Hosting.Web.Server/Hosting.Web.Server.csproj" />
@@ -167,7 +166,7 @@
 		<File Path="Yggdrasil/tests/Directory.Build.targets" />
 		<File Path="Yggdrasil/tests/Directory.Packages.props" />
 		<Project Path="Yggdrasil/tests/Hosting.Migrations.Service.Tests/Hosting.Migrations.Service.Tests.csproj" />
-		<Project Path="Yggdrasil/tests/Hosting.Stories.Server.Tests/Hosting.Stories.Server.Tests.csproj" />
+		<Project Path="Yggdrasil/tests/Hosting.Stories.Tests/Hosting.Stories.Tests.csproj" />
 		<Project Path="Yggdrasil/tests/Hosting.Web.Client.Tests/Hosting.Web.Client.Tests.csproj" />
 		<Project Path="Yggdrasil/tests/Hosting.Web.Server.Tests/Hosting.Web.Server.Tests.csproj" />
 		<Project Path="Yggdrasil/tests/Hosting.Worker.Tests/Hosting.Worker.Tests.csproj" />
