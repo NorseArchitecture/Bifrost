@@ -170,6 +170,11 @@
     // mkdir -p before the chown: on a genuinely fresh norse-home volume ~/.dotnet may not
     // exist at all yet (root-owned-from-build isn't guaranteed by every dotnet feature
     // build), and `chown -R` on a missing path exits non-zero, aborting this whole chain
+    // Workloads the realms declare ride the end of this same chain, after the chown: `dotnet workload
+    // restore` writes under ~/.dotnet too, so a sibling entry would race it. wasm-tools for Yggdrasil's
+    // WebAssembly client since the engines cut (Glitnir/docs/Svartalfheim/specs/
+    // 2026-10-09-hyper-engines-cut-design.md §9); driven by the projects, so a future MAUI head adds
+    // its workloads here without an edit.
     // before `dotnet dev-certs` ever runs. mkdir -p is a no-op once the directory is real.
     // `--trust` itself exits 4 on this base image — no NSS/certutil trust store for
     // dotnet dev-certs to register into (that store is installed further down this same
@@ -184,7 +189,7 @@
     // (see its comment for why chromium/chromium-sandbox moved there alongside it) —
     // this step no longer installs anything, just configures the NSS DB with what's
     // already present.
-    "dev-cert-trust": "mkdir -p /home/vscode/.dotnet && sudo chown -R vscode:vscode /home/vscode/.dotnet && mkdir -p ${containerWorkspaceFolder}/.devcontainer/certs && (dotnet dev-certs https --trust --export-path ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt --format PEM || true) && sudo cp ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt /usr/local/share/ca-certificates/aspnetcore-dev.crt && sudo update-ca-certificates && mkdir -p ~/.pki/nssdb && ([ -f ~/.pki/nssdb/cert9.db ] || certutil -d sql:$HOME/.pki/nssdb -N --empty-password) && (certutil -d sql:$HOME/.pki/nssdb -D -n aspnetcore-dev || true) && certutil -d sql:$HOME/.pki/nssdb -A -t \"P,,\" -n aspnetcore-dev -i ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt"
+    "dev-cert-trust": "mkdir -p /home/vscode/.dotnet && sudo chown -R vscode:vscode /home/vscode/.dotnet && mkdir -p ${containerWorkspaceFolder}/.devcontainer/certs && (dotnet dev-certs https --trust --export-path ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt --format PEM || true) && sudo cp ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt /usr/local/share/ca-certificates/aspnetcore-dev.crt && sudo update-ca-certificates && mkdir -p ~/.pki/nssdb && ([ -f ~/.pki/nssdb/cert9.db ] || certutil -d sql:$HOME/.pki/nssdb -N --empty-password) && (certutil -d sql:$HOME/.pki/nssdb -D -n aspnetcore-dev || true) && certutil -d sql:$HOME/.pki/nssdb -A -t \"P,,\" -n aspnetcore-dev -i ${containerWorkspaceFolder}/.devcontainer/certs/aspnetcore-dev.crt && dotnet workload restore ${containerWorkspaceFolder}/Yggdrasil/Yggdrasil.slnx"
   },
 
   "customizations": {
