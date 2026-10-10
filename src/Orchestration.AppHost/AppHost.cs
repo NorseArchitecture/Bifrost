@@ -10,6 +10,13 @@ var builder = DistributedApplication.CreateBuilder(args);
 // run state. See postgres/replication-hba.sh and postgres/replica-entrypoint.sh for the bootstrap.
 var pgPassword = builder.AddParameter("postgres-password", secret: true);
 
+// The OpenIddict signing/encryption certificate and the seeded machine client's secret (machine-authn plan,
+// Tasks 7 and 8): generated on first run, persisted to this AppHost's user secrets, stable across restarts.
+var oidcSigningCertPfx = builder.AddParameter("oidc-signing-cert-pfx",
+	new OidcSigningCertificateParameterDefault(), secret: true, persist: true);
+var oidcMachineClientSecret = builder.AddParameter("oidc-machine-client-secret",
+	new GenerateParameterDefault(), secret: true, persist: true);
+
 var pgPrimary = builder
 	.AddPostgres("pg-primary", password: pgPassword, port: 5432)
 	.WithContainerDefaults("19beta4")
@@ -80,6 +87,7 @@ var migrationsService = builder
 	.AddProject<Projects.Hosting_Migrations_Service>("migrations")
 	.WithReference(norseIdentity, connectionName: "norse_identity")
 	.WithReference(norseReference, connectionName: "norse_reference")
+	.WithEnvironment("OIDC_MACHINE_CLIENT_SECRET", oidcMachineClientSecret)
 	.WaitFor(norseIdentity)
 	.WaitFor(norseReference);
 
@@ -87,6 +95,7 @@ builder
 	.AddProject<Projects.Hosting_Web_Server>("web")
 	.WithReference(norseIdentity, connectionName: "norse_identity")
 	.WithReference(norseReference, connectionName: "norse_reference")
+	.WithEnvironment("OIDC_SIGNING_CERT_PFX", oidcSigningCertPfx)
 	.WaitFor(norseIdentity)
 	.WaitFor(norseReference)
 	.WaitForCompletion(migrationsService);

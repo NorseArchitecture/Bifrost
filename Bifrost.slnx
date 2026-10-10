@@ -263,6 +263,9 @@
 	<Folder Name="/Orchestration/src/">
 		<Project Path="src/Orchestration.AppHost/Orchestration.AppHost.csproj" />
 	</Folder>
+	<Folder Name="/Orchestration/tests/">
+		<Project Path="tests/Orchestration.AppHost.Tests/Orchestration.AppHost.Tests.csproj" />
+	</Folder>
 	<Folder Name="/Persistence/">
 		<File Path="Urdarbrunnr/.editorconfig" />
 		<File Path="Urdarbrunnr/.gitattributes" />
@@ -321,16 +324,13 @@
 		<File Path="Svartalfheim/src/Directory.Build.props" />
 		<File Path="Svartalfheim/src/Directory.Build.targets" />
 		<Project Path="Svartalfheim/src/Primitives/Primitives.csproj" />
-		<Project Path="Svartalfheim/src/Primitives.Ingestion/Primitives.Ingestion.csproj" />
 	</Folder>
 	<Folder Name="/Primitives/tests/">
 		<File Path="Svartalfheim/tests/Directory.Build.props" />
 		<File Path="Svartalfheim/tests/Directory.Build.targets" />
 		<File Path="Svartalfheim/tests/smoke/Directory.Build.props" />
 		<Project Path="Svartalfheim/tests/Primitives.Tests/Primitives.Tests.csproj" />
-		<Project Path="Svartalfheim/tests/Primitives.Ingestion.Tests/Primitives.Ingestion.Tests.csproj" />
 		<Project Path="Svartalfheim/tests/smoke/Primitives.Aot.Smoke/Primitives.Aot.Smoke.csproj" />
-		<Project Path="Svartalfheim/tests/smoke/Primitives.Ingestion.Aot.Smoke/Primitives.Ingestion.Aot.Smoke.csproj" />
 	</Folder>
 	<Folder Name="/Reference/">
 		<File Path="Mimir/.editorconfig" />

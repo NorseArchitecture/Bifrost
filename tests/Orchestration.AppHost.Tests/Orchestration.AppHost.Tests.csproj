@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Self-contained: Bifröst has no tests/Directory.Build.props to inherit from, and one project does
+	     not justify inventing shared test infrastructure (machine-authn plan, Task 7). -->
+	<PropertyGroup>
+		<IsPackable>false</IsPackable>
+		<IsPublishable>false</IsPublishable>
+		<IsTestProject>true</IsTestProject>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Aspire.Hosting" Version="13.*" />
+		<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.*" />
+		<PackageReference Include="Shouldly" Version="*" />
+		<PackageReference Include="xunit.v3.mtp-v2" Version="*" />
+		<ProjectReference Include="../../src/Orchestration.AppHost/Orchestration.AppHost.csproj" />
+		<Using Include="Shouldly" />
+		<Using Include="Xunit" />
+	</ItemGroup>
+
+</Project>
