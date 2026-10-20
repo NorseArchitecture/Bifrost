@@ -19,7 +19,7 @@ var oidcMachineClientSecret = builder.AddParameter("oidc-machine-client-secret",
 
 var pgPrimary = builder
 	.AddPostgres("pg-primary", password: pgPassword, port: 5432)
-	.WithContainerDefaults("19beta4")
+	.WithContainerDefaults("19rc1")
 	// On Windows, "localhost" (Aspire's default TargetHost for an unproxied endpoint) resolves IPv6
 	// first; nothing listens on the container's published port over ::1, and Windows hangs the
 	// connection for the full timeout instead of refusing it immediately like Linux does. That starves
@@ -27,11 +27,11 @@ var pgPrimary = builder
 	// container actually publishes to, sidestepping dual-stack resolution entirely — the sanctioned
 	// workaround for microsoft/aspire#10754 (closed not-planned; Aspire won't fix this upstream).
 	.WithEndpoint("tcp", static endpoint => endpoint.TargetHost = "127.0.0.1")
-	// WithDataVolume() mis-detects the data directory for beta-tagged images: it parses the major
-	// version by int-parsing the tag segment before the first hyphen, and "19beta4" (no separator
-	// between the version and "beta4") fails to parse, so it silently falls back to the pre-18
-	// path (/var/lib/postgresql/data) even though this image's real PGDATA nests under
-	// /var/lib/postgresql/19/docker. Mount the parent directory directly instead.
+	// WithDataVolume() mis-detects the data directory for prerelease-tagged images: it parses the
+	// major version by int-parsing the tag segment before the first hyphen, and "19rc1" (no separator
+	// between the version and "rc1", same as every 19betaN before it) fails to parse, so it silently
+	// falls back to the pre-18 path (/var/lib/postgresql/data) even though this image's real PGDATA
+	// nests under /var/lib/postgresql/19/docker. Mount the parent directory directly instead.
 	.WithVolume("norse-pg-primary", "/var/lib/postgresql")
 	.WithArgs(
 		"-c", "wal_level=logical",
@@ -67,7 +67,7 @@ var norseReference = pgPrimary.AddDatabase("norse-reference", databaseName: "nor
 
 builder
 	.AddContainer("pg-replica", "postgres")
-	.WithContainerDefaults("19beta4")
+	.WithContainerDefaults("19rc1")
 	// Mount the named volume at the image's own declared VOLUME path (/var/lib/postgresql), not a
 	// subdirectory of it — otherwise Docker still auto-creates an anonymous volume for the
 	// declared path itself (uncovered by a child-path mount), same class of bug as the primary's

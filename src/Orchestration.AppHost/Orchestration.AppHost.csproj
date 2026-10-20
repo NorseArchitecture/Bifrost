@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.6.0">
+﻿<Project Sdk="Aspire.AppHost.Sdk/13.6.1">
 
 	<PropertyGroup>
 		<AspireUseCliBundle>true</AspireUseCliBundle>
@@ -9,6 +9,8 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
 		<PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.*" />
+		<!-- Transitive on Aspire.Hosting.PostgreSQL that has vulnerabilities -->
+		<PackageReference Include="MessagePack" Version="3.*" />
 		<ProjectReference Include="..\..\Yggdrasil\src\Hosting.Migrations.Service\Hosting.Migrations.Service.csproj" />
 		<ProjectReference Include="..\..\Yggdrasil\src\Hosting.Stories\Hosting.Stories.csproj" />
 		<ProjectReference Include="..\..\Yggdrasil\src\Hosting.Web.Server\Hosting.Web.Server.csproj" />
