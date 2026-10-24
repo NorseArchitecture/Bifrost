@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "fantomas": {
-      "version": "7.0.6",
+      "version": "8.1.0",
       "commands": [
         "fantomas"
       ],
@@ -17,98 +17,98 @@
       "rollForward": false
     },
     "dotnet-dump": {
-      "version": "9.0.661903",
+      "version": "10.0.750501",
       "commands": [
         "dotnet-dump"
       ],
       "rollForward": false
     },
     "dotnet-trace": {
-      "version": "9.0.661903",
+      "version": "10.0.750501",
       "commands": [
         "dotnet-trace"
       ],
       "rollForward": false
     },
     "dotnet-counters": {
-      "version": "9.0.661903",
+      "version": "10.0.750501",
       "commands": [
         "dotnet-counters"
       ],
       "rollForward": false
     },
     "dotnet-coverage": {
-      "version": "18.10.0",
+      "version": "18.12.0",
       "commands": [
         "dotnet-coverage"
       ],
       "rollForward": false
     },
     "dotnet-debug": {
-      "version": "0.0.731901",
+      "version": "0.0.750501",
       "commands": [
         "dotnet-debug"
       ],
       "rollForward": false
     },
     "dotnet-gcdump": {
-      "version": "9.0.661903",
+      "version": "10.0.750501",
       "commands": [
         "dotnet-gcdump"
       ],
       "rollForward": false
     },
     "dotnet-monitor": {
-      "version": "10.0.3",
+      "version": "10.0.5",
       "commands": [
         "dotnet-monitor"
       ],
       "rollForward": false
     },
     "dotnet-stack": {
-      "version": "9.0.661903",
+      "version": "10.0.750501",
       "commands": [
         "dotnet-stack"
       ],
       "rollForward": false
     },
     "dotnet-symbol": {
-      "version": "9.0.661903",
+      "version": "10.0.750501",
       "commands": [
         "dotnet-symbol"
       ],
       "rollForward": false
     },
     "dotnet-sos": {
-      "version": "9.0.661903",
+      "version": "10.0.750501",
       "commands": [
         "dotnet-sos"
       ],
       "rollForward": false
     },
     "dotnet-dsrouter": {
-      "version": "9.0.661903",
+      "version": "10.0.750501",
       "commands": [
         "dotnet-dsrouter"
       ],
       "rollForward": false
     },
     "dotnet-debugger-extensions": {
-      "version": "10.0.731901",
+      "version": "10.0.750501",
       "commands": [
         "dotnet-debugger-extensions"
       ],
       "rollForward": false
     },
     "aspire.cli": {
-      "version": "13.5.2",
+      "version": "13.6.3",
       "commands": [
         "aspire"
       ],
       "rollForward": false
     },
     "ilspycmd": {
-      "version": "11.0.0.9375",
+      "version": "11.1.0.9782",
       "commands": [
         "ilspycmd"
       ],

@@ -22,14 +22,14 @@
     "ghcr.io/devcontainers/features/docker-in-docker:4": {
         "moby": false
     },
-    // The only SDK in the container. Preview 7 is the last preview — bump this line
-    // to 11.0.100-rc.1.* when RC1 drops, then rc.2, then RTM.
+    // The only SDK in the container. RC2 is the end of the prerelease line — bump this line
+    // to 11.0 at RTM, in the same change as global.json (this feature can't read it).
     // The ASP.NET Core 10 runtime is not for our code — it's what the C# extension's
     // Roslyn language server runs on. Baking it into the image (one layer, cached)
     // stops the extension re-downloading its own private copy into ~/.vscode-server
     // on every single rebuild. See dotnetAcquisitionExtension.* below.
     "ghcr.io/devcontainers/features/dotnet:2": {
-        "version": "11.0.100-preview.7.26381.103",
+        "version": "11.0.100-rc.2.26504.105",
         "aspNetCoreRuntimeVersions": "10.0"
     },
     "ghcr.io/devcontainers/features/github-cli:1": {},

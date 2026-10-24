@@ -1,0 +1,4 @@
+# devcontainer's exported ASP.NET Core dev cert (public cert only, but still a generated,
+# per-machine artifact — regenerates on first postCreateCommand run against a fresh
+# norse-home volume). See scripts/Trust-DevCert.ps1.
+certs/
