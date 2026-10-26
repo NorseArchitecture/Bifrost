@@ -190,6 +190,7 @@
 		<Project Path="Himinbjorg/src/Identity.Migrations/Identity.Migrations.csproj" />
 		<Project Path="Himinbjorg/src/Identity.Migrations.PostgreSQL/Identity.Migrations.PostgreSQL.csproj" />
 		<Project Path="Himinbjorg/src/Identity.Migrations.SqlServer/Identity.Migrations.SqlServer.csproj" />
+		<Project Path="Himinbjorg/src/Identity.Outcomes/Identity.Outcomes.csproj" />
 		<Project Path="Himinbjorg/src/Identity.Web.Server/Identity.Web.Server.csproj" />
 	</Folder>
 	<Folder Name="/Identity/tests/">
@@ -199,6 +200,7 @@
 		<Project Path="Himinbjorg/tests/Identity.Migrations.PostgreSQL.Tests/Identity.Migrations.PostgreSQL.Tests.csproj" />
 		<Project Path="Himinbjorg/tests/Identity.Migrations.SqlServer.Tests/Identity.Migrations.SqlServer.Tests.csproj" />
 		<Project Path="Himinbjorg/tests/Identity.Migrations.Tests/Identity.Migrations.Tests.csproj" />
+		<Project Path="Himinbjorg/tests/Identity.Outcomes.Tests/Identity.Outcomes.Tests.csproj" />
 		<Project Path="Himinbjorg/tests/Identity.Web.Server.Tests/Identity.Web.Server.Tests.csproj" />
 	</Folder>
 	<Folder Name="/Infrastructure/">
