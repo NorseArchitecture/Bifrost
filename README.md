@@ -37,6 +37,38 @@ ASP.NET Core Identity keeps the password hash, security stamp and lockout counte
 
 The stock store's blanket overwrites, which force-mark every column modified, are replaced by `NorseUserStore`. It implements Identity's store interfaces directly, writes only what changed, in explicit statements inside one transaction, and tells a failed write from one whose outcome is genuinely unknown. On SQL Server, the engine-native versioning EF can't yet aim at a single split table comes from the persistence chassis until EF Core ships it upstream. Erasure is a hard delete: the subject's key is destroyed first, then the rows. Run the AppHost, sign in with a wrong password, and `users_history` doesn't move. Full design: [Glitnir's identity explicit-writes spec](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Himinbjorg/specs/2026-10-24-identity-explicit-writes-temporal-split-design.md).
 
+## What's live: the identity account lifecycle over gRPC
+
+ASP.NET Core Identity ships its account pages as a static-SSR scaffold: pages that inject `UserManager` directly, post antiforgery forms, and park the two-factor hop in a cookie only a browser round trip can set. None of that renders on WASM or MAUI. Three trains replaced the scaffold with gRPC operations behind Heimdall's components, so every page renders the same on every host.
+
+**Train 1 (2026-10-26): the anonymous tier.**
+- Two-factor and recovery-code sign-in, forgot and reset password, and email confirmation are now gRPC operations.
+- The two-factor hop crosses the wire as a short-lived, data-protected challenge token. The token carries the security stamp, so a password reset kills an outstanding challenge.
+- The remember-this-machine cookie rides the same deferral chain as the sign-in itself.
+
+Plan: [Train 1](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Himinbjorg/plans/2026-10-26-identity-account-lifecycle-train-1.md).
+
+**Train 2 (2026-10-27): the account core.**
+- A new `IAccountService` covers the self-service operations: phone, password, email, external logins and erasure.
+- The whole Manage tree moved to Heimdall, behind one account policy stamped on every page.
+- The account's last way in can't be removed: the store refuses it under a row lock, whatever the page shows.
+- The end-to-end walk fixed what it found. Anonymous visitors are sent to login, not a bare 403. A form that hasn't finished loading refuses to submit instead of reporting a success it didn't earn. Saving an unchanged phone number no longer signs every other session out.
+
+Plan: [Train 2](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Himinbjorg/plans/2026-10-26-identity-account-lifecycle-train-2.md).
+
+**Train 3 (2026-10-28): two-factor, passkeys, external login and the scaffold's retirement.**
+- **Two-factor and passkeys** are managed over gRPC. Passkey sign-in requires user verification and is one-shot: a replayed assertion signs in nothing.
+- **The last scaffold folder is deleted.**
+- **`returnUrl` is honored.** It is validated on the server, which also builds the links between sign-in pages. Three older links are still built in the browser, and the server validates each one. The sign-in completion page lands only on a local path.
+- **Stamp refreshes:** a security-stamp rotation refreshes the sign-in instead of quietly signing you out half an hour later.
+- **External login always requires the platform's second factor.** It starts only from a same-origin or typed request, and it registers only a provider-verified email. It is proven by TestServer facts until a local provider exists.
+- **The account invariant has a job:** a background job in the web host checks that every account keeps a way to sign in.
+- **A failed policy lands on AccessDenied**, both over HTTP and inside the app, carrying the page it came from.
+
+Plan: [Train 3](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Himinbjorg/plans/2026-10-27-identity-account-lifecycle-train-3.md).
+
+Next comes **Train 4 (OpenIddict, spec sub-project B: authorization code + PKCE, step-up)**, then **Train 5 (full end-to-end OpenIddict / ASP.NET Identity integration, which walks external login locally against OpenIddict)**. Full design, with each train's as-built record: [Glitnir's account-lifecycle spec](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Himinbjorg/specs/2026-10-26-identity-account-lifecycle-over-grpc-design.md).
+
 ## What's live: flip one property, get two platforms
 
 Every cross-realm reference on the bridge is declared once, as a `NorseRef` item, and resolved by a single MSBuild property: `UseProjectReferences`. Flip it to `true` and the whole stack builds from source across every submodule on disk — edit Svartálfheim, rebuild Mímisbrunnr, the change is just *there*, no publish, no version bump, no wait. Flip it to `false` and the same declaration resolves to the exact NuGet packages GitHub Actions resolves — the same dependency graph, the other lens, on the same machine, in the time it takes to rebuild. A checkout with no Bifröst ancestor on disk — a genuinely standalone realm clone — falls back to that same package crossing by construction: there's no secret third mode hiding behind "standalone."

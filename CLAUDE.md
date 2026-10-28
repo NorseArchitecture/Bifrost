@@ -28,6 +28,41 @@ It is a **reference composition, not a product**. Consumers of the Norse Archite
 
 The train shipped in dependency order: Asgard v0.0.32, Midgard v0.0.35, Urðarbrunnr v0.0.17–v0.0.19, then Himinbjörg. `InitialCreate` keeps squashing in place until the Heimdall gRPC conversion is proven end to end with MAUI-renderable components; wipe the local Postgres volumes after each squash. Full narrative: `../Glitnir/docs/Himinbjorg/specs/2026-10-24-identity-explicit-writes-temporal-split-design.md` (plan: `../Glitnir/docs/Himinbjorg/plans/2026-10-24-identity-explicit-writes-temporal-split.md`).
 
+**State of the union (2026-10-26):** Train 1 of the identity account lifecycle over gRPC (Himinbjörg#48 sub-project A) put the anonymous tier on the wire.
+- **The flows:** two-factor and recovery-code sign-in, forgot and reset password, confirm email, confirm email change and resend confirmation became seven `IAuthenticationService` operations. They sit behind Heimdall shim-over-unit components, and Himinbjörg reaches Identity only through `.Outcome` views.
+- **The challenge token:** the two-factor hop crosses the wire as a five-minute data-protected token (`v1|userId|securityStamp|isPersistent|loginProvider`) that carries the security stamp, so a reset or any other stamp rotation kills an outstanding challenge. The `TwoFactorUserId` cookie is never written again.
+- **The deferral chain:** the remember-this-machine cookie and the identity cookie both ride `IDeferredSignIn`, chained through `DeferredCompletion.TryBuildUrl` as two `/_auth/complete` hops.
+- **The prerequisites** were front-loaded: Asgard's `NorseRoles.Anonymous`, Midgard's client-side `AddNorsePolicies()`, `AuthNPolicies.Account` declared, and `IdentityPolicies.Self` hardened against the anonymous principal.
+
+The train shipped as Asgard v0.0.34, Midgard v0.0.37, Heimdall v0.0.21, Himinbjörg v0.0.25 and Bragi v0.0.14, then Yggdrasil. Plan: `../Glitnir/docs/Himinbjorg/plans/2026-10-26-identity-account-lifecycle-train-1.md`. Spec: `../Glitnir/docs/Himinbjorg/specs/2026-10-26-identity-account-lifecycle-over-grpc-design.md`.
+
+**State of the union (2026-10-27):** Train 2 of the identity account lifecycle built the account core.
+- **The contract:** a new `IAccountService` carries eight self-service operations under `AuthNPolicies.Account`: status, phone, change and set password, change email, external-login list and remove, and erasure. Erasure is `DeletePersonalData`, the front door to `ErasureService`.
+- **The Manage tree** moved to Heimdall. `Manage/_Imports.razor` stamps every page with `ManageLayout` and the account policy. Pages are loaders over forms, and post-reload messages ride a server-authored `?status=` key. Six Himinbjörg scaffold pages were deleted, and the external-login link start became an antiforgery-free GET pair.
+- **The last-sign-in-method guard:** removing an external login flushes under a row lock on `user_credentials`. Removing an account's last way in answers `NorseIdentityErrorCodes.LastSignInMethod`, mapped to `Conflict`.
+- **The walk's rulings:** Ruling 44: an anonymous principal's page navigation into the Manage tree is challenged to login instead of a bare 403. Ruling 46: a statically rendered form refuses to dispatch. Ruling 47: saving an unchanged phone is a no-op success that rotates no stamp.
+
+Every realm closed on clean `master` at Asgard v0.0.36, Midgard v0.0.38, Heimdall v0.0.23, Himinbjörg v0.0.27 and Bragi v0.0.15. Plan: `../Glitnir/docs/Himinbjorg/plans/2026-10-26-identity-account-lifecycle-train-2.md`. As built: §14 of the spec above.
+
+**State of the union (2026-10-28):** Train 3 finished sub-project A: two-factor, passkeys, external login and the scaffold's retirement.
+- **Two-factor and passkeys over gRPC:** three new contracts, `ITwoFactorService` and `IPasskeyService` under `AuthNPolicies.Account` and `ISignInMethodsService` under `AuthNPolicies.Public`, sit behind nine Heimdall pages. Passkey sign-in requires user verification, and its assertion is one-shot through the non-temporal `consumed_passkey_challenges` ledger. A user-verifying passkey counts as MFA (`bypassTwoFactor: true`, the framework's own value).
+- **The scaffold is gone:** Himinbjörg's `Components/` is deleted, and its IL-scan exemption went with it. The coverage floor is ratcheted to 85.
+- **`returnUrl` is honored:** `ReturnUrls.Resolve` decides every landing, using path-only validation, and refuses external-login routes. Midgard's `/_auth/complete` meta-refreshes only to a single-slash-rooted local path (control characters refused before and after one percent-decode), and to the PathBase root otherwise. The links between sign-in pages are built by the server (`GetSignInMethods`, rendered by `SignInMethodLinks`). Three pre-existing links are still client-composed, and the server validates each one: `RedirectToLogin`'s login link, the Manage external-login link start, and `LoginWith2fa`'s recovery-code link.
+- **Stamp refreshes:** every stamp rotation refreshes the sign-in. New recovery codes survive the forced reload in a one-shot, data-protected handoff.
+- **External login requires the second factor:** `ExternalLoginSignInAsync` throws if it is ever passed `true`.
+  - Both GET starts fail closed on `Sec-Fetch-Site`.
+  - Registration accepts only a provider-verified email, read from the validated id token into `AuthenticationProperties`, never from claims, and the provider key is bound from `sub`.
+  - All of it is proven by real-manager TestServer facts over a test-only remote scheme.
+- **The invariant job:** the stranded-account verification runs in the web host, walking every account with a persisted, compare-and-set keyset cursor. Yggdrasil proves it through the public `norse.identity.stranded_accounts` gauge.
+- **AccessDenied on both lanes:** an identity principal that fails a policy gets `/Account/AccessDenied?ReturnUrl=…`, carrying the local return URL, from Midgard on HTTP and from `NotAuthorizedRedirect` in-circuit.
+- **`CanAct`:** Asgard's `OutcomeComponentBase.CanAct` disables every click trigger on an `OutcomeComponentBase` page until the component is interactive and idle. `PersonalData` moved onto that base to adopt it. `ChangeEmailForm`'s resend button sits on the form base and keeps its own in-flight guard.
+
+The end-to-end walk ran against a disposable Postgres, because the human owns the volume wipe after Himinbjörg's `InitialCreate` squash. The full AppHost stand-up is owed after that wipe. The WASM browser leg remains the RC3/Chromium 156 environment limit.
+
+The release order is Asgard, Midgard, then Heimdall → Bragi → Himinbjörg, then one Yggdrasil PR with every bump folded. The date is the staging date, to be adjusted if the release lands later. Plan: `../Glitnir/docs/Himinbjorg/plans/2026-10-27-identity-account-lifecycle-train-3.md`. As built: §15 of the same spec.
+
+The lifecycle continues in **Train 4 (OpenIddict, spec sub-project B: authorization code + PKCE, step-up)** and **Train 5 (full end-to-end OpenIddict / ASP.NET Identity integration, which walks external login locally against OpenIddict)**.
+
 **Peer repositories** sit beside Bifröst in the same parent directory and are not submodules of it:
 
 | Repository | Local path | Purpose |
