@@ -67,7 +67,17 @@ Plan: [Train 2](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Hi
 
 Plan: [Train 3](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Himinbjorg/plans/2026-10-27-identity-account-lifecycle-train-3.md).
 
-Next comes **Train 4 (OpenIddict, spec sub-project B: authorization code + PKCE, step-up)**, then **Train 5 (full end-to-end OpenIddict / ASP.NET Identity integration, which walks external login locally against OpenIddict)**. Full design, with each train's as-built record: [Glitnir's account-lifecycle spec](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Himinbjorg/specs/2026-10-26-identity-account-lifecycle-over-grpc-design.md).
+## What's live: the platform is its own OpenID provider
+
+Until this train, OpenIddict issued tokens to machines only, and no person could get one. Train 4 (2026-10-30, staged, not yet shipped) closes the account lifecycle's sub-project B on OpenIddict 8:
+- **Authorization code + PKCE with rotating refresh tokens** for first-party native clients, so the MAUI app has a flow to ride. Every token carries the original sign-in's time, and the code and refresh token also carry its security stamp: a password reset kills a code still waiting to be redeemed, and a refresh two weeks later still knows when you last signed in.
+- **Reuse ends the grant, durably.** Present a code or refresh token twice and the whole grant is revoked, including any successor a racing request minted. A password reset or erasure ends it too. A lockout only blocks signing in with a password; tokens already issued keep working. Revoking your current refresh token kills just that token, and presenting it again is reuse.
+- **Every request is stamped with the lane it arrived on**, the browser cookie, a user's token or a machine's token, and every policy is closed to the cookie unless it names another lane. A user's token reaches two read-only operations and nothing else. Midgard no longer references OpenIddict at all.
+- **Step-up:** adding a passkey, disabling two-factor, linking an external login and showing the authenticator key all demand a recent sign-in, and a stale caller is sent through the login page and back. The authorize endpoint honors `prompt` and `max_age` the same way.
+
+Two halts reshaped it mid-flight: OpenIddict's token store lost a token's grant under the platform's no-tracking default, and Mímir's reference reads had to name the machine lane. Both returned to the design court and came back as amendments. The end-to-end walk ran against the real web server and a throwaway database. Release order: Asgard → Midgard → Heimdall → Himinbjörg → Mímir → Yggdrasil. Full design, with the walk and the errata: [Glitnir's OpenIddict spec](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Himinbjorg/specs/2026-10-29-openiddict-authorization-code-pkce-step-up-design.md).
+
+Next comes **Train 5 (full end-to-end OpenIddict / ASP.NET Identity integration, which walks external login locally against OpenIddict)**, then Train 6 (MAUI). The account lifecycle's design, with each train's as-built record: [Glitnir's account-lifecycle spec](https://github.com/NorseArchitecture/Glitnir/blob/master/docs/Himinbjorg/specs/2026-10-26-identity-account-lifecycle-over-grpc-design.md).
 
 ## What's live: flip one property, get two platforms
 
